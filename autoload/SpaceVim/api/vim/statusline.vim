@@ -139,7 +139,9 @@ function! s:self.open_float(st) abort
   call setbufvar(self.__bufnr, '&number', 0)
   call setbufvar(self.__bufnr, '&bufhidden', 'wipe')
   call setbufvar(self.__bufnr, '&cursorline', 0)
+  call setbufvar(self.__bufnr, '&cursorcolumn', 0)
   call setbufvar(self.__bufnr, '&modifiable', 1)
+  call setbufvar(self.__bufnr, '&foldcolumn', 0)
   if exists('*nvim_buf_set_virtual_text')
     call setwinvar(win_id2win(self.__winid), '&cursorline', 0)
     call nvim_buf_set_virtual_text(
@@ -183,5 +185,6 @@ endif
 function! SpaceVim#api#vim#statusline#get() abort
   return deepcopy(s:self)
 endfunction
+
 
 " vim:set et sw=2 cc=80 nowrap:
