@@ -14,7 +14,7 @@ let s:SYS = SpaceVim#api#import('system')
 let s:BUFFER = SpaceVim#api#import('vim#buffer')
 let s:LIST = SpaceVim#api#import('data#list')
 let s:REGEX = SpaceVim#api#import('vim#regex')
-
+let s:VIM = SpaceVim#api#import('vim')
 let s:LOGGER =SpaceVim#logger#derive('FlyGrep')
 let s:HI = SpaceVim#api#import('vim#highlight')
 if has('nvim')
@@ -838,8 +838,9 @@ function! SpaceVim#plugins#flygrep#open(argv) abort
           \ 'col': 0
           \ })
   else
-    noautocmd rightbelow split __flygrep__
+    noautocmd botright split __flygrep__
     let s:flygrep_win_id = win_getid()
+    let s:buffer_id = bufnr('__flygrep__')
   endif
   if exists('&winhighlight')
     set winhighlight=Normal:Pmenu,EndOfBuffer:Pmenu,CursorLine:PmenuSel
@@ -859,7 +860,7 @@ function! SpaceVim#plugins#flygrep#open(argv) abort
   call s:matchadd('FileName', s:filename_pattern, 3)
   let s:MPT._prompt.begin = get(a:argv, 'input', '')
   let fs = get(a:argv, 'files', '')
-  if fs ==# '@buffers'
+  if !s:VIM.is_list(fs) && fs ==# '@buffers'
     let s:grep_files = map(s:BUFFER.listed_buffers(), 'bufname(v:val)')
   elseif !empty(fs)
     let s:grep_files = fs
