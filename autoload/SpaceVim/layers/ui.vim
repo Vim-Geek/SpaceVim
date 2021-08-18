@@ -136,10 +136,10 @@ function! SpaceVim#layers#ui#config() abort
   let g:indentLine_concealcursor = s:concealcursor
   let g:indentLine_conceallevel = s:conceallevel
 
-
   " enable/disable indentline
   let g:indentLine_enabled = s:enable_indentline
-  let g:indent_blankline_enabled = s:enable_indentline
+  " indent_blankline config
+  let g:indent_blankline_enabled = s:enable_indentline ? v:true : v:false
 
   " exclude filetypes for indentline
   let g:indentLine_fileTypeExclude = s:indentline_exclude_filetyps
