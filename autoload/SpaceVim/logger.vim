@@ -85,6 +85,12 @@ else
 
   endfunction
 
+  function! SpaceVim#logger#debug(msg) abort
+
+    call s:LOGGER.debug(a:msg)
+
+  endfunction
+
   function! SpaceVim#logger#viewRuntimeLog() abort
     let info = "### SpaceVim runtime log :\n\n"
     let info .= s:LOGGER.view(s:LOGGER.level)
@@ -188,6 +194,12 @@ else
   function! s:derive.error(msg) abort
     call s:LOGGER.set_name(self.derive_name)
     call s:LOGGER.error(a:msg)
+    call s:LOGGER.set_name(self.origin_name)
+  endfunction
+
+  function! s:derive.debug(msg) abort
+    call s:LOGGER.set_name(self.derive_name)
+    call s:LOGGER.debug(a:msg)
     call s:LOGGER.set_name(self.origin_name)
   endfunction
 

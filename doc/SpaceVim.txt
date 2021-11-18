@@ -77,9 +77,10 @@ CONTENTS                                                   *SpaceVim-contents*
       57. vim_help_language...............|SpaceVim-options-vim_help_language|
       58. vimcompatible.......................|SpaceVim-options-vimcompatible|
       59. warning_symbol.....................|SpaceVim-options-warning_symbol|
-      60. windows_index_type.............|SpaceVim-options-windows_index_type|
-      61. windows_leader.....................|SpaceVim-options-windows_leader|
-      62. windows_smartclose.............|SpaceVim-options-windows_smartclose|
+      60. windisk_encoding.................|SpaceVim-options-windisk_encoding|
+      61. windows_index_type.............|SpaceVim-options-windows_index_type|
+      62. windows_leader.....................|SpaceVim-options-windows_leader|
+      63. windows_smartclose.............|SpaceVim-options-windows_smartclose|
   3. Configuration...........................................|SpaceVim-config|
   4. Commands..............................................|SpaceVim-commands|
   5. Functions............................................|SpaceVim-functions|
@@ -812,6 +813,14 @@ Set the warning symbol for SpaceVim's syntax maker. Default is '⚠'.
 <
 
 ==============================================================================
+WINDISK_ENCODING                           *SpaceVim-options-windisk_encoding*
+
+Setting the encoding of windisk info. by default it is `cp936`.
+>
+  windisk_encoding = 'cp936'
+<
+
+==============================================================================
 WINDOWS_INDEX_TYPE                       *SpaceVim-options-windows_index_type*
 
 Set SpaceVim windows index type, default is 3.
@@ -1427,6 +1436,18 @@ SpaceVim#custom#SPC({m}, {keys}, {cmd}, {desc}, {is_cmd})
   is an ex command or key binding, depending on whether the last parameter is
   true. The fourth parameter is a short description of this custom key
   binding.
+
+SpaceVim#custom#SPCGroupName({keys}, {name})  *SpaceVim#custom#SPCGroupName()*
+  Set the group name of custom key bindings.
+
+SpaceVim#custom#LangSPC({ft}, {m}, {keys}, {cmd}, {desc}, {is_cmd})
+                                                   *SpaceVim#custom#LangSPC()*
+  This function offers user a way to add custom language specific key
+  bindings.
+
+SpaceVim#custom#LangSPCGroupName({ft}, {keys}, {name})
+                                          *SpaceVim#custom#LangSPCGroupName()*
+  Set the group name of custom language specific key bindings.
 
 SpaceVim#layers#load({layer})                         *SpaceVim#layers#load()*
   Load the {layer} you want. For all the layers SpaceVim supports, see
@@ -5319,10 +5340,37 @@ VIM#MESSAGE                                         *SpaceVim-api-vim-message*
 
 `vim#message` API provide functions for generating colored message in vim's
 command line.
+>
+  let s:MSG = SpaceVim#api#import('vim#message')
+  call s:MSG.echo('WarningMsg', 'hello world!')
+<
+FUNCTIONS
 
 echo({hi}, {msg})
 
-  print message with {hi} highlight group.
+  print message with {hi} highlight group. The {msg} starts on a new line.
+
+echon({hi}, {msg})
+
+  print message with {hi} highlight group. The {msg} will be displayed
+without anything added.
+
+echomsg({hi}, {msg})
+
+  print message with {hi} highlight group. The {msg} starts on a new line.
+The {msg} also will be added to `:messages` history.
+
+error({msg})
+
+  same as `echomsg('Error', {msg})`
+
+warn({msg})
+
+  same as `echomsg('WarningMsg', {msg})`
+
+confirm({msg})
+
+  promote a confirm message, accept user input `y/n`.
 
 ==============================================================================
 VIM#WINDOW                                           *SpaceVim-api-vim-window*

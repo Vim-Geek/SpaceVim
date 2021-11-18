@@ -110,6 +110,15 @@ let g:spacevim_enable_bepo_layout  = 0
 " <
 let g:spacevim_max_column              = 120
 
+""
+" @section windisk_encoding, options-windisk_encoding
+" @parentsection options
+" Setting the encoding of windisk info. by default it is `cp936`.
+" >
+"   windisk_encoding = 'cp936'
+" <
+
+let g:spacevim_windisk_encoding = 'cp936'
 
 ""
 " @section default_custom_leader, options-default_custom_leader
@@ -1254,7 +1263,7 @@ let g:_spacevim_mappings = {}
 let g:_spacevim_mappings_space_custom = []
 let g:_spacevim_mappings_space_custom_group_name = []
 let g:_spacevim_mappings_language_specified_space_custom = {}
-let g:_spacevim_mappings_language_specified_space_custom_group_name = {}
+let g:_spacevim_mappings_lang_group_name = {}
 let g:_spacevim_neobundle_installed     = 0
 let g:_spacevim_dein_installed          = 0
 let g:_spacevim_vim_plug_installed      = 0
@@ -1545,6 +1554,8 @@ function! SpaceVim#begin() abort
     endif
   catch /^Vim\%((\a\+)\)\=:E197/
     call SpaceVim#logger#error('Can not set language to en_US.utf8')
+  catch /^Vim\%((\a\+)\)\=:E319/
+    call SpaceVim#logger#error('Can not set language to en_US.utf8, language not implemented in this Vim build')
   endtry
 
   " try to set encoding to utf-8
