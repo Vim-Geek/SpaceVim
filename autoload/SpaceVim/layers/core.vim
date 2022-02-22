@@ -1,6 +1,6 @@
 "=============================================================================
 " core.vim --- SpaceVim core layer
-" Copyright (c) 2016-2021 Wang Shidong & Contributors
+" Copyright (c) 2016-2022 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -161,8 +161,6 @@ function! SpaceVim#layers#core#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'I'], 'call SpaceVim#issue#report()', 'report-issue-or-bug', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'l'], 'SPLayer -l', 'list-all-layers', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'L'], 'SPRuntimeLog', 'view-runtime-log', 1)
-  " @todo move this key binding to fuzzy layer
-  call SpaceVim#mapping#space#def('nnoremap', ['h', 'm'], 'Unite manpage', 'search available man pages', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'k'], 'LeaderGuide "[KEYs]"', 'show-top-level-bindings', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['j', '0'], 'm`^', 'jump-to-beginning-of-line', 0)
   call SpaceVim#mapping#space#def('nnoremap', ['j', '$'], 'm`g_', 'jump-to-end-of-line', 0)
@@ -261,6 +259,7 @@ function! SpaceVim#layers#core#config() abort
         \ 'call SpaceVim#mapping#kill_visible_buffer_choosewin()',
         \ 'delete-the-selected-buffer', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-d>'], 'call SpaceVim#mapping#clear_buffers()', 'kill-other-buffers', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['b', '<C-S-d>'], 'call SpaceVim#mapping#kill_buffer_expr()', 'kill-buffers-by-regexp', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'c'], 'call SpaceVim#mapping#clear_saved_buffers()', 'clear-all-saved-buffers', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'e'], 'call call('
         \ . string(s:_function('s:safe_erase_buffer')) . ', [])',

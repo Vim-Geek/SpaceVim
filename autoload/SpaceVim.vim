@@ -1,6 +1,6 @@
 "=============================================================================
 " SpaceVim.vim --- Initialization and core files for SpaceVim
-" Copyright (c) 2016-2021 Wang Shidong & Contributors
+" Copyright (c) 2016-2022 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -11,7 +11,7 @@ scriptencoding utf-8
 " @section Introduction, intro
 " @stylized spacevim
 " @library
-" @order intro options config layers usage api dev faq changelog
+" @order intro options config functions layers usage api dev faq changelog
 " SpaceVim is a bundle of custom settings and plugins with a modular
 " configuration for Vim. It was inspired by Spacemacs.
 "
@@ -36,8 +36,14 @@ scriptencoding utf-8
 ""
 " @section Configuration, config
 " If you still want to use `~/.SpaceVim.d/init.vim` as configuration file,
-" please take a look at the following options.
-"
+" please take a look at the following options add @section(functions)
+
+
+""
+" @section Public functions, functions
+" All of these functions can be used in `~/.SpaceVim.d/init.vim` and bootstrap
+" functions.
+
 
 let s:SYSTEM = SpaceVim#api#import('system')
 
@@ -45,7 +51,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 ""
 " Version of SpaceVim , this value can not be changed.
-let g:spacevim_version = '1.9.0-dev'
+let g:spacevim_version = '2.0.0-dev'
 lockvar g:spacevim_version
 
 ""
@@ -1384,7 +1390,6 @@ function! SpaceVim#end() abort
   elseif g:spacevim_vim_help_language ==# 'ja'
     let &helplang = 'jp'
   endif
-  ""
   " generate tags for SpaceVim
   let help = fnamemodify(g:_spacevim_root_dir, ':p:h') . '/doc'
   try
@@ -1392,8 +1397,6 @@ function! SpaceVim#end() abort
   catch
     call SpaceVim#logger#warn('Failed to generate helptags for SpaceVim')
   endtry
-
-  ""
   " set language
   if !empty(g:spacevim_language)
     silent exec 'lan ' . g:spacevim_language
@@ -1452,6 +1455,9 @@ function! SpaceVim#end() abort
       set guicolors
     endif
   endif
+
+  call SpaceVim#autocmds#init()
+
   if g:spacevim_colorscheme !=# '' "{{{
     try
       exec 'set background=' . g:spacevim_colorscheme_bg
@@ -1472,10 +1478,6 @@ function! SpaceVim#end() abort
       let &guifont = g:spacevim_guifont
     endif
   endif
-
-
-
-  call SpaceVim#autocmds#init()
 
   if !has('nvim-0.2.0') && !has('nvim')
     " In old version of neovim, &guicursor do not support cursor shape
@@ -1644,6 +1646,40 @@ endfunction
 " @section Usage, usage
 "   General guide for using SpaceVim. Including layer configuration, bootstrap
 "   function.
+
+""
+" @section undo-tree, usage-undotree
+" @parentsection usage
+" Undo tree visualizes the undo history and makes it easier to browse and
+" switch between different undo branches.The default key binding is `F7`.
+" If `+python` or `+python3` is enabled, `vim-mundo` will be used,
+" otherwise `undotree` will be used.
+" 
+" Key bindings within undo tree windows:
+" >
+"    key bindings     description
+"    `G`              move bottom
+"    `J`              move older write
+"    `K`              move newer write
+"    `N`              previous match
+"    `P`              play to
+"    `<2-LeftMouse>`  mouse click
+"    `/`              search
+"    `<CR>`           preview
+"    `d`              diff
+"    `<down>`         move older
+"    `<up>`           move newer
+"    `i`              toggle inline
+"    `j`              move older
+"    `k`              move newer
+"    `n`              next match
+"    `o`              preview
+"    `p`              diff current buffer
+"    `q`              quit
+"    `r`              diff
+"    `gg`             move top
+"    `?`              toggle help
+" <
 
 ""
 " @section windows-and-tabs, usage-windows-and-tabs
@@ -1882,11 +1918,19 @@ endfunction
 
 ""
 " @section Changelog, changelog
-" Following HEAD: changes in master branch since last release v1.7.0
+" Following HEAD: changes in master branch since last release v1.9.0
 "
 " https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD
 "
-" 2021-06-16: v1.4.0
+" 2021-06-16: v1.9.0
+"
+" https://spacevim.org/SpaceVim-release-v1.9.0/
+"
+" 2021-06-16: v1.8.0
+"
+" https://spacevim.org/SpaceVim-release-v1.8.0/
+"
+" 2021-06-16: v1.7.0
 "
 " https://spacevim.org/SpaceVim-release-v1.7.0/
 "

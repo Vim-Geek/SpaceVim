@@ -1,12 +1,13 @@
 "=============================================================================
 " g.vim --- g key bindings
-" Copyright (c) 2016-2021 Wang Shidong & Contributors
+" Copyright (c) 2016-2022 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
 function! SpaceVim#mapping#g#init() abort
+  call SpaceVim#logger#debug('init g key bindings')
   nnoremap <silent><nowait> [G] :<c-u>LeaderGuide "g"<CR>
   nmap g [G]
   let g:_spacevim_mappings_g = {}

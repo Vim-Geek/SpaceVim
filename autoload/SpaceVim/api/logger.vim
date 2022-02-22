@@ -1,6 +1,6 @@
 "=============================================================================
 " logger.vim --- SpaceVim logger API
-" Copyright (c) 2016-2021 Wang Shidong & Contributors
+" Copyright (c) 2016-2022 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg at 163.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -16,6 +16,8 @@
 "
 "   {silent} is a Boolean. by default it is false, and log will be print to
 "   screen.
+
+let s:TIME = SpaceVim#api#import('time')
 
 let s:self = {
       \ 'name' : '',
@@ -52,10 +54,10 @@ endfunction
 function! s:self._build_msg(msg, l) abort
   let msg = a:msg
   let time = strftime('%H:%M:%S')
-  let log = printf('[ %s ] [%s] [%00.3f] [ %s ] %s',
+  let log = printf('[ %s ] [%s] [%00.3f] [ %5s ] %s',
         \ self.name,
         \ time,
-        \ reltimefloat(reltime(self.clock)),
+        \ s:TIME.reltimefloat(reltime(self.clock)),
         \ self.levels[a:l],
         \ msg)
   return log
