@@ -1,7 +1,7 @@
 "=============================================================================
 " edit.vim --- SpaceVim edit layer
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -60,6 +60,7 @@ let s:LIST = SpaceVim#api#import('data#list')
 let s:VIM = SpaceVim#api#import('vim')
 let s:CMP = SpaceVim#api#import('vim#compatible')
 let s:BUFFER = SpaceVim#api#import('vim#buffer')
+let s:HI = SpaceVim#api#import('vim#highlight')
 
 let s:autosave_timeout = 0
 let s:autosave_events = []
@@ -249,6 +250,9 @@ function! SpaceVim#layers#edit#config() abort
   vnoremap <silent> <Plug>DuplicateLines :call <SID>duplicate_lines(1)<Cr>
   call SpaceVim#mapping#space#def('nmap', ['x', 'l', 'd'], '<Plug>DuplicateLines',
         \ 'duplicate-line-or-region', 0, 1)
+  nnoremap <silent> <Plug>ReverseLines :ReverseLines<cr>
+  vnoremap <silent> <Plug>ReverseLines :ReverseLines<cr>
+  call SpaceVim#mapping#space#def('nmap' , ['x' , 'l' , 'r'] , '<Plug>ReverseLines'  , 'reverse-lines'                  , 0, 1)
   call SpaceVim#mapping#space#def('nnoremap' , ['x' , 'l' , 's'] , 'sort i'  , 'sort lines (ignorecase)'                    , 1)
   call SpaceVim#mapping#space#def('nnoremap' , ['x' , 'l' , 'S'] , 'sort'    , 'sort lines (case-sensitive)'                , 1)
   nnoremap <silent> <Plug>UniquifyIgnoreCaseLines :call <SID>uniquify_lines(0, 1)<Cr>
@@ -697,6 +701,13 @@ function! s:duplicate_lines(visual) abort
   endif
 endfunction
 
+command! -nargs=0 -range=% ReverseLines :<line1>,<line2>call <sid>reverse_lines()
+function! s:reverse_lines() range
+  let rst = getline(a:firstline, a:lastline)
+  call reverse(rst)
+  call s:BUFFER.buf_set_lines(bufnr('.'), a:firstline-1 , a:lastline, 0, rst)
+endfunction
+
 function! s:uniquify_lines(visual, ignorecase) abort
   if a:visual
     let start_line = line("'<")
@@ -788,13 +799,13 @@ endfunction
 
 
 function! s:join_string_with() abort
-  if s:is_string(line('.'), col('.'))
+  if s:HI.is_string(line('.'), col('.'))
     let c = col('.')
     let a = 0
     let b = 0
     let _c = c
     while c > 0
-      if s:is_string(line('.'), c)
+      if s:HI.is_string(line('.'), c)
         let c -= 1
       else
         let a = c
@@ -803,7 +814,7 @@ function! s:join_string_with() abort
     endwhile
     let c = _c
     while c > 0
-      if s:is_string(line('.'), c)
+      if s:HI.is_string(line('.'), c)
         let c += 1
       else
         let b = c
@@ -816,16 +827,6 @@ function! s:join_string_with() abort
     let @m = l:save_register_m
   endif
 endfunction
-
-let s:string_hi = {
-      \ 'c' : 'cCppString',
-      \ 'cpp' : 'cCppString',
-      \ }
-
-function! s:is_string(l, c) abort
-  return synIDattr(synID(a:l, a:c, 1), 'name') == get(s:string_hi, &filetype, &filetype . 'String')
-endfunction
-
 
 " function() wrapper
 if v:version > 703 || v:version == 703 && has('patch1170')

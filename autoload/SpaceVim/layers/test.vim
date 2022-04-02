@@ -1,7 +1,7 @@
 "=============================================================================
 " test.vim --- SpaceVim test layer
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -10,6 +10,11 @@
 " @section test, layers-test
 " @parentsection layers
 " This layer allows to run tests on SpaceVim
+"
+" @subsection layer options
+"
+" - `use_ultest`: enable/disable vim-ultest plugin, this is disabled by
+"   default.
 "
 " @subsection Mappings
 " >

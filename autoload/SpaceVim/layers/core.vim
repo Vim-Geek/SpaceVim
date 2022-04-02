@@ -1,7 +1,7 @@
 "=============================================================================
 " core.vim --- SpaceVim core layer
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -48,6 +48,7 @@ let s:FILE = SpaceVim#api#import('file')
 let s:MESSAGE = SpaceVim#api#import('vim#message')
 let s:CMP = SpaceVim#api#import('vim#compatible')
 let s:NOTI = SpaceVim#api#import('notify')
+let s:HI = SpaceVim#api#import('vim#highlight')
 
 
 function! SpaceVim#layers#core#plugins() abort
@@ -92,8 +93,7 @@ function! SpaceVim#layers#core#plugins() abort
   endif
   call add(plugins, [g:_spacevim_root_dir . 'bundle/gruvbox', {'loadconf' : 1, 'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/open-browser.vim', {
-        \ 'merged' : 0, 'on_cmd' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
-        \ 'loadconf' : 1,
+        \ 'merged' : 0, 'loadconf' : 1,
         \}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-grepper' ,              { 'on_cmd' : 'Grepper',
         \ 'loadconf' : 1} ])
@@ -268,6 +268,9 @@ function! SpaceVim#layers#core#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'm'], 'call call('
         \ . string(s:_function('s:open_message_buffer')) . ', [])',
         \ 'open-message-buffer', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['b', 'o'], 'call call('
+        \ . string(s:_function('s:only_buf_win')) . ', [])',
+        \ 'kill-other-buffers-and-windows', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'P'], 'normal! ggdG"+P', 'copy-clipboard-to-whole-buffer', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'R'], 'call call('
         \ . string(s:_function('s:safe_revert_buffer')) . ', [])',
@@ -540,12 +543,12 @@ function! s:jump_last_change() abort
 endfunction
 
 function! s:split_string(newline) abort
-  if s:is_string(line('.'), col('.'))
+  if s:HI.is_string(line('.'), col('.'))
     let save_cursor = getcurpos()
     let c = col('.')
     let sep = ''
     while c > 0
-      if s:is_string(line('.'), c)
+      if s:HI.is_string(line('.'), c)
         let c -= 1
       else
         if !empty(get(get(g:string_info, &filetype, {}), 'quotes_hi', []))
@@ -575,18 +578,6 @@ function! s:split_string(newline) abort
     endif
     call setpos('.', save_cursor)
   endif
-endfunction
-
-
-" @toto add sting highlight for other filetype
-let s:string_hi = {
-      \ 'c' : 'cCppString',
-      \ 'cpp' : 'cCppString',
-      \ 'python' : 'pythonString',
-      \ }
-
-function! s:is_string(l, c) abort
-  return synIDattr(synID(a:l, a:c, 1), 'name') == get(s:string_hi, &filetype, &filetype . 'String')
 endfunction
 
 " function() wrapper
@@ -634,6 +625,11 @@ function! s:open_message_buffer() abort
   normal! G
   setlocal nomodifiable
   nnoremap <buffer><silent> q :call <SID>close_message_buffer()<CR>
+endfunction
+
+function! s:only_buf_win() abort
+  only
+  call SpaceVim#mapping#clear_saved_buffers()
 endfunction
 
 function! s:close_message_buffer() abort

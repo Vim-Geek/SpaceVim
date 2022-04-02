@@ -1,7 +1,7 @@
 "=============================================================================
 " SpaceVim.vim --- Initialization and core files for SpaceVim
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Shidong Wang < wsdjeg at 163.com >
+" Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -11,7 +11,7 @@ scriptencoding utf-8
 " @section Introduction, intro
 " @stylized spacevim
 " @library
-" @order intro options config functions layers usage api dev faq changelog
+" @order intro options config functions layers usage plugins api dev faq changelog
 " SpaceVim is a bundle of custom settings and plugins with a modular
 " configuration for Vim. It was inspired by Spacemacs.
 "
@@ -68,6 +68,11 @@ lockvar g:spacevim_version
 "   let g:spacevim_default_indent = 2
 " <
 let g:spacevim_default_indent          = 2
+""
+" @section expand_tab, options-expand_tab
+" @parentsection options
+" In Insert mode: Use the appropriate number of spaces to insert a <Tab>
+
 ""
 " In Insert mode: Use the appropriate number of spaces to insert a <Tab>
 let g:spacevim_expand_tab              = 1
@@ -592,6 +597,24 @@ let g:spacevim_statusline_left_sections = ['winnr', 'filename', 'major mode',
       \ 'search count',
       \ 'syntax checking', 'minor mode lighters',
       \ ]
+""
+" @section statusline_right_sections, options-statusline_right_sections
+" @parentsection options
+" Define the right section of statusline in active windows. By default:
+" >
+"   statusline_right_sections = [
+"     'fileformat',
+"     'cursorpos',
+"     'percentage'
+"     ]
+" <
+"
+" The following sections can be used in this option:
+" - fileformat: the format of current file
+" - cursorpos: the corsur position
+" - percentage: the percent of current page
+" - totallines: the total lines of current buffer
+
 ""
 " Define the right section of statusline in active windows. By default:
 " >

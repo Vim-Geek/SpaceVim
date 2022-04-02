@@ -1,7 +1,7 @@
 "=============================================================================
 " mapping.vim --- mapping functions in SpaceVim
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg at 163.com >
+" Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -104,6 +104,14 @@ endfunction
 
 function! SpaceVim#mapping#enter() abort
   return SpaceVim#mapping#enter#i_enter()
+endfunction
+
+function! SpaceVim#mapping#g_capital_d() abort
+  if !empty(SpaceVim#mapping#g_capital_d#get())
+    call call(SpaceVim#mapping#g_capital_d#get(), [])
+  else
+    normal! gD
+  endif
 endfunction
 
 function! SpaceVim#mapping#gd() abort

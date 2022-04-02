@@ -1,7 +1,7 @@
 "=============================================================================
 " flygrep.vim --- Grep on the fly in SpaceVim
 " Copyright (c) 2016-2022 Wang Shidong & Contributors
-" Author: Shidong Wang < wsdjeg at 163.com >
+" Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
@@ -372,7 +372,7 @@ function! s:close_grep_job() abort
   endif
   call timer_stop(s:grep_timer_id)
   call timer_stop(s:preview_timer_id)
-  noautocmd normal! "_ggdG
+  noautocmd normal! gg"_dG
   call s:update_statusline()
   let s:complete_input_history_num = [0,0]
 endfunction
@@ -753,7 +753,7 @@ function! s:previous_match_history() abort
   endif
   let s:complete_input_history_num[0] += 1
   let s:MPT._prompt.begin = s:complete_input_history(s:complete_input_history_base, s:complete_input_history_num)
-  noautocmd normal! "_ggdG
+  noautocmd normal! gg"_dG
   call s:MPT._handle_fly(s:MPT._prompt.begin . s:MPT._prompt.cursor .s:MPT._prompt.end)
 endfunction
 
@@ -765,7 +765,7 @@ function! s:next_match_history() abort
   endif
   let s:complete_input_history_num[1] += 1
   let s:MPT._prompt.begin = s:complete_input_history(s:complete_input_history_base, s:complete_input_history_num)
-  noautocmd normal! "_ggdG
+  noautocmd normal! gg"_dG
   call s:MPT._handle_fly(s:MPT._prompt.begin . s:MPT._prompt.cursor .s:MPT._prompt.end)
 endfunction
 

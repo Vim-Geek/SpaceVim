@@ -1115,6 +1115,7 @@ Text related commands (start with `x`):
 | `SPC x J`        | move down a line of text (enter transient state)                   |
 | `SPC x K`        | move up a line of text (enter transient state)                     |
 | `SPC x l d`      | duplicate a line or region                                         |
+| `SPC x l r`      | reverse lines                                                      |
 | `SPC x l s`      | sort lines (ignorecase)                                            |
 | `SPC x l S`      | sort lines (case-senstive)                                         |
 | `SPC x l u`      | uniquify lines (ignorecase)                                        |
@@ -1394,7 +1395,7 @@ Buffer manipulation commands (start with `b`):
 | `SPC b h`            | open _SpaceVim_ home buffer                                                    |
 | `SPC b n`            | switch to next buffer avoiding special buffers                                 |
 | `SPC b m`            | open _Messages_ buffer                                                         |
-| `SPC u SPC b m`      | kill all buffers and windows except the current one(TODO)                      |
+| `SPC b o`            | kill all saved buffers and windows except the current one                      |
 | `SPC b p`            | switch to previous buffer avoiding special buffers                             |
 | `SPC b P`            | copy clipboard and replace buffer (useful when pasting from a browser)         |
 | `SPC b R`            | revert the current buffer (reload from disk)                                   |
