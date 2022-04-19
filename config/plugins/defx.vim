@@ -69,8 +69,6 @@ augroup END
 function! s:win_count() abort
   if has('nvim') && exists('*nvim_win_get_config')
     return len(filter(range(1, winnr('$')), '!has_key(nvim_win_get_config(win_getid(v:val)), "col")'))
-  elseif exists('*popup_getoptions')
-    return len(filter(range(1, winnr('$')), '!has_key(popup_getoptions(win_getid(v:val)), "col")'))
   else
     return winnr('$')
   endif
@@ -148,8 +146,7 @@ function! s:defx_init()
         \ defx#do_action('drop', 'split')
   nnoremap <silent><buffer><expr> st
         \ defx#do_action('drop', 'tabedit')
-  nnoremap <silent><buffer><expr> p
-        \ defx#do_action('open', 'pedit')
+  nnoremap <silent><buffer><expr> p defx#do_action('call', g:defx_config_sid . 'DefxPreview')
   nnoremap <silent><buffer><expr> K
         \ defx#do_action('new_directory')
   nnoremap <silent><buffer><expr> N
@@ -208,6 +205,27 @@ function! s:DefxSmartL(_)
     endif
   endif
 endfunction
+
+function! s:DefxPreview(_) abort
+  if s:preview_windows_opened()
+    pclose
+  else
+    if !defx#is_directory()
+      let filepath = defx#get_candidate()['action__path']
+      exe 'topleft pedit ' . filepath
+    endif
+  endif
+endfunction
+
+fun! s:preview_windows_opened()
+  for nr in range(1, winnr('$'))
+    if getwinvar(nr, "&pvw") == 1
+      " found a preview
+      return 1
+    endif  
+  endfor
+  return 0
+endfun
 
 function! s:DefxSmartH(_)
   " if cursor line is first line, or in empty dir

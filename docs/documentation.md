@@ -73,6 +73,7 @@ description: "General documentation about how to use SpaceVim, including the qui
     - [Commands starting with `z`](#commands-starting-with-z)
 - [Advanced usage](#advanced-usage)
   - [Managing projects](#managing-projects)
+    - [Show project info on cmdline](#show-project-info-on-cmdline)
     - [Searching files in project](#searching-files-in-project)
     - [Custom alternate file](#custom-alternate-file)
   - [Bookmarks management](#bookmarks-management)
@@ -1955,6 +1956,10 @@ Project manager commands start with `p`:
 | ------------ | ----------------------------------------------------- |
 | `SPC p '`    | open a shell in project’s root (need the shell layer) |
 
+#### Show project info on cmdline
+
+By default the key binding `Ctrl-g` will display the information of current project on command line.
+
 #### Searching files in project
 
 | Key Bindings         | Descriptions                             |
@@ -2226,9 +2231,16 @@ With the above configuration, you will see the following tasks in the SpaceVim r
 ### Todo manager
 
 The todo manager plugin will run `rg` asynchronously, the results will be displayed on todo manager windows.
-The key binding is `SPC a o`.
+The key binding is `SPC a o`. The default `todo_prefix` option is `@`,
+and the `todo_labels` is: `['fixme', 'question', 'todo', 'idea']`.
 
-The default tags is: `'@fixme', '@question', '@todo', '@idea'`.
+Example:
+
+```
+[options]
+   todo_labels = ['fixme', 'question', 'todo', 'idea']
+   todo_prefix = '@'
+```
 
 ![todo manager](https://user-images.githubusercontent.com/13142418/61462920-0bd9d000-a9a6-11e9-8e1f-c70d6ec6ca1e.png)
 
@@ -2244,38 +2256,45 @@ The default color for iedit is `red`/`green` which is based on the current color
 
 **State transitions:**
 
-| Key Bindings | From             | to           |
-| ------------ | ---------------- | ------------ |
-| `SPC s e`    | normal or visual | iedit-Normal |
+| Key Bindings | Description                         |
+| ------------ | ----------------------------------- |
+| `SPC s e`    | start iedit with all matchs         |
+| `SPC s E`    | start iedit with only current match |
 
 **In iedit-Normal mode:**
 
 `iedit-Normal` mode inherits from `Normal` mode, the following key bindings are specific to `iedit-Normal` mode.
 
-| Key Binding   | Descriptions                                                                                                                       |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `<Esc>`       | go back to `Normal` mode                                                                                                           |
-| `i`           | switch to `iedit-Insert` mode, same as `i` in `Normal` model                                                                       |
-| `a`           | switch to `iedit-Insert` mode, same as `a` in `Normal` model                                                                       |
-| `I`           | go to the beginning of the current occurrence and switch to `iedit-Insert` mode, same as `I` in `Normal` model                     |
-| `A`           | go to the end of the current occurrence and switch to `iedit-Insert` mode, same as `A` in `Normal` model                           |
-| `<Left>`/`h`  | Move cursor to left, same as `h` in `Normal` model                                                                                 |
-| `<Right>`/`l` | Move cursor to right, same as `l` in `Normal` model                                                                                |
-| `0`/`<Home>`  | go to the beginning of the current occurrence, same as `0` in `Normal` model                                                       |
-| `$`/`<End>`   | go to the end of the current occurrence, same as `$` in `Normal` model                                                             |
-| `C`           | delete the characters from the cursor to the end in all occurrences and switch to iedit-Insert mode, same as `C` in `Normal` model |
-| `D`           | delete the occurrences, same as `D` in `Normal` model                                                                              |
-| `s`           | delete the character under cursor and switch to iedit-Insert mode, same as `s` in `Normal` model                                   |
-| `S`           | delete the occurrences and switch to iedit-Insert mode, same as `S` in `Normal` model                                              |
-| `x`           | delete the character under cursor in all the occurrences, same as `x` in `Normal` model                                            |
-| `X`           | delete the character before cursor in all the occurrences, same as `X` in `Normal` model                                           |
-| `gg`          | go to first occurrence, same as `gg` in `Normal` model                                                                             |
-| `G`           | go to last occurrence, same as `G` in `Normal` model                                                                               |
-| `f{char}`     | Move the cursor to the right where the `{char}` first appears in all the occurrences                                               |
-| `n`           | go to next occurrence                                                                                                              |
-| `N`           | go to previous occurrence                                                                                                          |
-| `p`           | replace occurrences with last yanked (copied) text                                                                                 |
-| `<Tab>`       | toggle current occurrence                                                                                                          |
+| Key Binding   | Descriptions                                                             |
+| ------------- | ------------------------------------------------------------------------ |
+| `<Esc>`       | go back to `Normal` mode                                                 |
+| `i`           | start `iedit-Insert` mode after current character                        |
+| `a`           | start `iedit-Insert` mode before current character                       |
+| `I`           | goto the beginning and start `iedit-Insert` mode                         |
+| `A`           | goto the end and start `iedit-Insert` mode                               |
+| `<Left>`/`h`  | Move cursor to left                                                      |
+| `<Right>`/`l` | Move cursor to right                                                     |
+| `0`/`<Home>`  | go to the beginning of the current occurrence                            |
+| `$`/`<End>`   | go to the end of the current occurrence                                  |
+| `C`           | delete from the cursor position to the end and start `iedit-Insert` mode |
+| `D`           | delete the occurrences                                                   |
+| `s`           | delete the character under cursor and start iedit-Insert mode            |
+| `S`           | delete the occurrences and start iedit-Insert mode                       |
+| `x`           | delete the character under cursor in all the occurrences                 |
+| `X`           | delete the character before cursor in all the occurrences                |
+| `gg`          | go to first occurrence                                                   |
+| `G`           | go to last occurrence                                                    |
+| `f{char}`     | To first occurrence of `{char}` to the right.                            |
+| `n`           | go to next occurrence                                                    |
+| `N`           | go to previous occurrence                                                |
+| `p`           | replace occurrences with last yanked (copied) text                       |
+| `<Tab>`       | toggle current occurrence                                                |
+| `Ctrl-n`      | forward and active next match                                            |
+| `Ctrl-x`      | inactivate current match and move forward                                |
+| `Ctrl-p`      | inactivate current match and move backward                               |
+| `e`           | forward to the end of word                                               |
+| `w`           | forward to the begin of next word                                        |
+| `b`           | move to the begin of current word                                        |
 
 **In iedit-Insert mode:**
 

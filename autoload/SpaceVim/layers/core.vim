@@ -20,6 +20,7 @@ scriptencoding utf-8
 "   enabled by default.
 " - `enable_filetree_gitstatus`: enable/disable git status column in filetree.
 " - `enable_filetree_filetypeicon`: enable/disable filetype icons in filetree.
+" - `enable_netrw`: enable/disable netrw, disabled by default.
 "
 " NOTE: the `enable_vimfiler_gitstatus` and `enable_filetree_gitstatus` option
 " has been deprecated. Use layer option instead.
@@ -34,13 +35,11 @@ if exists('s:string_hi')
 endif
 
 let s:enable_smooth_scrolling = 1
+let s:enable_netrw = 0
 
 let g:_spacevim_enable_filetree_gitstatus = 0
 let g:_spacevim_enable_filetree_filetypeicon = 0
 
-
-" disabel netrw
-let g:loaded_netrwPlugin = 1
 
 
 let s:SYS = SpaceVim#api#import('system')
@@ -81,6 +80,7 @@ function! SpaceVim#layers#core#plugins() abort
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx.nvim',{'merged' : 0, 'loadconf' : 1 , 'loadconf_before' : 1}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-git',{'merged' : 0, 'loadconf' : 1}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-icons',{'merged' : 0}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-sftp',{'merged' : 0}])
   endif
 
   if !g:spacevim_vimcompatible
@@ -103,6 +103,13 @@ endfunction
 let s:filename = expand('<sfile>:~')
 let s:lnum = expand('<slnum>') + 2
 function! SpaceVim#layers#core#config() abort
+
+  if !s:enable_netrw
+    " disabel netrw
+    let g:loaded_netrwPlugin = 1
+  endif
+
+
   if g:spacevim_filemanager ==# 'nerdtree'
     noremap <silent> <F3> :NERDTreeToggle<CR>
   endif
@@ -321,7 +328,9 @@ function! SpaceVim#layers#core#config() abort
     call SpaceVim#mapping#space#def('nnoremap', ['b', 't'], 'exe "Defx -no-toggle " . fnameescape(expand("%:p:h"))', 'show-file-tree-at-buffer-dir', 1)
   endif
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'y'], 'call SpaceVim#util#CopyToClipboard()', 'show-and-copy-buffer-filename', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['f', 'Y'], 'call SpaceVim#util#CopyToClipboard(1)', 'show-and-copy-buffer-filename', 1)
+  nnoremap <silent> <Plug>YankGitRemoteURL :call SpaceVim#util#CopyToClipboard(2)<Cr>
+  vnoremap <silent> <Plug>YankGitRemoteURL :<C-u>call SpaceVim#util#CopyToClipboard(3)<Cr>
+  call SpaceVim#mapping#space#def('nmap', ['f', 'Y'], '<Plug>YankGitRemoteURL', 'yank-remote-url', 0, 1)
   let g:_spacevim_mappings_space.f.v = {'name' : '+Vim/SpaceVim'}
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'v'], 'let @+=g:spacevim_version | echo g:spacevim_version', 'display-and-copy-version', 1)
   let lnum = expand('<slnum>') + s:lnum - 1
@@ -1003,7 +1012,7 @@ function! s:rename_current_file() abort
     echo 'canceled!'
   endif
 
-  
+
 endfunction
 
 function! s:save_as_new_file() abort
@@ -1086,6 +1095,9 @@ function! SpaceVim#layers#core#set_variable(var) abort
   let g:_spacevim_enable_filetree_gitstatus = get(a:var,
         \ 'enable_filetree_gitstatus',
         \ g:_spacevim_enable_filetree_gitstatus)
+  let s:enable_netrw = get(a:var,
+        \ 'enable_netrw',
+        \ 0)
 endfunction
 
 function! SpaceVim#layers#core#get_options() abort
@@ -1094,7 +1106,8 @@ function! SpaceVim#layers#core#get_options() abort
         \ 'filetree_closed_icon',
         \ 'filetree_opened_icon',
         \ 'filetree_show_hidden',
-        \ 'enable_smooth_scrolling'
+        \ 'enable_smooth_scrolling',
+        \ 'enable_filetree_filetypeicon'
         \ ]
 
 endfunction
