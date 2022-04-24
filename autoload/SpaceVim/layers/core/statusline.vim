@@ -37,7 +37,8 @@ let s:LANG = SpaceVim#api#import('language')
 
 let s:JSON = SpaceVim#api#import('data#json')
 
-let s:VIM =  SpaceVim#api#import('vim')
+let s:VIM = SpaceVim#api#import('vim')
+let s:WIN = SpaceVim#api#import('vim#window')
 
 
 " init
@@ -95,6 +96,11 @@ let s:modes = {
         \ 'icon' : s:MESSLETTERS.circled_letter('w'),
         \ 'icon_asc' : 'w',
         \ 'desc' : 'whitespace mode',
+        \ },
+        \ 'wrapline' :{
+        \ 'icon' : s:MESSLETTERS.circled_letter('W'),
+        \ 'icon_asc' : 'W',
+        \ 'desc' : 'wrap line mode',
         \ },
         \ }
 
@@ -393,7 +399,7 @@ function! SpaceVim#layers#core#statusline#get(...) abort
             \ . ( has('patch-8.0.1384') 
             \ ? ((getqflist({'title' : 0}).title ==# ':setqflist()') ? '' : 
             \ '%#SpaceVim_statusline_c#'
-            \ . getqflist({'title' : 0}).title
+            \ . ' ' . getqflist({'title' : 0}).title
             \ . '%#SpaceVim_statusline_c_SpaceVim_statusline_z#' . s:lsep
             \ ) : '')
     else
@@ -407,7 +413,7 @@ function! SpaceVim#layers#core#statusline#get(...) abort
             \ ? ((getloclist(winnr(),{'title' : 0}).title ==# ':setloclist()')
             \ ? '' : 
             \ '%#SpaceVim_statusline_c#'
-            \ . getloclist(winnr(),{'title' : 0}).title
+            \ . ' ' . getloclist(winnr(),{'title' : 0}).title
             \ . '%#SpaceVim_statusline_c_SpaceVim_statusline_z#' . s:lsep
             \ ) : '')
 
@@ -491,7 +497,7 @@ function! SpaceVim#layers#core#statusline#get(...) abort
     catch
     endtry
     let st = '%#SpaceVim_statusline_ia#' . s:winnr(1) . '%#SpaceVim_statusline_ia_SpaceVim_statusline_b#' . s:lsep
-          \ . '%#SpaceVim_statusline_b# startify %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep . ' '
+          \ . '%#SpaceVim_statusline_b# startify %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep
     if index(g:spacevim_statusline_left, 'vcs') != -1
       let st .= '%#SpaceVim_statusline_c#' .  call(s:registed_sections['vcs'], [])
             \ . '%#SpaceVim_statusline_c_SpaceVim_statusline_z#' . s:lsep
@@ -700,17 +706,20 @@ endfunction
 " This func is used to toggle major mode in statusline
 
 function! SpaceVim#layers#core#statusline#toggle_mode(name) abort
-  if index(s:loaded_modes, a:name) != -1
-    call remove(s:loaded_modes, index(s:loaded_modes, a:name))
-  else
-    call add(s:loaded_modes, a:name)
-  endif
   let mode = get(s:modes, a:name, {})
   call SpaceVim#logger#info('try to call func of mode:' . a:name)
   if has_key(mode, 'func')
-    call call(mode.func, [])
+    let done = call(mode.func, [])
   else
+    let done = 1
     call SpaceVim#logger#info('no func found for mode:' . a:name)
+  endif
+  if index(s:loaded_modes, a:name) != -1
+    call remove(s:loaded_modes, index(s:loaded_modes, a:name))
+  else
+    if done
+      call add(s:loaded_modes, a:name)
+    endif
   endif
   let &l:statusline = SpaceVim#layers#core#statusline#get(1)
   call s:update_conf()
@@ -834,7 +843,7 @@ function! SpaceVim#layers#core#statusline#ctrlp_status(str) abort
 endfunction
 
 function! SpaceVim#layers#core#statusline#jump(i) abort
-  if winnr('$') >= a:i
+  if s:WIN.win_count() >= a:i
     exe a:i . 'wincmd w'
   endif
 endfunction

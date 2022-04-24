@@ -276,7 +276,8 @@ function! SpaceVim#layers#ui#config() abort
 
   call SpaceVim#mapping#space#def('nnoremap', ['t', 'l'], 'setlocal list!',
         \ 'toggle-hidden-listchars', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['t', 'W'], 'setlocal wrap!',
+  call SpaceVim#mapping#space#def('nnoremap', ['t', 'W'], 'call call('
+        \ . string(s:_function('s:toggle_wrap_line')) . ', [])',
         \ 'toggle-wrap-line', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['t', 'w'], 'call call('
         \ . string(s:_function('s:toggle_whitespace')) . ', [])',
@@ -433,13 +434,21 @@ function! s:toggle_spell_check() abort
   if &l:spell
     let &l:spell = 0
   else
-    let &l:spell = 1
+    let v:errmsg = ''
+    silent! let &l:spell = 1
   endif
-  if &l:spell == 1
-    echo 'spell-checking enabled.'
+  if v:errmsg !=# ''
+    echo 'failed to enable spell check'
+    silent! let &l:spell = 0
+    return 0
   else
-    echo 'spell-checking disabled.'
+    if &l:spell == 1
+      echo 'spell-checking enabled.'
+    else
+      echo 'spell-checking disabled.'
+    endif
   endif
+  return 1
 endfunction
 
 function! s:toggle_paste() abort
@@ -453,6 +462,7 @@ function! s:toggle_paste() abort
   else
     echo 'paste-mode disabled.'
   endif
+  return 1
 endfunction
 
 let s:whitespace_enable = 0
@@ -466,6 +476,11 @@ function! s:toggle_whitespace() abort
   endif
   call SpaceVim#layers#core#statusline#toggle_section('whitespace')
   call SpaceVim#layers#core#statusline#toggle_mode('whitespace')
+endfunction
+
+function! s:toggle_wrap_line() abort
+  setlocal wrap!
+  call SpaceVim#layers#core#statusline#toggle_mode('wrapline')
 endfunction
 
 function! s:toggle_conceallevel() abort

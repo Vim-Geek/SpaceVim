@@ -83,29 +83,39 @@ function! s:on_stdout_show_branch(id, data, event) abort
   let b = s:STR.trim(join(a:data, ''))
   if !empty(b)
     let pwd = get(s:job_pwds, 'jobid' . a:id, '')
-    let s:branch_info[pwd] = {
-          \ 'name' : b,
-          \ }
+    if !empty(pwd)
+      let s:branch_info[pwd] = {
+            \ 'name' : b,
+            \ }
+    endif
   endif
 endfunction
 
 function! s:on_exit_show_branch(id, data, event) abort
   let pwd = get(s:job_pwds, 'jobid' . a:id, '')
-  if !has_key(s:branch_info, pwd)
+  if !has_key(s:branch_info, pwd) && !empty(pwd)
     let s:branch_info[pwd] = {}
   endif
-  call extend(s:branch_info[pwd], {
-        \ 'last_update_done' : localtime(),
-        \ })
+  if !empty(pwd)
+    call extend(s:branch_info[pwd], {
+          \ 'last_update_done' : localtime(),
+          \ })
+  endif
 endfunction
 
-function! git#branch#current() abort
+function! git#branch#current(...) abort
   let pwd = getcwd()
   let branch = get(s:branch_info, pwd, {})
   if empty(branch)
     call s:update_branch_name(pwd)
   endif
-  return get(branch, 'name', '')
+  let branch_name = get(branch, 'name', '')
+  let prefix = get(a:000, 0 , '')
+  if !empty(branch_name)
+    return ' ' . prefix . ' ' . branch_name . ' '
+  else
+    return ''
+  endif
 endfunction
 
 function! git#branch#detect() abort
