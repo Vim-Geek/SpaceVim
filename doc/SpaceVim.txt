@@ -1483,9 +1483,6 @@ Twitter.
 jaxbot/github-issues.vim {{{ Disable completion by github-issues.vim. Because
 github-complete.vim provides more powerful completion.
 
-                                                          *g:github_dashboard*
-junegunn/vim-github-dashboard {{{
-
                                                                   *g:dash_map*
 rizzatti/dash.vim {{{ Allows configuration of mappings between Vim filetypes
 and Dash's docsets.
@@ -1977,6 +1974,29 @@ automatically. and the format is:
 >
   autosave_location/path+=to+=filename.ext.backup
 <
+  5. `enable_hop`: by default, spacevim use easymotion plugin. and if you are
+using neovim 0.6.0 or above, hop.nvim will be enabled. You can disabled this
+plugin and still using easymotion.
+
+KEY BINDINGS
+
+The `edit` layer also provides many key bindings:
+>
+  key binding       description
+  SPC x c           count in the selection region
+<
+
+The following key binding is to jump to targets. The default plugin is
+`easymotion`, and if you are using neovim 0.6.0 or above. The `hop.nvim` will
+be used.
+>
+  key binding       description
+  SPC j j           jump or select a character
+  SPC j J           jump to suite of two characters
+  SPC j l           jump or select to a line
+  SPC j w           jump to a word
+  SPC j u           jump to a url
+<
 
 ==============================================================================
 EXPRFOLD                                            *SpaceVim-layers-exprfold*
@@ -2110,14 +2130,14 @@ This layer provides GitHub integration for SpaceVim
 MAPPINGS
 
 >
-  Mode      Key           Function
+  Key           Function
   -------------------------------------------------------------
-  normal    SPC g h i     show issues
-  normal    SPC g h a     show activities
-  normal    SPC g h d     show dashboard
-  normal    SPC g h f     show current file in browser
-  normal    SPC g h I     show issues in browser
-  normal    SPC g h p     show PRs in browser
+  SPC g h i     show issues
+  SPC g h a     show activities
+  SPC g h d     show dashboard
+  SPC g h f     show current file in browser
+  SPC g h I     show issues in browser
+  SPC g h p     show PRs in browser
 <
 
 NOTE: If you are using python2, you may get error:
@@ -2394,10 +2414,12 @@ Note: If `.clang` file contains std configuration, it will override
 
 KEY BINDINGS
 
+
 >
-  Mode            Key             Function
-  ---------------------------------------------
-  normal          SPC l r         run current file
+  Key             Function
+  --------------------------------
+  SPC l r         run current file
+  g d             jump to definition
 <
 
 This layer also provides REPL support for c, the key bindings are:
@@ -2408,6 +2430,21 @@ This layer also provides REPL support for c, the key bindings are:
   SPC l s b       send whole buffer
   SPC l s l       send current line
   SPC l s s       send selection text
+<
+
+If the lsp layer is enabled for c/c++, the following key bindings can be used:
+>
+  key binding     Description
+  --------------------------------
+  g D             jump to declaration
+  SPC l e         rename symbol
+  SPC l x         show references
+  SPC l h         show line diagnostics
+  SPC l d         show document
+  K               show document
+  SPC l w l       list workspace folder
+  SPC l w a       add workspace folder
+  SPC l w r       remove workspace folder
 <
 
 Known issue:
