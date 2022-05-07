@@ -40,7 +40,6 @@ let s:JSON = SpaceVim#api#import('data#json')
 let s:VIM = SpaceVim#api#import('vim')
 let s:WIN = SpaceVim#api#import('vim#window')
 
-
 " init
 " " the separators icons:
 "
@@ -103,6 +102,9 @@ let s:modes = {
         \ 'desc' : 'wrap line mode',
         \ },
         \ }
+
+let [s:lsep , s:rsep] = get(s:separators, g:spacevim_statusline_separator, s:separators['arrow'])
+let [s:ilsep , s:irsep] = get(s:i_separators, g:spacevim_statusline_iseparator, s:i_separators['arrow'])
 
 if SpaceVim#layers#isLoaded('checkers')
   call add(s:loaded_modes, 'syntax-checking')
