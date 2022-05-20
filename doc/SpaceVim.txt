@@ -109,125 +109,129 @@ CONTENTS                                                   *SpaceVim-contents*
       14. exprfold..................................|SpaceVim-layers-exprfold|
       15. foldsearch..............................|SpaceVim-layers-foldsearch|
       16. format......................................|SpaceVim-layers-format|
-      17. fzf............................................|SpaceVim-layers-fzf|
-      18. git............................................|SpaceVim-layers-git|
-      19. github......................................|SpaceVim-layers-github|
-      20. gtags........................................|SpaceVim-layers-gtags|
-      21. incsearch................................|SpaceVim-layers-incsearch|
-      22. indentmove..............................|SpaceVim-layers-indentmove|
-      23. lang#WebAssembly..................|SpaceVim-layers-lang-WebAssembly|
-      24. lang#actionscript................|SpaceVim-layers-lang-actionscript|
-      25. lang#agda................................|SpaceVim-layers-lang-agda|
-      26. lang#asciidoc........................|SpaceVim-layers-lang-asciidoc|
-      27. lang#asepctj..........................|SpaceVim-layers-lang-asepctj|
-      28. lang#assembly........................|SpaceVim-layers-lang-assembly|
-      29. lang#autohotkey....................|SpaceVim-layers-lang-autohotkey|
-      30. lang#autoit............................|SpaceVim-layers-lang-autoit|
-      31. lang#batch..............................|SpaceVim-layers-lang-batch|
-      32. lang#c......................................|SpaceVim-layers-lang-c|
-      33. lang#chapel............................|SpaceVim-layers-lang-chapel|
-      34. lang#clojure..........................|SpaceVim-layers-lang-clojure|
-      35. lang#coffeescript................|SpaceVim-layers-lang-coffeescript|
-      36. lang#crystal..........................|SpaceVim-layers-lang-crystal|
-      37. lang#csharp............................|SpaceVim-layers-lang-csharp|
-      38. lang#d......................................|SpaceVim-layers-lang-d|
-      39. lang#dart................................|SpaceVim-layers-lang-dart|
-      40. lang#dockerfile....................|SpaceVim-layers-lang-dockerfile|
-      41. lang#e......................................|SpaceVim-layers-lang-e|
-      42. lang#eiffel............................|SpaceVim-layers-lang-eiffel|
-      43. lang#elixir............................|SpaceVim-layers-lang-elixir|
-      44. lang#elm..................................|SpaceVim-layers-lang-elm|
-      45. lang#erlang............................|SpaceVim-layers-lang-erlang|
-      46. lang#extra..............................|SpaceVim-layers-lang-extra|
-      47. lang#fennel............................|SpaceVim-layers-lang-fennel|
-      48. lang#forth..............................|SpaceVim-layers-lang-forth|
-      49. lang#fortran..........................|SpaceVim-layers-lang-fortran|
-      50. lang#foxpro............................|SpaceVim-layers-lang-foxpro|
-      51. lang#fsharp............................|SpaceVim-layers-lang-fsharp|
-      52. lang#go....................................|SpaceVim-layers-lang-go|
-      53. lang#goby................................|SpaceVim-layers-lang-goby|
-      54. lang#gosu................................|SpaceVim-layers-lang-gosu|
-      55. lang#graphql..........................|SpaceVim-layers-lang-graphql|
-      56. lang#groovy............................|SpaceVim-layers-lang-groovy|
-      57. lang#hack................................|SpaceVim-layers-lang-hack|
-      58. lang#haskell..........................|SpaceVim-layers-lang-haskell|
-      59. lang#haxe................................|SpaceVim-layers-lang-haxe|
-      60. lang#html................................|SpaceVim-layers-lang-html|
-      61. lang#hy....................................|SpaceVim-layers-lang-hy|
-      62. lang#idris..............................|SpaceVim-layers-lang-idris|
-      63. lang#io....................................|SpaceVim-layers-lang-io|
-      64. lang#j......................................|SpaceVim-layers-lang-j|
-      65. lang#janet..............................|SpaceVim-layers-lang-janet|
-      66. lang#java................................|SpaceVim-layers-lang-java|
-      67. lang#javascript....................|SpaceVim-layers-lang-javascript|
-      68. lang#jr....................................|SpaceVim-layers-lang-jr|
-      69. lang#json................................|SpaceVim-layers-lang-json|
-      70. lang#julia..............................|SpaceVim-layers-lang-julia|
-      71. lang#kotlin............................|SpaceVim-layers-lang-kotlin|
-      72. lang#latex..............................|SpaceVim-layers-lang-latex|
-      73. lang#lisp................................|SpaceVim-layers-lang-lisp|
-      74. lang#livescript....................|SpaceVim-layers-lang-livescript|
-      75. lang#lua..................................|SpaceVim-layers-lang-lua|
-      76. lang#markdown........................|SpaceVim-layers-lang-markdown|
-      77. lang#moonscript....................|SpaceVim-layers-lang-moonscript|
-      78. lang#nim..................................|SpaceVim-layers-lang-nim|
-      79. lang#nix..................................|SpaceVim-layers-lang-nix|
-      80. lang#ocaml..............................|SpaceVim-layers-lang-ocaml|
-      81. lang#octave............................|SpaceVim-layers-lang-octave|
-      82. lang#pact................................|SpaceVim-layers-lang-pact|
-      83. lang#pascal............................|SpaceVim-layers-lang-pascal|
-      84. lang#perl................................|SpaceVim-layers-lang-perl|
-      85. lang#php..................................|SpaceVim-layers-lang-php|
-      86. lang#plantuml........................|SpaceVim-layers-lang-plantuml|
-      87. lang#pony................................|SpaceVim-layers-lang-pony|
-      88. lang#processing....................|SpaceVim-layers-lang-processing|
-      89. lang#prolog............................|SpaceVim-layers-lang-prolog|
-      90. lang#puppet............................|SpaceVim-layers-lang-puppet|
-      91. lang#purescript....................|SpaceVim-layers-lang-purescript|
-      92. lang#python............................|SpaceVim-layers-lang-python|
-      93. lang#racket............................|SpaceVim-layers-lang-racket|
-      94. lang#racket...............................|SpaceVim-layers-lang-red|
-      95. lang#reason............................|SpaceVim-layers-lang-reason|
-      96. lang#ring...................................|SpaceVim-layers-lang-r|
-      97. lang#ring................................|SpaceVim-layers-lang-ring|
-      98. lang#ruby................................|SpaceVim-layers-lang-ruby|
-      99. lang#rust................................|SpaceVim-layers-lang-rust|
-      100. lang#scala.............................|SpaceVim-layers-lang-scala|
-      101. lang#scheme...........................|SpaceVim-layers-lang-scheme|
-      102. lang#sh...................................|SpaceVim-layers-lang-sh|
-      103. lang#smalltalk.....................|SpaceVim-layers-lang-smalltalk|
-      104. lang#sml.................................|SpaceVim-layers-lang-sml|
-      105. lang#swig..............................|SpaceVim-layers-lang-swift|
-      106. lang#swig...............................|SpaceVim-layers-lang-swig|
-      107. lang#tcl.................................|SpaceVim-layers-lang-tcl|
-      108. lang#teal...............................|SpaceVim-layers-lang-teal|
-      109. lang#toml...............................|SpaceVim-layers-lang-toml|
-      110. lang#typescript...................|SpaceVim-layers-lang-typescript|
-      111. lang#v.....................................|SpaceVim-layers-lang-v|
-      112. lang#vala...............................|SpaceVim-layers-lang-vala|
-      113. lang#vbnet.............................|SpaceVim-layers-lang-vbnet|
-      114. lang#verilog.........................|SpaceVim-layers-lang-verilog|
-      115. lang#vim.................................|SpaceVim-layers-lang-vim|
-      116. lang#vue.................................|SpaceVim-layers-lang-vue|
-      117. lang#wdl.................................|SpaceVim-layers-lang-wdl|
-      118. lang#wolfram.........................|SpaceVim-layers-lang-wolfram|
-      119. lang#xml.................................|SpaceVim-layers-lang-xml|
-      120. lang#xquery...........................|SpaceVim-layers-lang-xquery|
-      121. lang#zig.................................|SpaceVim-layers-lang-zig|
-      122. language server protocol......................|SpaceVim-layers-lsp|
-      123. leaderf...................................|SpaceVim-layers-leaderf|
-      124. mail.........................................|SpaceVim-layers-mail|
-      125. operator.................................|SpaceVim-layers-operator|
-      126. shell.......................................|SpaceVim-layers-shell|
-      127. ssh...........................................|SpaceVim-layers-ssh|
-      128. test.........................................|SpaceVim-layers-test|
-      129. tmux.........................................|SpaceVim-layers-tmux|
-      130. tools#dash.............................|SpaceVim-layers-tools-dash|
-      131. tools#mpv...............................|SpaceVim-layers-tools-mpv|
-      132. tools#zeal.............................|SpaceVim-layers-tools-zeal|
-      133. treesitter.............................|SpaceVim-layers-treesitter|
-      134. ui.............................................|SpaceVim-layers-ui|
-      135. unite.......................................|SpaceVim-layers-unite|
+      17. framework#django..................|SpaceVim-layers-framework-django|
+      18. fzf............................................|SpaceVim-layers-fzf|
+      19. git............................................|SpaceVim-layers-git|
+      20. github......................................|SpaceVim-layers-github|
+      21. gtags........................................|SpaceVim-layers-gtags|
+      22. incsearch................................|SpaceVim-layers-incsearch|
+      23. indentmove..............................|SpaceVim-layers-indentmove|
+      24. lang#WebAssembly..................|SpaceVim-layers-lang-WebAssembly|
+      25. lang#actionscript................|SpaceVim-layers-lang-actionscript|
+      26. lang#agda................................|SpaceVim-layers-lang-agda|
+      27. lang#asciidoc........................|SpaceVim-layers-lang-asciidoc|
+      28. lang#asepctj..........................|SpaceVim-layers-lang-asepctj|
+      29. lang#assembly........................|SpaceVim-layers-lang-assembly|
+      30. lang#autohotkey....................|SpaceVim-layers-lang-autohotkey|
+      31. lang#autoit............................|SpaceVim-layers-lang-autoit|
+      32. lang#batch..............................|SpaceVim-layers-lang-batch|
+      33. lang#c......................................|SpaceVim-layers-lang-c|
+      34. lang#chapel............................|SpaceVim-layers-lang-chapel|
+      35. lang#clojure..........................|SpaceVim-layers-lang-clojure|
+      36. lang#coffeescript................|SpaceVim-layers-lang-coffeescript|
+      37. lang#crystal..........................|SpaceVim-layers-lang-crystal|
+      38. lang#csharp............................|SpaceVim-layers-lang-csharp|
+      39. lang#d......................................|SpaceVim-layers-lang-d|
+      40. lang#dart................................|SpaceVim-layers-lang-dart|
+      41. lang#dockerfile....................|SpaceVim-layers-lang-dockerfile|
+      42. lang#e......................................|SpaceVim-layers-lang-e|
+      43. lang#eiffel............................|SpaceVim-layers-lang-eiffel|
+      44. lang#elixir............................|SpaceVim-layers-lang-elixir|
+      45. lang#elm..................................|SpaceVim-layers-lang-elm|
+      46. lang#erlang............................|SpaceVim-layers-lang-erlang|
+      47. lang#extra..............................|SpaceVim-layers-lang-extra|
+      48. lang#fennel............................|SpaceVim-layers-lang-fennel|
+      49. lang#forth..............................|SpaceVim-layers-lang-forth|
+      50. lang#fortran..........................|SpaceVim-layers-lang-fortran|
+      51. lang#foxpro............................|SpaceVim-layers-lang-foxpro|
+      52. lang#fsharp............................|SpaceVim-layers-lang-fsharp|
+      53. lang#go....................................|SpaceVim-layers-lang-go|
+      54. lang#goby................................|SpaceVim-layers-lang-goby|
+      55. lang#gosu................................|SpaceVim-layers-lang-gosu|
+      56. lang#graphql..........................|SpaceVim-layers-lang-graphql|
+      57. lang#groovy............................|SpaceVim-layers-lang-groovy|
+      58. lang#hack................................|SpaceVim-layers-lang-hack|
+      59. lang#haskell..........................|SpaceVim-layers-lang-haskell|
+      60. lang#haxe................................|SpaceVim-layers-lang-haxe|
+      61. lang#html................................|SpaceVim-layers-lang-html|
+      62. lang#hy....................................|SpaceVim-layers-lang-hy|
+      63. lang#idris..............................|SpaceVim-layers-lang-idris|
+      64. lang#io....................................|SpaceVim-layers-lang-io|
+      65. lang#j......................................|SpaceVim-layers-lang-j|
+      66. lang#janet..............................|SpaceVim-layers-lang-janet|
+      67. lang#java................................|SpaceVim-layers-lang-java|
+      68. lang#javascript....................|SpaceVim-layers-lang-javascript|
+      69. lang#jr....................................|SpaceVim-layers-lang-jr|
+      70. lang#json................................|SpaceVim-layers-lang-json|
+      71. lang#jsonnet..........................|SpaceVim-layers-lang-jsonnet|
+      72. lang#julia..............................|SpaceVim-layers-lang-julia|
+      73. lang#kotlin............................|SpaceVim-layers-lang-kotlin|
+      74. lang#latex..............................|SpaceVim-layers-lang-latex|
+      75. lang#lisp................................|SpaceVim-layers-lang-lisp|
+      76. lang#livescript....................|SpaceVim-layers-lang-livescript|
+      77. lang#lua..................................|SpaceVim-layers-lang-lua|
+      78. lang#markdown........................|SpaceVim-layers-lang-markdown|
+      79. lang#moonscript....................|SpaceVim-layers-lang-moonscript|
+      80. lang#nim..................................|SpaceVim-layers-lang-nim|
+      81. lang#nix..................................|SpaceVim-layers-lang-nix|
+      82. lang#ocaml..............................|SpaceVim-layers-lang-ocaml|
+      83. lang#octave............................|SpaceVim-layers-lang-octave|
+      84. lang#pact................................|SpaceVim-layers-lang-pact|
+      85. lang#pascal............................|SpaceVim-layers-lang-pascal|
+      86. lang#perl................................|SpaceVim-layers-lang-perl|
+      87. lang#php..................................|SpaceVim-layers-lang-php|
+      88. lang#plantuml........................|SpaceVim-layers-lang-plantuml|
+      89. lang#pony................................|SpaceVim-layers-lang-pony|
+      90. lang#processing....................|SpaceVim-layers-lang-processing|
+      91. lang#prolog............................|SpaceVim-layers-lang-prolog|
+      92. lang#puppet............................|SpaceVim-layers-lang-puppet|
+      93. lang#purescript....................|SpaceVim-layers-lang-purescript|
+      94. lang#python............................|SpaceVim-layers-lang-python|
+      95. lang#racket............................|SpaceVim-layers-lang-racket|
+      96. lang#racket...............................|SpaceVim-layers-lang-red|
+      97. lang#reason............................|SpaceVim-layers-lang-reason|
+      98. lang#ring...................................|SpaceVim-layers-lang-r|
+      99. lang#ring................................|SpaceVim-layers-lang-ring|
+      100. lang#ruby...............................|SpaceVim-layers-lang-ruby|
+      101. lang#rust...............................|SpaceVim-layers-lang-rust|
+      102. lang#scala.............................|SpaceVim-layers-lang-scala|
+      103. lang#scheme...........................|SpaceVim-layers-lang-scheme|
+      104. lang#sh...................................|SpaceVim-layers-lang-sh|
+      105. lang#smalltalk.....................|SpaceVim-layers-lang-smalltalk|
+      106. lang#sml.................................|SpaceVim-layers-lang-sml|
+      107. lang#swig..............................|SpaceVim-layers-lang-swift|
+      108. lang#swig...............................|SpaceVim-layers-lang-swig|
+      109. lang#tcl.................................|SpaceVim-layers-lang-tcl|
+      110. lang#teal...............................|SpaceVim-layers-lang-teal|
+      111. lang#toml...............................|SpaceVim-layers-lang-toml|
+      112. lang#typescript...................|SpaceVim-layers-lang-typescript|
+      113. lang#v.....................................|SpaceVim-layers-lang-v|
+      114. lang#vala...............................|SpaceVim-layers-lang-vala|
+      115. lang#vbnet.............................|SpaceVim-layers-lang-vbnet|
+      116. lang#verilog.........................|SpaceVim-layers-lang-verilog|
+      117. lang#vim.................................|SpaceVim-layers-lang-vim|
+      118. lang#vue.................................|SpaceVim-layers-lang-vue|
+      119. lang#wdl.................................|SpaceVim-layers-lang-wdl|
+      120. lang#wolfram.........................|SpaceVim-layers-lang-wolfram|
+      121. lang#xml.................................|SpaceVim-layers-lang-xml|
+      122. lang#xquery...........................|SpaceVim-layers-lang-xquery|
+      123. lang#yang...............................|SpaceVim-layers-lang-yang|
+      124. lang#zig.................................|SpaceVim-layers-lang-zig|
+      125. language server protocol......................|SpaceVim-layers-lsp|
+      126. leaderf...................................|SpaceVim-layers-leaderf|
+      127. mail.........................................|SpaceVim-layers-mail|
+      128. operator.................................|SpaceVim-layers-operator|
+      129. shell.......................................|SpaceVim-layers-shell|
+      130. ssh...........................................|SpaceVim-layers-ssh|
+      131. telescope...............................|SpaceVim-layers-telescope|
+      132. test.........................................|SpaceVim-layers-test|
+      133. tmux.........................................|SpaceVim-layers-tmux|
+      134. tools#dash.............................|SpaceVim-layers-tools-dash|
+      135. tools#mpv...............................|SpaceVim-layers-tools-mpv|
+      136. tools#zeal.............................|SpaceVim-layers-tools-zeal|
+      137. treesitter.............................|SpaceVim-layers-treesitter|
+      138. ui.............................................|SpaceVim-layers-ui|
+      139. unite.......................................|SpaceVim-layers-unite|
   7. Usage....................................................|SpaceVim-usage|
       1. alternate file........................|SpaceVim-usage-alternate-file|
       2. buffers-and-files..................|SpaceVim-usage-buffers-and-files|
@@ -239,10 +243,11 @@ CONTENTS                                                   *SpaceVim-contents*
       8. undo-tree...................................|SpaceVim-usage-undotree|
       9. windows-and-tabs....................|SpaceVim-usage-windows-and-tabs|
   8. Plugins................................................|SpaceVim-plugins|
-      1. iedit........................................|SpaceVim-plugins-iedit|
-      2. runner......................................|SpaceVim-plugins-runner|
-      3. tab manager.............................|SpaceVim-plugins-tabmanager|
-      4. todo manager...........................|SpaceVim-plugins-todomanager|
+      1. autosave..................................|SpaceVim-plugins-autosave|
+      2. iedit........................................|SpaceVim-plugins-iedit|
+      3. runner......................................|SpaceVim-plugins-runner|
+      4. tab manager.............................|SpaceVim-plugins-tabmanager|
+      5. todo manager...........................|SpaceVim-plugins-todomanager|
   9. API........................................................|SpaceVim-api|
       1. clock............................................|SpaceVim-api-clock|
       2. cmdlinemenu................................|SpaceVim-api-cmdlinemenu|
@@ -2056,6 +2061,17 @@ KEY BINDINGS
 
 
 ==============================================================================
+FRAMEWORK#DJANGO                            *SpaceVim-layers-framework-django*
+
+The `framework#django` layer provides code completion and syntax highlight for
+django. This layer is not enabled by default, to enable it:
+>
+  [[layers]]
+    name = 'framework#django'
+<
+
+
+==============================================================================
 FZF                                                      *SpaceVim-layers-fzf*
 
 This layer provides fuzzy finder feature which is based on `fzf`. This layer
@@ -3591,6 +3607,18 @@ OPTIONS
 <
 
 ==============================================================================
+LANG#JSONNET                                    *SpaceVim-layers-lang-jsonnet*
+
+This layer adds syntax highlighting for the jsonnet Language. It is disabled
+by default, to enable this layer, add following snippet to your SpaceVim
+configuration file.
+>
+  [[layers]]
+    name = 'lang#jsonnet'
+<
+
+
+==============================================================================
 LANG#JULIA                                        *SpaceVim-layers-lang-julia*
 
 This layer is for julia development, disabled by default, to enable this
@@ -3620,11 +3648,11 @@ This layer also provides REPL support for julia, the key bindings are:
 To format julia code, you need to install `JuliaFormatter`, and the key
 binding is `SPC b f`
 
-If the lsp layer is enabled for python, the following key bindings can be
-used:
+If the lsp layer is enabled for julia, the following key bindings can be used:
 >
   key binding     Description
   g D             jump to type definition
+  g d             jump to definition
   SPC l e         rename symbol
   SPC l x         show references
   SPC l h         show line diagnostics
@@ -5226,6 +5254,18 @@ disabled by default, to enable this layer, add following snippet to  your
 <
 
 ==============================================================================
+LANG#YANG                                          *SpaceVim-layers-lang-yang*
+
+This layer adds syntax highlighting for the YANG data file. It is disabled by
+default, to enable this layer, add following snippet to your SpaceVim
+configuration file.
+>
+  [[layers]]
+    name = 'lang#yang'
+<
+
+
+==============================================================================
 LANG#ZIG                                            *SpaceVim-layers-lang-zig*
 
 This layer is for zig language development, disabled by default, to enable
@@ -5376,6 +5416,33 @@ KEY BINDINGS
 >
   Key Bingding    Description
   SPC S o         connect to ssh server
+<
+
+==============================================================================
+TELESCOPE                                          *SpaceVim-layers-telescope*
+
+This layer provides fuzzy finder feature which is based on |telescope|, and
+this This layer is not loaded by default. To use this layer:
+>
+  [[layers]]
+    name = 'telescope'
+<
+KEY BINDINGS
+
+The following key bindings will be enabled when this layer is loaded:
+>
+  Key bindings      Description
+  SPC p f / Ctrl-p  search files in current directory
+  <Leader> f SPC    Fuzzy find menu:CustomKeyMaps
+  <Leader> f e      Fuzzy find register
+  <Leader> f h      Fuzzy find history/yank
+  <Leader> f j      Fuzzy find jump, change
+  <Leader> f l      Fuzzy find location list
+  <Leader> f m      Fuzzy find output messages
+  <Leader> f o      Fuzzy find functions
+  <Leader> f t      Fuzzy find tags
+  <Leader> f q      Fuzzy find quick fix
+  <Leader> f r      Resumes Unite window
 <
 
 ==============================================================================
@@ -5940,6 +6007,12 @@ The following key bindings can be used to manager vim windows and tabs.
 PLUGINS                                                     *SpaceVim-plugins*
 
 This is a list of buildin plugins.
+
+==============================================================================
+AUTOSAVE                                           *SpaceVim-plugins-autosave*
+
+The `autosave` plugin will save your work automatically, and this plugin has
+been used in `edit` layer, checkout |SpaceVim-layers-edit| for more info.
 
 ==============================================================================
 IEDIT                                                 *SpaceVim-plugins-iedit*

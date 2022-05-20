@@ -86,7 +86,8 @@ description: "General documentation about how to use SpaceVim, including the qui
   - [Todo manager](#todo-manager)
   - [Replace text with iedit](#replace-text-with-iedit)
     - [iedit states key bindings](#iedit-states-key-bindings)
-  - [Code runner and REPL](#code-runner-and-repl)
+  - [Code runner](#code-runner)
+  - [Read Eval Print Loop](#read-eval-print-loop)
   - [Highlight current symbol](#highlight-current-symbol)
   - [Error handling](#error-handling)
   - [EditorConfig](#editorconfig)
@@ -260,8 +261,7 @@ SpaceVim also supports project specific configuration files.
 The init file is `.SpaceVim.d/init.toml` in the root of your project.
 The local `.SpaceVim.d/` will also be added to the `&runtimepath`.
 
-Please be aware that if there are errors in your `init.toml`, the setting will not be applied. See [FAQ](../faq/#why-are-the-options-in-toml-file-not-applied). 
-
+Please be aware that if there are errors in your `init.toml`, the setting will not be applied. See [FAQ](../faq/#why-are-the-options-in-toml-file-not-applied).
 
 All SpaceVim options can be found in `:h SpaceVim-options`,
 the key is the same as the option name without the `g:spacevim_` prefix.
@@ -415,7 +415,7 @@ The different key bindings between SpaceVim and vim are shown as below.
 
 - In vim the `,` key repeats the last last `f`, `F`, `t` and `T`, but in SpaceVim it is the language specific Leader key.
   To disable this feature, set the option `enable_language_specific_leader` to `false` in in the `[options]` section of your configuration file.
-  
+
   ```toml
   [options]
       enable_language_specific_leader = false
@@ -863,7 +863,7 @@ Key bindings within the tab manager window:
 SpaceVim uses `nerdtree` as the default file tree, the default key binding is `<F3>`.
 SpaceVim also provides `SPC f t` and `SPC f T` to open the file tree.
 
-To change the filemanager plugin insert the following to the `[options]` section of your configuration file. 
+To change the filemanager plugin insert the following to the `[options]` section of your configuration file.
 
 ```toml
 [options]
@@ -1487,7 +1487,7 @@ By default, `find` is the default tool, you can use `ctrl-e` to switch tools.
 
 ![find](https://user-images.githubusercontent.com/13142418/97999590-79717000-1e26-11eb-91b1-458ab30d6254.gif)
 
-To change the default file searching tool, you can use `file_searching_tools` in the `[options]` section. 
+To change the default file searching tool, you can use `file_searching_tools` in the `[options]` section.
 It is `[]` by default.
 
 ```toml
@@ -1501,10 +1501,11 @@ The first item is the name of the tool, the second one is the default searching 
 
 Convenient key bindings are located under the prefix `SPC f v` to quickly navigate between Vim and SpaceVim specific files.
 
-| Key Bindings | Descriptions                            |
-| ------------ | --------------------------------------- |
-| `SPC f v v`  | display and copy SpaceVim version       |
-| `SPC f v d`  | open SpaceVim custom configuration file |
+| Key Bindings | Descriptions                                     |
+| ------------ | ------------------------------------------------ |
+| `SPC f v v`  | display and copy SpaceVim version                |
+| `SPC f v d`  | open SpaceVim custom configuration file          |
+| `SPC f v s`  | list all loaded vim scripts, like `:scriptnames` |
 
 ### Available layers
 
@@ -1520,8 +1521,14 @@ Fuzzy finder provides a variety of efficient content searching key bindings,
 including file searching, outline searching, vim messages searching and register
 content searching.
 
-SpaceVim provides five fuzzy find tools, each of them is configured in a layer
-([`unite`](../layers/unite/), `denite`, `leaderf`, `ctrlp` and `fzf` layer).
+Currently, there are six fuzzy finder layers:
+
+- [`unite`](../layers/unite/) layer: based on `Shougo/unite.vim`
+- [`denite`](../layers/denite/) layer: based on `Shougo/denite.nvim`
+- [`leaderf`](../layers/leaderf/) layer: based on `Yggdroot/LeaderF`
+- [`ctrlp`](../layers/ctrlp/) layer: based on `ctrlpvim/ctrlp.vim`
+- [`fzf`](../layers/fzf/) layer: based on fzf
+- [`telescope`](../layers/telescope) layer: based on telescope.nvim
 
 These layers have the same key bindings and features. But they need different dependencies.
 
@@ -2328,7 +2335,7 @@ The default color for iedit is `red`/`green` which is based on the current color
 | `Ctrl-h` / `<Backspace>` | delete character before cursor                              |
 | `<Delete>`               | delete character after cursor                               |
 
-### Code runner and REPL
+### Code runner
 
 SpaceVim provides an asynchronous code runner plugin. In most language layers,
 the key binding `SPC l r` is defined for running the current buffer.
@@ -2339,17 +2346,18 @@ Use `F5` to build the project asynchronously.
 nnoremap <silent> <F5> :call SpaceVim#plugins#runner#open('make')
 ```
 
-The following features have been added to the runner and repl plugins:
+Key bindings within code runner buffer:
 
-- Run the current file with the default command
-- Run code file through system file explorer, only supported in gvim.
-- Run code per Shebang
-- Stop code running
-- View output in the Output Window
-- Set default language to run
-- Select language to run
-- REPL support
-- Run selected code snippet
+| key binding | description                 |
+| ----------- | --------------------------- |
+| `ctrl-c`    | stop code runner            |
+| `i`         | open promote to insert text |
+
+### Read Eval Print Loop
+
+The REPL(Read Eval Print Loop) plugin provides a framework to run REPL command asynchronously.
+
+For different language, you need to checkout the doc of language layer. The repl key bindings are defined in language layer.
 
 ### Highlight current symbol
 
