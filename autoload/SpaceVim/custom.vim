@@ -142,6 +142,7 @@ function! s:apply(config, type) abort
       endif
       exe 'let g:spacevim_' . name . ' = value'
       if name ==# 'project_rooter_patterns'
+            \ || name ==# 'project_rooter_outermost'
         " clear rooter cache
         call SpaceVim#plugins#projectmanager#current_root()
       endif
@@ -218,7 +219,13 @@ function! s:apply(config, type) abort
     let bootstrap_script = get(options, 'bootstrap_script', '')
 
     if !empty(bootstrap_script) && exists('*nvim_exec')
-      call nvim_exec(bootstrap_script, 0)
+      try
+        call nvim_exec(bootstrap_script, 0)
+      catch
+        call SpaceVim#logger#error('failed to execute bootstrap_script.')
+        call SpaceVim#logger#error('       exception: ' . v:exception)
+        call SpaceVim#logger#error('       throwpoint: ' . v:throwpoint)
+      endtry
     endif
 
     if !empty(bootstrap_before)
@@ -331,6 +338,11 @@ function! s:load_glob_conf() abort
     let custom_glob_conf = global_dir . 'init.vim'
     let &rtp = global_dir . ',' . &rtp . ',' . global_dir . 'after'
     exe 'source ' . custom_glob_conf
+  elseif filereadable(global_dir . 'init.lua')
+    let g:_spacevim_global_config_path = global_dir . 'init.lua'
+    let custom_glob_conf = global_dir . 'init.lua'
+    let &rtp = global_dir . ',' . &rtp . ',' . global_dir . 'after'
+    exe 'luafile ' . custom_glob_conf
   else
     if has('timers')
       " if there is no custom config auto generate it.

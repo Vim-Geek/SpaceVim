@@ -33,6 +33,7 @@ description: "General documentation about how to use SpaceVim, including the qui
   - [File tree](#file-tree)
     - [File tree navigation](#file-tree-navigation)
     - [Open file with file tree.](#open-file-with-file-tree)
+    - [Override filetree key bindings](#override-filetree-key-bindings)
 - [General usage](#general-usage)
   - [Native functions](#native-functions)
   - [Command line mode key bindings](#command-line-mode-key-bindings)
@@ -92,9 +93,6 @@ description: "General documentation about how to use SpaceVim, including the qui
   - [Error handling](#error-handling)
   - [EditorConfig](#editorconfig)
   - [Vim Server](#vim-server)
-- [Achievements](#achievements)
-  - [issues](#issues)
-  - [Stars, forks and watchers](#stars-forks-and-watchers)
 
 <!-- vim-markdown-toc -->
 
@@ -131,13 +129,12 @@ packages tuned by power users and bugs are fixed quickly.
 ## Highlighted features
 
 - **Great documentation:** access documentation in SpaceVim with `:h SpaceVim`.
-- **Minimalistic and nice graphical UI:** you'll love the awesome UI and its useful features.
-- **Keep your fingers on the home row:** for quicker editing with support for QWERTY and BEPO layouts.
-- **Mnemonic key bindings:** commands have mnemonic prefixes like `[WIN]` for all the window and buffer commands or `[Unite]` for the unite work flow commands.
+- **nice UI:** you'll love the awesome UI and its useful features.
+- **Mnemonic key bindings:** key binding guide will be displayed automatically
 - **Fast boot time:** Lazy-load 90% of plugins with [dein.vim](https://github.com/Shougo/dein.vim)
 - **Lower the risk of RSI:** by heavily using the space bar instead of modifiers.
 - **Batteries included:** discover hundreds of ready-to-use packages nicely organised in configuration layers following a set of [conventions](http://spacevim.org/conventions/).
-- **Neovim centric:** Dark powered mode of SpaceVim
+- **Consistent experience:** consistent experience between Vim and NeoVim
 
 ## Screenshots
 
@@ -154,8 +151,6 @@ Neovim on iTerm2 using the SpaceVim color scheme _base16-solarized-dark_
 Depicts a common frontend development scenario with JavaScript (jQuery), SASS, and PHP buffers.
 
 Non-code buffers show a Neovim terminal, a TagBar window, a Vimfiler window and a TernJS definition window.
-
-To get more screenshots, see: [issue #415](https://github.com/SpaceVim/SpaceVim/issues/415)
 
 ## Concepts
 
@@ -560,6 +555,23 @@ guifont = "SourceCodePro Nerd Font Mono:h11"
 If the specified font is not found, the fallback one will be used (depends on your system).
 Also note that changing this value has no effect if you are running Vim/Neovim in terminal.
 
+**Increase/Decrease fonts**
+
+| Key Bindings | Descriptions              |
+| ------------ | ------------------------- |
+| `SPC z .`    | open font transient state |
+
+![font transient state](https://user-images.githubusercontent.com/13142418/170854166-bbcd5448-47d3-4fb5-ab7a-97540140d975.png)
+
+In font transient state:
+
+| Key Bindings  | Descriptions              |
+| ------------- | ------------------------- |
+| `+`           | increase the font size    |
+| `-`           | decrease the font size    |
+| Any other key | leave the transient state |
+
+
 ### Mouse
 
 Mouse support is enabled in Normal mode and Visual mode by default.
@@ -941,6 +953,25 @@ If only one file buffer is opened, a file is opened in the active window, otherw
 | `l` / `<Enter>` | open file in one window                  |
 | `s g`           | open file in a vertically split window   |
 | `s v`           | open file in a horizontally split window |
+
+
+#### Override filetree key bindings
+
+If you want to override the default key bindings in filetree windows. You can use User autocmd in bootstrap function. for examples:
+
+```vim
+function! myspacevim#before() abort
+    autocmd User NerdTreeInit
+        \ nnoremap <silent><buffer> <CR> :<C-u>call
+        \ g:NERDTreeKeyMap.Invoke('o')<CR>
+endfunction
+```
+
+Here is all the autocmd for filetree:
+
+- nerdtree: `User NerdTreeInit`
+- defx: `User DefxInit`
+- vimfiler: `User VimfilerInit`
 
 ## General usage
 
@@ -2453,37 +2484,5 @@ export PATH=$PATH:$HOME/.SpaceVim/bin
 Use `svc` to open a file in the existing Vim server, or use `nsvc` to open a file in the existing Neovim server.
 
 ![server-and-client](https://user-images.githubusercontent.com/13142418/32554968-7164fe9c-c4d6-11e7-95f7-f6a6ea75e05b.gif)
-
-<!-- SpaceVim Achievements start -->
-
-## Achievements
-
-### issues
-
-| Achievements                                                          | Account                                             |
-| --------------------------------------------------------------------- | --------------------------------------------------- |
-| [100th issue(issue)](https://github.com/SpaceVim/SpaceVim/issues/100) | [BenBergman](https://github.com/BenBergman)         |
-| [1000th issue(PR)](https://github.com/SpaceVim/SpaceVim/issues/1000)  | [sei40kr](https://github.com/sei40kr)               |
-| [2000th issue(PR)](https://github.com/SpaceVim/SpaceVim/issues/2000)  | [nikolaussucher](https://github.com/nikolaussucher) |
-| [3000th issue(PR)](https://github.com/SpaceVim/SpaceVim/issues/3000)  | [nahuef](https://github.com/nahuef)                 |
-
-### Stars, forks and watchers
-
-| Achievements       | Account                                             |
-| ------------------ | --------------------------------------------------- |
-| First stargazers   | [monkeydterry](https://github.com/monkeydterry)     |
-| 100th stargazers   | [robertofarrell](https://github.com/robertofarrell) |
-| 1000th stargazers  | [mohebifar](https://github.com/mohebifar)           |
-| 2000th stargazers  | [myakove](https://github.com/myakove)               |
-| 3000th stargazers  | [adrian-spataru](https://github.com/adrian-spataru) |
-| 4000th stargazers  | [seungdols](https://github.com/seungdols)           |
-| 5000th stargazers  | [shiningdracon](https://github.com/shiningdracon)   |
-| 6000th stargazers  | [SummerMagic](https://github.com/SummerMagic)       |
-| 7000th stargazers  | [Murderlon](https://github.com/Murderlon)           |
-| 8000th stargazers  | [dbdr](https://github.com/dbdr)                     |
-| 9000th stargazers  | [Ruyka](https://github.com/Ruyka)                   |
-| 10000th stargazers | [royge](https://github.com/royge)                   |
-
-<!-- SpaceVim Achievements end -->
 
 <!-- vim:set nowrap: -->

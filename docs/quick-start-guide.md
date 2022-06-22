@@ -21,6 +21,7 @@ It will give you a good idea of what SpaceVim is like.
 - [Configuration](#configuration)
 - [Online tutorials](#online-tutorials)
 - [Learning SpaceVim](#learning-spacevim)
+- [User experiences](#user-experiences)
 
 <!-- vim-markdown-toc -->
 
@@ -63,7 +64,7 @@ If you got a vimproc error like this:
 ```
 
 Please read `:help vimproc` and make it, you may need to install make (from `build-essential`)
-and a C compiler (like `gcc`) to build the dll (see issue [#435](https://github.com/SpaceVim/SpaceVim/issues/435) and [#544](https://github.com/SpaceVim/SpaceVim/issues/544)).
+and a C compiler (like `gcc`) to build the dll.
 
 ### Windows
 
@@ -156,3 +157,9 @@ A list of guides for programming language support:
   The SpaceVim Documentation will introduce you to the main topics important to using SpaceVim.
   The book is the primary official document of SpaceVim.
 - [Hack-SpaceVim](https://github.com/Gabirel/Hack-SpaceVim). Teaches you how to hack SpaceVim.
+
+## User experiences
+
+Here is a list of User experiences about using SpaceVim:
+
+- [Vim as an IDE, not the text editor](https://blog.ghaiklor.com/2019/10/12/vim-as-an-ide-not-the-text-editor/) - Eugene Obrezkov

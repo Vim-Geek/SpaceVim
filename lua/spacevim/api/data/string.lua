@@ -11,9 +11,9 @@ local M = {}
 
 
 function M.trim(str)
+
     return str:match( "^%s*(.-)%s*$" )
 end
-
 
 function M.fill(str, length, ...)
     local v = ''
@@ -98,6 +98,7 @@ function M.split(str, ...)
 end
 
 return M
+
 
 -- @todo add lua string api
 

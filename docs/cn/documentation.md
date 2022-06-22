@@ -35,6 +35,7 @@ lang: zh
   - [文件树](#文件树)
     - [文件树中的常用操作](#文件树中的常用操作)
     - [文件树中打开文件](#文件树中打开文件)
+    - [修改文件树默认快捷键](#修改文件树默认快捷键)
 - [基本操作](#基本操作)
   - [原生功能](#原生功能)
   - [命令行模式快捷键](#命令行模式快捷键)
@@ -152,8 +153,6 @@ Neovim 运行在 iTerm2 上，采用 SpaceVim，配色为：_base16-solarized-da
 展示了一个通用的前端开发界面，用于开发：JavaScript (jQuery), SASS, 和 PHP buffers。
 
 图中包含了一个 Neovim 的终端，一个语法树窗口，一个文件树窗口以及一个 TernJS 定义窗口
-
-想要查阅更多截图，请阅读 [issue #415](https://github.com/SpaceVim/SpaceVim/issues/415)
 
 ## 基本概念
 
@@ -896,6 +895,24 @@ SpaceVim 的文件树提供了版本控制信息的接口，但是这一特性�
 | `l` / `<Enter>` | 打开文件         |
 | `sg`            | 分屏打开文件     |
 | `sv`            | 垂直分屏打开文件 |
+
+#### 修改文件树默认快捷键
+
+如果想要修改文件树内的默认快捷键，需要再启动函数里面调用用户自定义的自动命令，比如：
+
+```vim
+function! myspacevim#before() abort
+    autocmd User NerdTreeInit
+        \ nnoremap <silent><buffer> <CR> :<C-u>call
+        \ g:NERDTreeKeyMap.Invoke('o')<CR>
+endfunction
+```
+
+以下是不同文件时所对应的自动命令名称：
+
+- nerdtree: `User NerdTreeInit`
+- defx: `User DefxInit`
+- vimfiler: `User VimfilerInit`
 
 ## 基本操作
 

@@ -12,6 +12,7 @@ function M.pick(d, keys)
     return new_d
 end
 
+
 ---
 -- @function: 打印table的内容，递归
 -- @param: tbl 要打印的table
@@ -47,6 +48,28 @@ function M.print( tbl , level, filteDefault)
   end
   print(indent_str .. "}")
 end
+
+
+function M.make(keys, values, ...)
+    local dict = {}
+    local arg = {...}
+    local fill = arg[1] or 0
+    for i = 1, #keys do
+        local key = tostring(keys[i])
+        if key == '' then return {} end
+        dict[key] = values[i] or fill
+    end
+    return dict
+end
+
+function M.swap(d)
+    
+end
+
+function M.make_index(list, ...)
+    
+end
+
 
 
 
