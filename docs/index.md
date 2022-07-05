@@ -6,27 +6,27 @@ description: "SpaceVim is a community-driven vim distribution that seeks to prov
 [![Gitter](https://img.shields.io/gitter/room/SpaceVim/SpaceVim?color=%2364CEAA)](https://gitter.im/SpaceVim/SpaceVim)
 [![build](https://img.shields.io/github/workflow/status/SpaceVim/SpaceVim/test)](https://github.com/SpaceVim/SpaceVim/actions/workflows/check.yml?query=branch%3Amaster)
 [![Codecov coverage](https://img.shields.io/codecov/c/github/SpaceVim/SpaceVim.svg)](https://codecov.io/gh/SpaceVim/SpaceVim)
-[![Version](https://img.shields.io/badge/version-2.0.0--dev-8700FF.svg)](https://github.com/SpaceVim/SpaceVim/releases)
+[![Version](https://img.shields.io/badge/version-2.1.0--dev-8700FF.svg)](https://github.com/SpaceVim/SpaceVim/releases)
 [![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/SpaceVim/SpaceVim/blob/master/LICENSE)
 
-![welcome page](https://user-images.githubusercontent.com/13142418/148374827-5f7aeaaa-e69b-441e-b872-408b47f4da04.png)
+![welcome page](https://user-images.githubusercontent.com/13142418/176910121-8e7ca78f-8434-4ac7-9b02-08c4d15f8ad9.png)
 
 # SpaceVim - Modern Vim distribution
 
 SpaceVim is a distribution of the Vim editor that's inspired by spacemacs.
-It manages collections of plugins in layers, which help collecting related
-packages together to provide features. This approach helps keeping
+It manages collections of plugins in layers, which help to collect related
+packages together to provide features. This approach helps keep the
 configuration organized and reduces overhead for the user by keeping them
 from having to think about what packages to install.
 
 If you like SpaceVim, please feel free to star the project on [github](https://github.com/SpaceVim/SpaceVim). It is a great way to show your
 appreciation while providing us motivation to continue working on this project.
 
-- [Quick start guide](quick-start-guide/): installation, configuration, and resources of learning SpaceVim
-- [Documentation](documentation/): the primary official document of SpaceVim
+- [Quick start guide](quick-start-guide/): installation, configuration, and learning resources for SpaceVim
+- [Documentation](documentation/): the primary official documentation of SpaceVim
 - [Available layers](layers/): a list of available layers which can be used in SpaceVim
 
-The latest release [v1.9.0](https://spacevim.org/SpaceVim-release-v1.9.0/) was released at 2022-01-06, check out [following-HEAD](https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD) page for what happened since last release.
+The latest release [v2.0.0](https://spacevim.org/SpaceVim-release-v2.0.0/) was released at 2022-07-02, check out [following-HEAD](https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD) page for what happened since last release.
 
 ## New features
 
@@ -49,11 +49,11 @@ Follow our twitter: [@SpaceVim](https://twitter.com/SpaceVim)
 
 Discuss the project at [gitter.im/SpaceVim](https://gitter.im/SpaceVim/SpaceVim) or [/r/SpaceVim](https://www.reddit.com/r/SpaceVim/)
 
-Contribute code, report bugs and request features at [GitHub](https://github.com/SpaceVim/SpaceVim).
+Contribute code, report bugs and request features on [GitHub](https://github.com/SpaceVim/SpaceVim).
 
 ## FAQ
 
-- What is the project status?
+- What is the project's status?
 
   The current stable version is v1.9.0, See the [milestones page](https://github.com/SpaceVim/SpaceVim/milestones)
   for development progress and the [Roadmap](roadmap/) for high-level plans.
@@ -85,6 +85,6 @@ Contribute code, report bugs and request features at [GitHub](https://github.com
   | neovim  | v0.4.2  | √       | √     |
   | neovim  | v0.3.8  | √       | √     |
 
-For more general questions, please read SpaceVim [FAQ](faq/).
+For more general questions, please read the SpaceVim [FAQ](faq/).
 
 <!-- vim:set nowrap: -->
