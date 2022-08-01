@@ -3,7 +3,7 @@ lua <<EOF
   local cmp = require'cmp'
 
   cmp.setup({
-    mapping = {
+    mapping = cmp.mapping.preset.insert({
       ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
       ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
       ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -13,18 +13,32 @@ lua <<EOF
         c = cmp.mapping.close(),
       }),
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    },
+      ['<Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end,
+      ['<S-Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+    }),
     formatting = {
       format = require("lspkind").cmp_format({with_text = true, menu = ({
           buffer = "[Buffer]",
         })}),
     },
     sources = cmp.config.sources({
-      { name = 'path' },
+      { name = 'nvim_lsp' },
     }, {
       { name = 'buffer' },
     }, {
-      { name = 'nvim_lsp' },
+      { name = 'path' },
     })
   })
 -- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
