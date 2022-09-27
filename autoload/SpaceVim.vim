@@ -1597,16 +1597,19 @@ function! s:parser_argv() abort
     if index(v:argv, '--embed') !=# -1
           \ || len(v:argv) == 1
       return [0]
-    elseif v:argv[1] =~# '/$'
-      let f = fnamemodify(expand(v:argv[1]), ':p')
+    elseif index(v:argv, '-d') !=# -1
+      " this is  diff mode
+      return [2]
+    elseif v:argv[-1] =~# '/$'
+      let f = fnamemodify(expand(v:argv[-1]), ':p')
       if isdirectory(f)
         return [1, f]
       else
         return [1, getcwd()]
       endif
-    elseif v:argv[1] ==# '.'
+    elseif v:argv[-1] ==# '.'
       return [1, getcwd()]
-    elseif isdirectory(expand(v:argv[1]))
+    elseif isdirectory(expand(v:argv[-1]))
       return [1, fnamemodify(expand(v:argv[1]), ':p')]
     else
       return [2, get(v:, 'argv', ['failed to get v:argv'])]
@@ -1708,7 +1711,11 @@ function! SpaceVim#begin() abort
   else
     call SpaceVim#logger#info('Startup with argv: ' . string(s:status[1]) )
   endif
-  call SpaceVim#default#options()
+  if has('nvim-0.7')
+    lua require('spacevim.default').options()
+  else
+    call SpaceVim#default#options()
+  endif
   call SpaceVim#default#layers()
   call SpaceVim#commands#load()
 endfunction

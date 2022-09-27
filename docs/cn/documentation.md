@@ -296,7 +296,7 @@ git -C ~/.SpaceVim pull
     merged = false
 ```
 
-`one_cmd` 选项使得这个插件延迟加载。
+`on_cmd` 选项使得这个插件延迟加载。
 该插件会在第一次执行 `ColorHighlight` 或者 `ColorToggle`
 命令时被加载。
 
@@ -1422,7 +1422,7 @@ SpaceVim 选项 `window_leader` 的值来设为其它按键：
 | `SPC f E`            | open a file with elevated privileges (sudo edit)(TODO) |
 | `SPC f f`            | 在当前文件所在文件夹搜索文件                           |
 | `SPC f F`            | 在当前文件所在的文件夹搜索光标下的文件                 |
-| `SPC f o`            | 代开文件树，并定位到当前文件                           |
+| `SPC f o`            | 打开文件树，并定位到当前文件                           |
 | `SPC f R`            | 重命名当前文件                                         |
 | `SPC f s` / `Ctrl-s` | 保存文件 (:w)                                          |
 | `SPC f a`            | 另存为新的文件                                         |

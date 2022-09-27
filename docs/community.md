@@ -1,16 +1,16 @@
 ---
-title:  "Community"
+title: "Community"
 description: "A list of SpaceVim's public channels, All messages are bridged between IRC, gitter, telegram, matrix and slack"
 ---
 
 # Community
-
 
 <!-- vim-markdown-toc GFM -->
 
 - [News](#news)
 - [Feedback](#feedback)
 - [Chat](#chat)
+- [Others](#others)
 
 <!-- vim-markdown-toc -->
 
@@ -22,10 +22,7 @@ The news about spacevim will be post on twitter, feel free to follow them:
 
 ## Feedback
 
-If you run into a bug or want a new feature.
-Please send email to the mailing list to report any bugs or file feature requests.
-
-[spacevim@googlegroups.com](mailto:spacevim@googlegroups.com)
+If you run into a bug or want a new feature. Please use the [issue tracker](https://github.com/SpaceVim/SpaceVim/issues) to report any bugs or file feature requests.
 
 ## Chat
 
@@ -38,3 +35,8 @@ Join on one of them to chat with us:
 - <i class="fab fa-telegram-plane"></i> [`t.me/SpaceVim` on telegram](https://t.me/joinchat/CN0HPvvrVKg4MzY9)
 - <i class="fab fa-slack-hash"></i> [`#spacevim` on slack](https://join.slack.com/t/spacevim/shared_invite/zt-74w64lg5-bT~~2~zEhtIy1zow53tHJg)
 - <i class="fab fa-discord"></i> [`#spacevim` on discord](https://discord.gg/xcRQnF8)
+
+## Others
+
+- [Reddit](https://www.reddit.com/r/SpaceVim/)
+- [Facebook](https://www.facebook.com/SpaceVim/)
