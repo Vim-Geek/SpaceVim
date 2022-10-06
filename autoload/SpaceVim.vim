@@ -51,7 +51,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 ""
 " Version of SpaceVim , this value can not be changed.
-let g:spacevim_version = '2.0.0-dev'
+let g:spacevim_version = '2.1.0-dev'
 lockvar g:spacevim_version
 
 ""
@@ -1112,6 +1112,8 @@ let g:spacevim_enable_powerline_fonts  = 1
 " >
 "   let g:spacevim_lint_on_save = 0
 " <
+" NOTE: the `lint_on_save` option has been deprecated. Please use layer option
+" of @section(layers-checkers) layer.
 let g:spacevim_lint_on_save            = 1
 ""
 " @section search_tools, options-search_tools
@@ -1248,6 +1250,8 @@ let g:spacevim_todo_prefix = '@'
 " >
 "   lint_on_the_fly = false
 " <
+" NOTE: the `lint_on_the_fly` option has been deprecated. Please use layer option
+" of @section(layers-checkers) layer.
 
 ""
 " Enable/Disable lint on the fly feature of SpaceVim's maker. Default is 0.
@@ -1545,12 +1549,15 @@ function! SpaceVim#end() abort
   if g:spacevim_hiddenfileinfo == 1 && has('patch-7.4.1570')
     set shortmess+=F
   endif
-  if has('gui_running') && !empty(g:spacevim_guifont)
-    if has('gui_vimr')
-      " VimR has removed support for guifont
-    else
+  if !empty(g:spacevim_guifont)
+    try
       let &guifont = g:spacevim_guifont
-    endif
+    catch
+      call SpaceVim#logger#error('failed to set guifont to: '
+            \ . g:spacevim_guifont)
+      call SpaceVim#logger#error('       exception: ' . v:exception)
+      call SpaceVim#logger#error('       throwpoint: ' . v:throwpoint)
+    endtry
   endif
 
   if !has('nvim-0.2.0') && !has('nvim')
@@ -1590,16 +1597,19 @@ function! s:parser_argv() abort
     if index(v:argv, '--embed') !=# -1
           \ || len(v:argv) == 1
       return [0]
-    elseif v:argv[1] =~# '/$'
-      let f = fnamemodify(expand(v:argv[1]), ':p')
+    elseif index(v:argv, '-d') !=# -1
+      " this is  diff mode
+      return [2]
+    elseif v:argv[-1] =~# '/$'
+      let f = fnamemodify(expand(v:argv[-1]), ':p')
       if isdirectory(f)
         return [1, f]
       else
         return [1, getcwd()]
       endif
-    elseif v:argv[1] ==# '.'
+    elseif v:argv[-1] ==# '.'
       return [1, getcwd()]
-    elseif isdirectory(expand(v:argv[1]))
+    elseif isdirectory(expand(v:argv[-1]))
       return [1, fnamemodify(expand(v:argv[1]), ':p')]
     else
       return [2, get(v:, 'argv', ['failed to get v:argv'])]
@@ -1701,7 +1711,11 @@ function! SpaceVim#begin() abort
   else
     call SpaceVim#logger#info('Startup with argv: ' . string(s:status[1]) )
   endif
-  call SpaceVim#default#options()
+  if has('nvim-0.7')
+    lua require('spacevim.default').options()
+  else
+    call SpaceVim#default#options()
+  endif
   call SpaceVim#default#layers()
   call SpaceVim#commands#load()
 endfunction

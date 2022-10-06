@@ -35,6 +35,7 @@ lang: zh
   - [文件树](#文件树)
     - [文件树中的常用操作](#文件树中的常用操作)
     - [文件树中打开文件](#文件树中打开文件)
+    - [修改文件树默认快捷键](#修改文件树默认快捷键)
 - [基本操作](#基本操作)
   - [原生功能](#原生功能)
   - [命令行模式快捷键](#命令行模式快捷键)
@@ -152,8 +153,6 @@ Neovim 运行在 iTerm2 上，采用 SpaceVim，配色为：_base16-solarized-da
 展示了一个通用的前端开发界面，用于开发：JavaScript (jQuery), SASS, 和 PHP buffers。
 
 图中包含了一个 Neovim 的终端，一个语法树窗口，一个文件树窗口以及一个 TernJS 定义窗口
-
-想要查阅更多截图，请阅读 [issue #415](https://github.com/SpaceVim/SpaceVim/issues/415)
 
 ## 基本概念
 
@@ -297,7 +296,7 @@ git -C ~/.SpaceVim pull
     merged = false
 ```
 
-`one_cmd` 选项使得这个插件延迟加载。
+`on_cmd` 选项使得这个插件延迟加载。
 该插件会在第一次执行 `ColorHighlight` 或者 `ColorToggle`
 命令时被加载。
 
@@ -897,6 +896,24 @@ SpaceVim 的文件树提供了版本控制信息的接口，但是这一特性�
 | `sg`            | 分屏打开文件     |
 | `sv`            | 垂直分屏打开文件 |
 
+#### 修改文件树默认快捷键
+
+如果想要修改文件树内的默认快捷键，需要再启动函数里面调用用户自定义的自动命令，比如：
+
+```vim
+function! myspacevim#before() abort
+    autocmd User NerdTreeInit
+        \ nnoremap <silent><buffer> <CR> :<C-u>call
+        \ g:NERDTreeKeyMap.Invoke('o')<CR>
+endfunction
+```
+
+以下是不同文件时所对应的自动命令名称：
+
+- nerdtree: `User NerdTreeInit`
+- defx: `User DefxInit`
+- vimfiler: `User VimfilerInit`
+
 ## 基本操作
 
 以下列出了最常用的移动光标以及滚屏的快捷键：
@@ -1405,7 +1422,7 @@ SpaceVim 选项 `window_leader` 的值来设为其它按键：
 | `SPC f E`            | open a file with elevated privileges (sudo edit)(TODO) |
 | `SPC f f`            | 在当前文件所在文件夹搜索文件                           |
 | `SPC f F`            | 在当前文件所在的文件夹搜索光标下的文件                 |
-| `SPC f o`            | 代开文件树，并定位到当前文件                           |
+| `SPC f o`            | 打开文件树，并定位到当前文件                           |
 | `SPC f R`            | 重命名当前文件                                         |
 | `SPC f s` / `Ctrl-s` | 保存文件 (:w)                                          |
 | `SPC f a`            | 另存为新的文件                                         |

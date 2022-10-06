@@ -58,50 +58,16 @@ Besides, you can also [chat with us](../community/#chat)
 
 If you run into a bug, please follow the guidelines below to give feedback.
 
-- Check that no duplicate issue in [issue tracker](https://github.com/SpaceVim/SpaceVim/issues)
-- Check that the issue has not been fixed in latest version of SpaceVim,
-  please update your SpaceVim, and try to reproduce the bug here.
-- Use a clear title with `bug reporting` issue template
-
-```
-<!-- bug reporting without issue template will be closed automatically -->
-## Expected behavior, english is required
-
-## The reproduce ways from Vim starting (Required!)
-
-## Debug info
-<!-- Please press SPC h I, debug info will be put into clipboard, -->
-<!-- then paste all content below. -->
-
-## Screenshots
-<!-- If you have any screenshots for this issue, -->
-<!-- please upload here. -->
-<!-- BTW you can use https://asciinema.org/ for recording video in terminal. -->
-```
+- Update the SpaceVim to the latest version. And make sure the can be reproduced in latest version of spacevim.
+- [Open new issue on github](https://github.com/SpaceVim/SpaceVim/issues/new?assignees=&labels=&template=bug_report.md&title=), and follow the `bug reporting` template.
 
 ## Requesting new feature
 
-If you want a new feature, use the [github issue tracker](https://github.com/SpaceVim/SpaceVim/issues) to file a new issue.
-You need to choose a concise title and refine the content in the issue template:
-
-```
-**Is your feature request related to a problem? Please describe.**
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
-
-**Describe the solution you'd like**
-<!-- A clear and concise description of what you want to happen. -->
-
-**Describe alternatives you've considered**
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
-
-**Additional context**
-<!-- Add any other context or screenshots about the feature request here. -->
-```
+If you want a new feature or have an idea to improve spacevim, feel free to [open new issue](https://github.com/SpaceVim/SpaceVim/issues/new?assignees=&labels=feature+request&template=feature_request.md&title=) for feature requesting.
 
 ## Contributing code
 
-Code and documentation contributions of any kind are welcome.
-Please read the following sections carefully.
+Code and documentation contributions of any kind are welcome. 
 In any case, feel free to [chat with us](../community/#chat) to ask questions about contributing!
 
 ### License
@@ -278,7 +244,7 @@ The following example shows how to create a new layer named `foo`:
 ```vim
 "=============================================================================
 " foo.vim --- foo Layer file for SpaceVim
-" Copyright (c) 2012-2016 Shidong Wang & Contributors
+" Copyright (c) 2012-2022 Shidong Wang & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3

@@ -66,10 +66,10 @@ You can check the value of `autocomplete_method` via `:SPSet autocomplete_method
 
 ### alternate file jumping
 
-To manage the alternate file for a project, you may need to create a `.project_alt.json` file in the root of your
+To manage alternate files for a project, you may need to create a `.project_alt.json` file in the root of your
 project.
 
-for exmaple, add following content into the `.project_alt.json` file:
+For example, add the following content into the `.project_alt.json` file:
 
 ```json
 {
@@ -78,7 +78,7 @@ for exmaple, add following content into the `.project_alt.json` file:
 }
 ```
 
-with this configuration, you can jump between the alternate file via command `:A`
+With this configuration, you can jump between alternate files via command `:A`
 
 
 ### code running
@@ -114,13 +114,9 @@ lint for C/C++ is `gcc`/`g++`. These commands also read configuration in `.clang
 
 ### code format
 
-The format layer use neoformat as default tool to format code, it will format current file.
-And the default key binding is `SPC b f`.
-
-```toml
-[[layers]]
-  name = "format"
-```
+In order to be able to format C/C++ files, you need to install `uncrustify`, `clangformat` or `astyle`.
+The key binding `SPC b f` is defineded in [format](../layers/format/) layer which is loaded by default.
+In this layer, the default format engine is `neoformat`.
 
 ### REPL support
 

@@ -279,6 +279,14 @@ function! s:syntax_checking() abort
 endfunction
 
 function! s:search_status() abort
+  if exists('*searchcount')
+    let result = searchcount(#{maxcount: 0})
+    if result.total ==# 0
+      return ''
+    else
+      return ' ' . result.current . '/' . result.total . ' '
+    endif
+  endif
   let save_cursor = getpos('.')
   let ct = 0
   let tt = 0
@@ -450,7 +458,7 @@ function! SpaceVim#layers#core#statusline#get(...) abort
           \ . s:lsep
           \ . '%#SpaceVim_statusline_b# Terminal %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep
           \ . '%#SpaceVim_statusline_c# '
-          \ . matchstr(bufname(), '\d\+:\zs.*')
+          \ . matchstr(bufname('%'), '\d\+:\zs.*')
     if !empty(get(b:, '_spacevim_shell', ''))
       let st .= '%#SpaceVim_statusline_c# %{b:_spacevim_shell} %#SpaceVim_statusline_c_SpaceVim_statusline_z#' . s:lsep
     endif
@@ -487,6 +495,9 @@ function! SpaceVim#layers#core#statusline#get(...) abort
   elseif &filetype ==# 'git-log'
     return '%#SpaceVim_statusline_ia#' . s:winnr(1) . '%#SpaceVim_statusline_ia_SpaceVim_statusline_b#' . s:lsep
           \ . '%#SpaceVim_statusline_b# Git log %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep . ' '
+  elseif &filetype ==# 'calendar'
+    return '%#SpaceVim_statusline_ia#' . s:winnr(1) . '%#SpaceVim_statusline_ia_SpaceVim_statusline_b#' . s:lsep
+          \ . '%#SpaceVim_statusline_b# Calendar %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep . ' '
   elseif &filetype ==# 'vader-result'
     return '%#SpaceVim_statusline_ia#' . s:winnr(1) . '%#SpaceVim_statusline_ia_SpaceVim_statusline_b#' . s:lsep
           \ . '%#SpaceVim_statusline_b# Vader result %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep . ' '

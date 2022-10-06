@@ -36,6 +36,7 @@ main () {
             _checkdir autoload/SpaceVim/api/data
             _checkdir autoload/SpaceVim/mapping
             _checkdir autoload/SpaceVim/plugins
+            _checkdir lua/spacevim/api
             _detact autoload/SpaceVim/plugins/flygrep.vim
             _detact autoload/SpaceVim/api.vim
             _detact autoload/SpaceVim/api/logger.vim
@@ -59,6 +60,10 @@ main () {
             _detact autoload/SpaceVim/api/time.vim
             _detact autoload/SpaceVim/mapping/search.vim
             _detact autoload/SpaceVim/logger.vim
+            _detact lua/spacevim.lua
+            _detact lua/spacevim/api.lua
+            _detact lua/spacevim/api/logger.lua
+            _detact lua/spacevim/logger.lua
             _detact syntax/SpaceVimFlyGrep.vim
             _default_readme "FlyGrep.vim" "Grep on the fly in Vim/Neovim"
             _detact LICENSE
@@ -66,7 +71,7 @@ main () {
             cat <<EOT > plugin/FlyGrep.vim
 "=============================================================================
 " FlyGrep.vim --- Fly grep in vim
-" Copyright (c) 2016-2017 Shidong Wang & Contributors
+" Copyright (c) 2016-2022 Shidong Wang & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://github.com/wsdjeg/FlyGrep.vim
 " License: MIT license
@@ -161,7 +166,7 @@ EOT
             cat <<EOT > autoload/plugin/iedit.vim
 "=============================================================================
 " iedit.vim --- multiple cursor support for neovim and vim
-" Copyright (c) 2016-2021 Shidong Wang & Contributors
+" Copyright (c) 2016-2022 Shidong Wang & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://github.com/wsdjeg/iedit.vim
 " License: MIT license

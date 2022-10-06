@@ -284,6 +284,10 @@ function! SpaceVim#layers#ui#config() abort
         \ 'toggle-highlight-tail-spaces', 1)
 
   nnoremap <silent> <F11> :call <SID>toggle_full_screen()<Cr>
+  let g:_spacevim_mappings_space.z = get(g:_spacevim_mappings_space, 'z',  {'name' : '+Fonts'})
+  call SpaceVim#mapping#space#def('nnoremap', ['z', '.'], 'call call('
+        \ . string(s:_function('s:fonts_transient_state')) . ', [])',
+        \ 'font-transient-state', 1)
 endfunction
 
 let s:fullscreen_flag = 0
@@ -505,71 +509,62 @@ endfunction
 function! s:win_resize_transient_state() abort
   let state = SpaceVim#api#import('transient_state')
   call state.set_title('Windows Resize Transient State')
-  call state.defind_keys(
-        \ {
-          \ 'layout' : 'vertical split',
-          \ 'left' : [
-            \ {
-              \ 'key' : 'H',
-              \ 'desc' : 'left',
-              \ 'func' : '',
-              \ 'cmd' : 'wincmd h',
-              \ 'exit' : 0,
-              \ },
-              \ {
-                \ 'key' : 'J',
-                \ 'desc' : 'below',
-                \ 'func' : '',
-                \ 'cmd' : 'wincmd j',
-                \ 'exit' : 0,
-                \ },
-                \ {
-                  \ 'key' : 'K',
-                  \ 'desc' : 'up',
-                  \ 'func' : '',
-                  \ 'cmd' : 'wincmd k',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                    \ 'key' : 'L',
-                    \ 'desc' : 'right',
-                    \ 'func' : '',
-                    \ 'cmd' : 'wincmd l',
-                    \ 'exit' : 0,
-                    \ },
-                    \ ],
-                    \ 'right' : [
-                      \ {
-                        \ 'key' : 'h',
-                        \ 'desc' : 'decrease width',
-                        \ 'func' : '',
-                        \ 'cmd' : 'vertical resize -1',
-                        \ 'exit' : 0,
-                        \ },
-                        \ {
-                          \ 'key' : 'l',
-                          \ 'desc' : 'increase width',
-                          \ 'func' : '',
-                          \ 'cmd' : 'vertical resize +1',
-                          \ 'exit' : 0,
-                          \ },
-                          \ {
-                            \ 'key' : 'j',
-                            \ 'desc' : 'decrease height',
-                            \ 'func' : '',
-                            \ 'cmd' : 'resize -1',
-                            \ 'exit' : 0,
-                            \ },
-                            \ {
-                              \ 'key' : 'k',
-                              \ 'desc' : 'increase height',
-                              \ 'func' : '',
-                              \ 'cmd' : 'resize +1',
-                              \ 'exit' : 0,
-                              \ },
-                              \ ],
-                              \ }
-                              \ )
+  call state.defind_keys({
+        \ 'layout' : 'vertical split',
+        \ 'left' : [{
+        \   'key' : 'H',
+        \   'desc' : 'left',
+        \   'func' : '',
+        \   'cmd' : 'wincmd h',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'J',
+        \   'desc' : 'below',
+        \   'func' : '',
+        \   'cmd' : 'wincmd j',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'K',
+        \   'desc' : 'up',
+        \   'func' : '',
+        \   'cmd' : 'wincmd k',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'L',
+        \   'desc' : 'right',
+        \   'func' : '',
+        \   'cmd' : 'wincmd l',
+        \   'exit' : 0,
+        \ },
+        \ ],
+        \ 'right' : [{
+        \   'key' : 'h',
+        \   'desc' : 'decrease width',
+        \   'func' : '',
+        \   'cmd' : 'vertical resize -1',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'l',
+        \   'desc' : 'increase width',
+        \   'func' : '',
+        \   'cmd' : 'vertical resize +1',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'j',
+        \   'desc' : 'decrease height',
+        \   'func' : '',
+        \   'cmd' : 'resize -1',
+        \   'exit' : 0,
+        \ },{
+        \   'key' : 'k',
+        \   'desc' : 'increase height',
+        \   'func' : '',
+        \   'cmd' : 'resize +1',
+        \   'exit' : 0,
+        \ },
+        \ ],
+        \ }
+        \ )
   call state.open()
 endfunction
 
@@ -637,4 +632,58 @@ function! SpaceVim#layers#ui#get_options() abort
         \ 'indentline_char',
         \ 'cursorword_exclude_filetypes']
 
+endfunction
+
+function! s:fonts_transient_state() abort
+  if !exists('s:guifont')
+    let s:guifont = &guifont
+  endif
+  let state = SpaceVim#api#import('transient_state') 
+  call state.set_title('Fonts Transient State')
+  call state.defind_keys({
+        \ 'layout' : 'vertical split',
+        \ 'left' : [{
+        \   'key' : '+',
+        \   'desc' : 'increase the font',
+        \   'func' : '',
+        \   'exit' : 0,
+        \   'cmd' : 'call call(' . string(s:_function('s:increase_font')) . ', [])',
+        \ },{
+        \   'key' : '0',
+        \   'desc' : 'reset the font size',
+        \   'func' : '',
+        \   'exit' : 0,
+        \   'cmd' : 'call call(' . string(s:_function('s:reset_font_size')) . ', [])',
+        \ },
+        \ ],
+        \ 'right' : [{
+        \   'key' : '-',
+        \   'desc' : 'reduce the font',
+        \   'func' : '',
+        \   'exit' : 0,
+        \   'cmd' : 'call call(' . string(s:_function('s:reduce_font')) . ', [])',
+        \ },
+        \ ],
+        \ }
+        \ )
+  call state.open()
+endfunction
+
+function! s:reset_font_size() abort
+  let &guifont = s:guifont
+  sleep 100m
+endfunction
+
+function! s:increase_font() abort
+  let font_size = str2nr(matchstr(matchstr(&guifont, ':h\d\+'), '\d\+'))
+  let font_size += 1
+  let &guifont = substitute(&guifont, ':h\d\+', ':h' . font_size, '')
+  sleep 100m
+endfunction
+
+function! s:reduce_font() abort
+  let font_size = str2nr(matchstr(matchstr(&guifont, ':h\d\+'), '\d\+'))
+  let font_size -= 1
+  let &guifont = substitute(&guifont, ':h\d\+', ':h' . font_size, '')
+  sleep 100m
 endfunction
