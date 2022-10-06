@@ -44,3 +44,8 @@ view/
 .vim-bookmarks
 # ignore cache
 .cache/
+
+### macOS ###
+*.DS_Store
+.AppleDouble
+.LSOverride
