@@ -15,7 +15,7 @@ M.__vim = require('spacevim.api').import('vim')
 
 
 M._keys = {
-    close = "<Esc>"
+    close = Key.t('<Esc>')
 }
 
 M._prompt = {
@@ -52,7 +52,7 @@ end
 function M._handle_input(...)
     local argv = {...}
     local begin = argv[1] or ''
-    if begin == '' then
+    if begin ~= '' then
         if type(M._oninputpro) == 'function' then
             M._oninputpro()
         end
@@ -70,53 +70,113 @@ function M._handle_input(...)
             pcall(M._function_key[char])
             goto continue
         end
-        if M._c_r_mode == 1 then
+        if M._c_r_mode then
+            if char:match('^[%w":+/]$') then
+                local reg = '@' .. char
+                local paste = vim.fn.get(vim.fn.split(vim.fn.eval(reg), "\n"), 0, '')
+                M._prompt.cursor_begin = M._prompt.cursor_begin .. paste
+                M._prompt.cursor_char = vim.fn.matchstr(M._prompt.cursor_end, '.$')
+                M._c_r_mode = false
+                M._build_prompt()
+            else
+                M._c_r_mode = false
+                goto continue
+            end
         elseif char == Key.t('<c-r>') then
+            M._c_r_mode = true
+            vim.fn.timer_start(2000, M._c_r_mode_off)
+            M._build_prompt()
+            goto continue
         elseif char == Key.t('<right>') then
             M._prompt.cursor_begin = M._prompt.cursor_begin .. M._prompt.cursor_char
-            M._prompt.cursor_char = M.__cmp.fn.matchstr(M._prompt.cursor_begin, '^.')
+            M._prompt.cursor_char = M.__cmp.fn.matchstr(M._prompt.cursor_end, '^.')
             M._prompt.cursor_end = M.__cmp.fn.substitute(M._prompt.cursor_end, '^.', '', 'g')
             M._build_prompt()
             goto continue
-        elseif char == "\<Left>" then
-        elseif char == "\<C-w>" then
-        elseif char == "\<C-a>"  or char == "\<Home>" then
-        elseif char == "\<C-e>"  or char == "\<End>" then
-        elseif char == "\<C-u>" then
-        elseif char == "\<C-k>" then
-        elseif char == "\<bs>" then
-        elseif (type(self._keys.close) == 1 add char == self._keys.close)
-            or (type(self._keys.close) == 3 add index(self._keys.close, char) > -1 ) then
-        elseif char == "\<FocusLost>" or char ==# "\<FocusGained>" or char2nr(char) == 128 then
-        else
-        end
-        if type(self._oninputpro) ==# 2
-            call call(self._oninputpro, [])
-            endif
-            if type(self._handle_fly) ==# 2
-                call call(self._handle_fly, [self._prompt.begin . self._prompt.cursor . self._prompt.end])
-                endif
-                ::continue::
+        elseif char == Key.t('<left>') then
+            if M._prompt.cursor_begin ~= '' then
+                M._prompt.cursor_end = M._prompt.cursor_char .. M._prompt.cursor_end
+                M._prompt.cursor_char = vim.fn.matchstr(M._prompt.cursor_begin, '.$')
+                M._prompt.cursor_begin = vim.fn.substitute(M._prompt.cursor_begin, '.$', '', 'g')
+                M._build_prompt()
             end
+            goto continue
+        elseif char == Key.t('<C-w>') then
+            M._prompt.cursor_begin = M.__cmp.fn.substitute(M._prompt.cursor_begin, [[[^\ .*]\+\s*$]],'','g')
+            M._build_prompt()
+        elseif char == Key.t('<C-a>')  or char == Key.t('<Home>') then
+            M._prompt.cursor_end = M.__cmp.fn.substitute(M._prompt.cursor_begin .. M._prompt.cursor_char .. M._prompt.cursor_end, '^.', '', 'g')
+            M._prompt.cursor_char = M.__cmp.matchstr(M._prompt.cursor_begin, '^.')
+            M._prompt.cursor_begin = ''
+            M._build_prompt()
+            goto continue
+        elseif char == Key.t('<C-e>')  or char == Key.t('<End>') then
+            M._prompt.cursor_begin = M._prompt.cursor_begin .. M._prompt.cursor_char .. M._prompt.cursor_end
+            M._prompt.cursor_char = ''
+            M._prompt.cursor_end = ''
+            M._build_prompt()
+            goto continue
+        elseif char == Key.t('<C-u>') then
+            M._prompt.cursor_begin = ''
+            M._build_prompt()
+        elseif char == Key.t('<C-k>') then
+            M._prompt.cursor_char = ''
+            M._prompt.cursor_end = ''
+            M._build_prompt()
+        elseif char == Key.t('<bs>') then
+            M._prompt.cursor_begin = vim.fn.substitute(M._prompt.cursor_begin, '.$', '', 'g')
+            M._build_prompt()
+        elseif (type(M._keys.close) == 'string' and char == M._keys.close)
+            or (type(M._keys.close) == 'table' and vim.fn.index(M._keys.close, char) > -1 ) then
+            M.close()
+            break
+        elseif char == Key.t('<FocusLost>') or char == Key.t('<FocusGained>') or vim.fn.char2nr(char) == 128 then
+            goto continue
+        else
+            M._prompt.cursor_begin = M._prompt.cursor_begin .. char
+            M._build_prompt()
         end
-
-
-        function M._build_prompt()
-            local ident = M.__cmp.fn['repeat'](' ', M.__cmp.win_screenpos(0)[2] - 1)
+        if type(M._oninputpro) == 'function' then
+            M._oninputpro()
         end
-
-        function M._clear_prompt()
-            M._prompt = {
-                mpt = M._prompt.mpt,
-                cursor_begin = '',
-                cursor_char = '',
-                cursor_end = ''
-            }
+        if type(M._handle_fly) == 'function' then
+            M._handle_fly(M._prompt.cursor_begin
+            .. M._prompt.cursor_char
+            .. M._prompt.cursor_end)
         end
+        ::continue::
+    end
+end
 
-        function M.close()
 
-        end
+function M._build_prompt()
+    local ident = M.__cmp.fn['repeat'](' ', M.__cmp.win_screenpos(0)[2] - 1)
+    vim.cmd('redraw')
+    vim.api.nvim_echo({
+        {ident .. M._prompt.mpt, 'Comment'},
+        {M._prompt.cursor_begin, 'None'},
+        {M._prompt.cursor_char, 'Wildmenu'},
+        {M._prompt.cursor_end, 'None'},
+        {'_', 'Comment'}
+    }, false, {})
+end
+
+function M._clear_prompt()
+    M._prompt = {
+        mpt = M._prompt.mpt,
+        cursor_begin = '',
+        cursor_char = '',
+        cursor_end = ''
+    }
+end
+
+function M.close()
+    if type(M._onclose) == 'function' then
+        M._onclose()
+    end
+    M._clear_prompt()
+    M._quit = true
+end
 
 
-        return M
+return M
