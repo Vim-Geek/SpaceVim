@@ -37,10 +37,8 @@ function! SpaceVim#mapping#space#init() abort
   if s:has_map_to_spc()
     return
   endif
-  if g:spacevim_default_custom_leader ==# '<Space>'
-    nnoremap <silent><nowait> [SPC] :<c-u>LeaderGuide ' '<CR>
-    vnoremap <silent><nowait> [SPC] :<c-u>LeaderGuideVisual ' '<CR>
-  endif
+  nnoremap <silent><nowait> [SPC] :<c-u>LeaderGuide ' '<CR>
+  vnoremap <silent><nowait> [SPC] :<c-u>LeaderGuideVisual ' '<CR>
   exe printf('nmap %s [SPC]', g:spacevim_default_custom_leader)
   exe printf('vmap %s [SPC]', g:spacevim_default_custom_leader)
   if !g:spacevim_vimcompatible && g:spacevim_enable_language_specific_leader
@@ -514,8 +512,13 @@ function! SpaceVim#mapping#space#init() abort
         \ "call SpaceVim#plugins#flygrep#open({'input' : expand(\"<cword>\"), 'dir' : get(b:, \"rootDir\", getcwd())})",
         \ 'grep-cword-in-project', 1)
   " Searching background
-  call SpaceVim#mapping#space#def('nnoremap', ['s', 'j'],
-        \ 'call SpaceVim#plugins#searcher#find("", SpaceVim#mapping#search#default_tool()[0])', 'background-search-in-project', 1)
+  if has('nvim-0.7.0')
+    call SpaceVim#mapping#space#def('nnoremap', ['s', 'j'],
+          \ "lua require('spacevim.plugin.searcher').find('', require('spacevim.plugin.search').default_tool())", 'background-search-in-project', 1)
+  else
+    call SpaceVim#mapping#space#def('nnoremap', ['s', 'j'],
+          \ 'call SpaceVim#plugins#searcher#find("", SpaceVim#mapping#search#default_tool()[0])', 'background-search-in-project', 1)
+  endif
   call SpaceVim#mapping#space#def('nnoremap', ['s', 'J'],
         \ 'call SpaceVim#plugins#searcher#find(expand("<cword>"),SpaceVim#mapping#search#default_tool()[0])',
         \ 'background-search-cwords-in-project', 1)
@@ -663,8 +666,13 @@ function! SpaceVim#mapping#space#init() abort
         \ 'clear-search-results', 1)
 
   "Symbol
-  nnoremap <silent> <plug>SpaceVim-plugin-iedit :call SpaceVim#plugins#iedit#start()<cr>
-  xnoremap <silent> <plug>SpaceVim-plugin-iedit :call SpaceVim#plugins#iedit#start(1)<cr>
+  if has('nvim-0.7.0')
+    nnoremap <silent> <plug>SpaceVim-plugin-iedit :lua require('spacevim.plugin.iedit').start()<cr>
+    xnoremap <silent> <plug>SpaceVim-plugin-iedit :lua require('spacevim.plugin.iedit').start(1)<cr>
+  else
+    nnoremap <silent> <plug>SpaceVim-plugin-iedit :call SpaceVim#plugins#iedit#start()<cr>
+    xnoremap <silent> <plug>SpaceVim-plugin-iedit :call SpaceVim#plugins#iedit#start(1)<cr>
+  endif
   call SpaceVim#mapping#space#def('nmap', ['s', 'e'], '<plug>SpaceVim-plugin-iedit',
         \ 'start-iedit-with-all-matches', 0, 1)
   call SpaceVim#mapping#space#def('nnoremap', ['s', 'E'], 'call SpaceVim#plugins#iedit#start({"selectall" : 0})',
@@ -689,7 +697,11 @@ function! SpaceVim#mapping#space#init() abort
           \ ]
           \ ]
           \ , 1)
-  call SpaceVim#custom#SPC('nnoremap', ['a', 'o'], 'call SpaceVim#plugins#todo#list()', 'open-todo-manager', 1)
+  if has('nvim-0.7.0')
+    call SpaceVim#custom#SPC('nnoremap', ['a', 'o'], 'lua require("spacevim.plugin.todo").list()', 'open-todo-manager', 1)
+  else
+    call SpaceVim#custom#SPC('nnoremap', ['a', 'o'], 'call SpaceVim#plugins#todo#list()', 'open-todo-manager', 1)
+  endif
 endfunction
 
 function! SpaceVim#mapping#space#def(m, keys, cmd, desc, is_cmd, ...) abort

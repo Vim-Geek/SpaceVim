@@ -59,6 +59,11 @@ let s:i_separators = {
       \ 'bar' : ['|', '|'],
       \ 'nil' : ['', ''],
       \ }
+
+let [s:lsep , s:rsep] = ['', '']
+
+let [s:ilsep , s:irsep] = ['', '']
+
 let s:loaded_modes = []
 let s:modes = {
       \ 'center-cursor': {
@@ -447,6 +452,10 @@ function! SpaceVim#layers#core#statusline#get(...) abort
           \ . '%#SpaceVim_statusline_b# %{fuzzy#statusline()} %#SpaceVim_statusline_b_SpaceVim_statusline_c#' . s:lsep 
   elseif &filetype ==# 'SpaceVimFindArgv'
     return '%#SpaceVim_statusline_a_bold# Find %#SpaceVim_statusline_a_SpaceVim_statusline_b#' . s:lsep
+  elseif &filetype ==# 'rst' && bufname('%') == '__doc__'
+    return '%#SpaceVim_statusline_a_bold# Python Doc %#SpaceVim_statusline_a_SpaceVim_statusline_b#' . s:lsep
+  elseif bufname('%') == '__cheat_output__'
+    return '%#SpaceVim_statusline_a_bold# Vim Cheat %#SpaceVim_statusline_a_SpaceVim_statusline_b#' . s:lsep
   elseif &filetype ==# 'gista-list'
     return '%#SpaceVim_statusline_ia#'
           \ . s:winnr(1) . '%#SpaceVim_statusline_ia_SpaceVim_statusline_b#'
@@ -701,8 +710,8 @@ function! SpaceVim#layers#core#statusline#def_colors() abort
   exe 'hi! SpaceVim_statusline_b ctermbg=' . t[1][2] . ' ctermfg=' . t[1][3] . ' guibg=' . t[1][1] . ' guifg=' . t[1][0]
   exe 'hi! SpaceVim_statusline_c ctermbg=' . t[2][2] . ' ctermfg=' . t[2][3] . ' guibg=' . t[2][1] . ' guifg=' . t[2][0]
   exe 'hi! SpaceVim_statusline_z ctermbg=' . t[3][1] . ' ctermfg=' . t[2][2] . ' guibg=' . t[3][0] . ' guifg=' . t[2][0]
-  hi! SpaceVim_statusline_error ctermbg=003 ctermfg=Black guibg=#504945 guifg=#fb4934 gui=bold
-  hi! SpaceVim_statusline_warn ctermbg=003 ctermfg=Black guibg=#504945 guifg=#fabd2f gui=bold
+  exe 'hi! SpaceVim_statusline_error ctermbg=' . t[1][2] . ' ctermfg=Black guibg=' . t[1][1] . ' guifg=#fb4934 gui=bold'
+  exe 'hi! SpaceVim_statusline_warn ctermbg=' . t[1][2] . ' ctermfg=Black guibg=' . t[1][1] . ' guifg=#fabd2f gui=bold'
   call s:HI.hi_separator('SpaceVim_statusline_a', 'SpaceVim_statusline_b')
   call s:HI.hi_separator('SpaceVim_statusline_a_bold', 'SpaceVim_statusline_b')
   call s:HI.hi_separator('SpaceVim_statusline_ia', 'SpaceVim_statusline_b')

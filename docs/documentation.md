@@ -88,7 +88,8 @@ description: "General documentation about how to use SpaceVim, including the qui
   - [Replace text with iedit](#replace-text-with-iedit)
     - [iedit states key bindings](#iedit-states-key-bindings)
   - [Code runner](#code-runner)
-  - [Read Eval Print Loop](#read-eval-print-loop)
+    - [Custom runner](#custom-runner)
+  - [REPL(read eval print loop)](#replread-eval-print-loop)
   - [Highlight current symbol](#highlight-current-symbol)
   - [Error handling](#error-handling)
   - [EditorConfig](#editorconfig)
@@ -571,7 +572,6 @@ In font transient state:
 | `-`           | decrease the font size    |
 | Any other key | leave the transient state |
 
-
 ### Mouse
 
 Mouse support is enabled in Normal mode and Visual mode by default.
@@ -954,7 +954,6 @@ If only one file buffer is opened, a file is opened in the active window, otherw
 | `s g`           | open file in a vertically split window   |
 | `s v`           | open file in a horizontally split window |
 
-
 #### Override filetree key bindings
 
 If you want to override the default key bindings in filetree windows. You can use User autocmd in bootstrap function. for examples:
@@ -1254,6 +1253,22 @@ Read `:h registers` for more info about other registers.
 | `<Leader> p` | Paste text from system clipboard after here  |
 | `<Leader> P` | Paste text from system clipboard before here |
 | `<Leader> Y` | Copy selected text to pastebin               |
+
+To change the command of clipboard, you nned to use bootstrap after function:
+
+```viml
+" for example, to use tmux clipboard:
+function! myspacevim#after() abort
+    call clipboard#set('tmux load-buffer -', 'tmux save-buffer -')
+endfunction
+```
+
+within the runtime log (`SPC h L`), the clipboard command will be displayed:
+
+```
+[ clipboard ] [11:00:35] [670.246] [ Info  ] yank_cmd is:'tmux load-buffer -'
+[ clipboard ] [11:00:35] [670.246] [ Info  ] paste_cmd is:'tmux save-buffer -'
+```
 
 The `<Leader> Y` key binding will copy selected text to a pastebin server. It requires `curl` in your `$PATH`.
 The default command is:
@@ -1997,6 +2012,26 @@ For example, to ignore the `node_packages/` directory:
     project_rooter_outermost = false
 ```
 
+There are three options for non-project files/directories:
+
+- Don't change directory (default).
+
+```
+project_non_root = ''
+```
+
+- Change to file's directory (similar to 'autochdir').
+
+```
+project_non_root = 'current'
+```
+
+- Change to home directory.
+
+```
+project_non_root = 'home'
+```
+
 You can also disable project root detection completely (i.e. vim will set the
 root directory to the present working directory):
 
@@ -2117,13 +2152,20 @@ which is similar to VSCode's tasks-manager. There are two kinds of task configur
 The tasks defined in the global tasks configuration can be overrided by project local
 tasks configuration.
 
-| Key Bindings | Descriptions                  |
-| ------------ | ----------------------------- |
-| `SPC p t e`  | edit tasks configuration file |
-| `SPC p t r`  | select task to run            |
-| `SPC p t l`  | list all available tasks      |
+| Key Bindings | Descriptions                              |
+| ------------ | ----------------------------------------- |
+| `SPC p t e`  | edit tasks configuration file             |
+| `SPC p t r`  | select task to run                        |
+| `SPC p t l`  | list all available tasks                  |
+| `SPC p t f`  | fuzzy find tasks(require telescope layer) |
+
+The `SPC p t l` will open the tasks manager windows, in the tasks manager windows, you can use `Enter` to run task under the cursor.
 
 ![task_manager](https://user-images.githubusercontent.com/13142418/94822603-69d0c700-0435-11eb-95a7-b0b4fef91be5.png)
+
+If the `telescope` layer is loaded, you can also use `SPC p t f` to fuzzy find specific task, and run the select task.
+
+![fuzzy-task](https://user-images.githubusercontent.com/13142418/199057483-d5cce17c-2f06-436d-bf7d-24a78d0eeb11.png)
 
 #### Custom tasks
 
@@ -2370,6 +2412,7 @@ The default color for iedit is `red`/`green` which is based on the current color
 
 SpaceVim provides an asynchronous code runner plugin. In most language layers,
 the key binding `SPC l r` is defined for running the current buffer.
+To close the code runner windows, you can use `` Ctrl-`  `` key binding.
 If you need to add new commands, you can use the bootstrap function. For example:
 Use `F5` to build the project asynchronously.
 
@@ -2384,11 +2427,31 @@ Key bindings within code runner buffer:
 | `ctrl-c`    | stop code runner            |
 | `i`         | open promote to insert text |
 
-### Read Eval Print Loop
+#### Custom runner
+
+If you want to set custom code runner for specific language. You need to use `SpaceVim#plugins#runner#reg_runner(ft, runner)` api in bootstrap function.
+
+example:
+
+```vim
+call SpaceVim#plugins#runner#reg_runner('lua', {
+      \ 'exe' : 'lua',
+      \ 'opt' : ['-'],
+      \ 'usestdin' : 1,
+      \ })
+```
+
+### REPL(read eval print loop)
 
 The REPL(Read Eval Print Loop) plugin provides a framework to run REPL command asynchronously.
 
 For different language, you need to checkout the doc of language layer. The repl key bindings are defined in language layer.
+
+Key bindings within repl buffer:
+
+| key binding | description                 |
+| ----------- | --------------------------- |
+| `i`         | open promote to insert text |
 
 ### Highlight current symbol
 

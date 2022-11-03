@@ -134,7 +134,9 @@ let s:CPT = SpaceVim#api#import('vim#compatible')
 " plugins {{{
 function! SpaceVim#layers#lang#c#plugins() abort
   let plugins = []
-  if !SpaceVim#layers#lsp#check_filetype('c') && !SpaceVim#layers#lsp#check_filetype('cpp')
+  if !SpaceVim#layers#lsp#check_filetype('c')
+        \ && !SpaceVim#layers#lsp#check_filetype('cpp')
+        \ && !SpaceVim#layers#lsp#check_server('clangd')
     if g:spacevim_autocomplete_method ==# 'deoplete'
       call add(plugins, ['Shougo/deoplete-clangx', {'merged' : 0}])
     elseif g:spacevim_autocomplete_method ==# 'ycm'
@@ -216,7 +218,10 @@ function! SpaceVim#layers#lang#c#config() abort
     let g:neomake_c_enabled_makers = ['clang']
     let g:neomake_cpp_enabled_makers = ['clang']
   endif
+  let g:neomake_c_clang_remove_invalid_entries = 1
+  let g:neomake_cpp_clang_remove_invalid_entries = 1
   let g:neomake_c_gcc_remove_invalid_entries = 1
+  let g:neomake_cpp_gcc_remove_invalid_entries = 1
   let g:chromatica#enable_at_startup = 0
   let g:clighter_autostart           = 0
   augroup SpaceVim_lang_c

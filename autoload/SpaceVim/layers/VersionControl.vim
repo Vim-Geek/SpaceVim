@@ -301,6 +301,16 @@ function! s:change_options(key) abort
       else
         let s:git_log_options[a:key].option = '--author='
       endif
+    elseif a:key ==# 'g'
+      " change search text
+      " change author
+      let origin_grep = matchstr(s:git_log_options[a:key].option, '\("\)\@<=[^"]*')
+      let grep = input('--grep=', origin_grep)
+      if !empty(grep)
+        let s:git_log_options[a:key].option = '--grep=' . grep
+      else
+        let s:git_log_options[a:key].option = '--grep='
+      endif
     elseif a:key ==# 'n'
       let orig_nr = matchstr(s:git_log_options[a:key].option, '\("\)\@<=[^"]*')
       let nr = str2nr(input('-n', orig_nr))
@@ -342,7 +352,7 @@ function! s:show_repo_log() abort
 endfunction
 
 function! s:get_log_argv() abort
-  let argv = ['git', 'log', '--no-color']
+  let argv = []
   for k in keys(s:git_log_switches)
     if s:git_log_switches[k].enable
       call add(argv, s:git_log_switches[k].option)
@@ -359,19 +369,8 @@ endfunction
 " git log popup action functions {{{
 function! s:Log_current() abort
   close
-  tabnew
-  setlocal norelativenumber
-  let t:_spacevim_tab_name = 'Git log'
-  let argv = join(s:get_log_argv(), ' ')
-  call SpaceVim#logger#info(argv)
-  " in gvim only have term_start function
-  if !has('nvim')
-    call term_start(argv, {'curwin' : 1, 'term_finish' : 'close'})
-  else
-    call termopen(argv)
-  endif
-  nnoremap <buffer><silent> q :bd!<cr>
-  startinsert
+  let argv = s:get_log_argv()
+  call git#log#run(argv)
 endfunction
 " }}}
 
@@ -380,23 +379,23 @@ function! s:show_diff_of_unstaged_hunks() abort
 endfunction
 
 function! s:fetch_repo() abort
-
+  Git fetch
 endfunction
 
 function! s:pull_repo() abort
-
+  Git pull
 endfunction
 
 function! s:push_repo() abort
-
+  Git push
 endfunction
 
 function! s:commit_popup() abort
-
+  Git commit -m update
 endfunction
 
 function! s:commit() abort
-
+  Git commit
 endfunction
 
 function! s:revert_hunk() abort

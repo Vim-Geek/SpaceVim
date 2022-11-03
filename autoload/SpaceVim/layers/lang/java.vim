@@ -131,9 +131,11 @@ let s:java_file_head = [
 let s:java_interpreter = 'java'
 
 function! SpaceVim#layers#lang#java#plugins() abort
-  let plugins = [
-        \ ['artur-shaik/vim-javacomplete2', { 'on_ft' : ['java','jsp'], 'loadconf' : 1}],
-        \ ]
+  let plugins = []
+  if !SpaceVim#layers#lsp#check_filetype('java')
+        \ && !SpaceVim#layers#lsp#check_server('jdtls')
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-javacomplete2', { 'on_ft' : ['java','jsp'], 'loadconf' : 1}])
+  endif
   call add(plugins, [g:_spacevim_root_dir . 'bundle/JavaUnit.vim', {'on_ft' : 'java'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/java_getset.vim', {'on_ft' : 'java'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-dict', {'on_ft' : 'java'}])
@@ -144,6 +146,11 @@ function! SpaceVim#layers#lang#java#config() abort
   call SpaceVim#mapping#space#regesit_lang_mappings('java', function('s:language_specified_mappings'))
   call SpaceVim#plugins#repl#reg('java', 'jshell')
   call add(g:spacevim_project_rooter_patterns, 'pom.xml')
+  call add(g:spacevim_project_rooter_patterns, 'build.gradle')
+
+  " for neomake 
+  "
+  let g:neomake_java_javac_options = ['-J-Duser.language=en'] 
 
   if SpaceVim#layers#lsp#check_filetype('java')
     call SpaceVim#mapping#gd#add('java', function('SpaceVim#lsp#go_to_def'))
@@ -178,6 +185,26 @@ function! SpaceVim#layers#lang#java#config() abort
           \ })
   endif
   call SpaceVim#layers#edit#add_ft_head_tamplate('java', s:java_file_head)
+  call SpaceVim#plugins#projectmanager#reg_callback(function('s:handle_java_project_changed'))
+  call SpaceVim#plugins#tasks#reg_provider(function('s:maven_tasks'))
+endfunction
+
+function! s:maven_tasks() abort
+  let detect_task = {}
+  let conf = {}
+  if filereadable('pom.xml')
+    call extend(detect_task, {
+          \ 'compile' : {'command' : 'mvn', 'args' : ['compile'], 'isDetected' : 1, 'detectedName' : 'mvn:'}
+          \ })
+  endif
+  return detect_task
+endfunction
+
+function! s:handle_java_project_changed() abort
+  try
+    call javacomplete#classpath#classpath#BuildClassPath()
+  catch
+  endtry
 endfunction
 
 function! s:JspFileTypeInit() abort

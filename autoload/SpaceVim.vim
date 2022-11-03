@@ -1056,6 +1056,13 @@ let g:spacevim_github_username         = ''
 " Set the default key for smart close windows, default is `q`.
 let g:spacevim_windows_smartclose      = 'q'
 ""
+" @section disabled_plugins, options-disabled_plugins
+" @parentsection options
+" >
+"   disabled_plugins = ['vim-foo', 'vim-bar']
+" <
+
+""
 " Disable plugins by name.
 " >
 "   let g:spacevim_disabled_plugins = ['vim-foo', 'vim-bar']
@@ -1346,6 +1353,8 @@ let g:spacevim_wildignore
 let g:_spacevim_mappings = {}
 let g:_spacevim_mappings_space_custom = []
 let g:_spacevim_mappings_space_custom_group_name = []
+let g:_spacevim_mappings_leader_custom = []
+let g:_spacevim_mappings_leader_custom_group_name = []
 let g:_spacevim_mappings_language_specified_space_custom = {}
 let g:_spacevim_mappings_lang_group_name = {}
 let g:_spacevim_neobundle_installed     = 0

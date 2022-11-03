@@ -101,12 +101,12 @@ function! SpaceVim#layers#lang#python#plugins() abort
         \ && !SpaceVim#layers#lsp#check_server('pyright')
         \ && !SpaceVim#layers#lsp#check_server('pylsp')
     if has('nvim')
-      call add(plugins, ['zchee/deoplete-jedi', { 'on_ft' : 'python'}])
+      call add(plugins, [g:_spacevim_root_dir . 'bundle/deoplete-jedi', { 'on_ft' : 'python'}])
       " in neovim, we can use deoplete-jedi together with jedi-vim,
       " but we need to disable the completions of jedi-vim.
       let g:jedi#completions_enabled = 0
     endif
-    call add(plugins, ['davidhalter/jedi-vim', { 'on_ft' : 'python',
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/jedi-vim', { 'on_ft' : 'python',
           \ 'if' : has('python') || has('python3')}])
   endif
   call add(plugins, ['heavenshell/vim-pydocstring',

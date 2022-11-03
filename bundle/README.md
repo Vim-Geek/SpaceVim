@@ -6,26 +6,32 @@ In `bundle/` directory, there are two kinds of plugins: forked plugins without c
 
 - [Changed plugin:](#changed-plugin)
 - [No changed plugins](#no-changed-plugins)
+  - [`core` layer](#core-layer)
   - [`lang#ruby` layer](#langruby-layer)
   - [`lang#python` layer](#langpython-layer)
   - [`lang#liquid` layer](#langliquid-layer)
   - [`lang#go` layer](#langgo-layer)
   - [`tmux` layer](#tmux-layer)
   - [`incsearch` layer](#incsearch-layer)
+  - [`lang#java` layer](#langjava-layer)
 
 <!-- vim-markdown-toc -->
 
 ### Changed plugin:
 
+This plugins are changed based on a specific version of origin plugin.
+
 - `vim-bookmarks`: based on [`MattesGroeger/vim-bookmarks@3adeae1`](https://github.com/MattesGroeger/vim-bookmarks/commit/3adeae10639edcba29ea80dafa1c58cf545cb80e)
 - `delimitMate`: based on [`Raimondi/delimitMate@537a1da`](https://github.com/Raimondi/delimitMate/tree/537a1da0fa5eeb88640425c37e545af933c56e1b)
-- `vim-toml`: based on [cespare/vim-toml@717bd87ef9](https://github.com/cespare/vim-toml/tree/717bd87ef928293e0cc6cfc12ebf2e007cb25311)
-- `neoformat`: based on [neoformat](https://github.com/sbdchd/neoformat/tree/f1b6cd506b72be0a2aaf529105320ec929683920)
-- `github-issues.vim`: based on [github-issues.vim](https://github.com/jaxbot/github-issues.vim/tree/46f1922d3d225ed659f3dda1c95e35001c9f41f4)
-- `vim-virtualenv`: based on [vim-virtualenv](https://github.com/jmcantrell/vim-virtualenv/tree/b1150223cd876f155ed7a3b2e285ed33f6f93873)
+- `vim-toml`: based on [`cespare/vim-toml@717bd87ef9`](https://github.com/cespare/vim-toml/tree/717bd87ef928293e0cc6cfc12ebf2e007cb25311)
+- `neoformat`: based on [`neoformat@f1b6cd50`](https://github.com/sbdchd/neoformat/tree/f1b6cd506b72be0a2aaf529105320ec929683920)
+- `github-issues.vim`: based on [`github-issues.vim@46f1922d`](https://github.com/jaxbot/github-issues.vim/tree/46f1922d3d225ed659f3dda1c95e35001c9f41f4)
+- `vim-virtualenv`: based on [`vim-virtualenv@b1150223`](https://github.com/jmcantrell/vim-virtualenv/tree/b1150223cd876f155ed7a3b2e285ed33f6f93873)
 - `clever-f.vim`: based on [`clever-f.vim@fd370f2`](https://github.com/rhysd/clever-f.vim/tree/fd370f27cca93918184a8043220cef1aa440a1fd)
 - `verilog`: based on [`vhda/verilog_systemverilog.vim@0b88f2c`](https://github.com/vhda/verilog_systemverilog.vim/tree/0b88f2ccf81983944bf00d15ec810dd807053d19)
 - `rainbow`: based on [`luochen1990/rainbow@c18071e5`](https://github.com/luochen1990/rainbow/tree/c18071e5c7790928b763c2e88c487dfc93d84a15)
+- `jedi-vim`: based on [`jedi-vim@e82d07`](https://github.com/davidhalter/jedi-vim/tree/e82d07faa17c3b3fe04b4fa6ab074e8e8601a596)
+- `vim-unstack`: based on [`vim-unstack@9b191419`](https://github.com/mattboehm/vim-unstack/tree/9b191419b4d3f26225a5ae3df5e409c62b426941)
 
 ### No changed plugins
 
@@ -46,6 +52,10 @@ In `bundle/` directory, there are two kinds of plugins: forked plugins without c
 - [vim-autohotkey@6bf1e71](https://github.com/wsdjeg/vim-autohotkey/tree/6bf1e718c73cad22caad3ecd8c4db96db05b37f7)
 - [vim-cmake-syntax@bcc3a97a](https://github.com/pboettch/vim-cmake-syntax/tree/bcc3a97ab934f03e112becd4ce79286793152b47)
 - [itchyny/calendar.vim@896360bfd](https://github.com/itchyny/calendar.vim/tree/896360bfd9d5347b2726dd247df2d2cbdb8cf1d6)
+
+#### `core` layer
+
+- [nerdtree@fc85a6f07](https://github.com/preservim/nerdtree/tree/fc85a6f07c2cd694be93496ffad75be126240068)
 
 #### `lang#ruby` layer
 
@@ -77,3 +87,7 @@ In `bundle/` directory, there are two kinds of plugins: forked plugins without c
 - [vim-asterisk@77e9706](https://github.com/haya14busa/vim-asterisk/tree/77e97061d6691637a034258cc415d98670698459)
 - [vim-over@878f83b](https://github.com/osyo-manga/vim-over/tree/878f83bdac0cda308f599d319f45c7877d5274a9)
 - [incsearch-easymotion.vim@fcdd3ae](https://github.com/haya14busa/incsearch-easymotion.vim/tree/fcdd3aee6f4c0eef1a515727199ece8d6c6041b5)
+
+#### `lang#java` layer
+
+- `vim-javacomplete2` based on `https://github.com/artur-shaik/vim-javacomplete2/tree/a716e32bbe36daaed6ebc9aae76525aad9536245`
