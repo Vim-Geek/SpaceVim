@@ -129,13 +129,15 @@ packages tuned by power users and bugs are fixed quickly.
 
 ## Highlighted features
 
-- **Great documentation:** access documentation in SpaceVim with `:h SpaceVim`.
-- **nice UI:** you'll love the awesome UI and its useful features.
+- **Modularization:** plugins and functions are organized in [layers](https://spacevim.org/layers/).
+- **Compatible api:** a series of [compatible APIs](https://spacevim.org/api/) for Vim/Neovim.
+- **Great documentation:** online [documentation](https://spacevim.org/documentation/) and `:h SpaceVim`.
+- **Better experience:** rewrite core plugins using lua
+- **Beautiful UI:** you'll love the awesome UI and its useful features.
 - **Mnemonic key bindings:** key binding guide will be displayed automatically
 - **Fast boot time:** Lazy-load 90% of plugins with [dein.vim](https://github.com/Shougo/dein.vim)
 - **Lower the risk of RSI:** by heavily using the space bar instead of modifiers.
-- **Batteries included:** discover hundreds of ready-to-use packages nicely organised in configuration layers following a set of [conventions](http://spacevim.org/conventions/).
-- **Consistent experience:** consistent experience between Vim and NeoVim
+- **Consistent experience:** consistent experience between terminal and gui
 
 ## Screenshots
 
@@ -385,7 +387,7 @@ endfunction
 ```
 
 Similarly, if you want to add custom key bindings prefixed by language leader key,
-which is typically `,`, you can add them to the boostrap function. **Make sure** that the
+which is typically `,`, you can add them to the bootstrap function. **Make sure** that the
 key bindings are not used by SpaceVim.
 
 ```vim
@@ -589,8 +591,8 @@ Read `:h 'mouse'` for more info.
 
 ### Scrollbar
 
-The scrollbar is disabled by default. To enable the scrollbar,
-you need to change `enable_scrollbar` option in [ui layer](../layers/ui/).
+The scrollbar requires floating window of neovim or popup of vim8. It is disabled by default.
+To enable the scrollbar, you need to change `enable_scrollbar` option in [ui layer](../layers/ui/).
 
 ```
 [[layers]]
@@ -1254,7 +1256,7 @@ Read `:h registers` for more info about other registers.
 | `<Leader> P` | Paste text from system clipboard before here |
 | `<Leader> Y` | Copy selected text to pastebin               |
 
-To change the command of clipboard, you nned to use bootstrap after function:
+To change the command of clipboard, you need to use bootstrap after function:
 
 ```viml
 " for example, to use tmux clipboard:

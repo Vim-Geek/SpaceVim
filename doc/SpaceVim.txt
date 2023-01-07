@@ -191,10 +191,10 @@ CONTENTS                                                   *SpaceVim-contents*
       95. lang#puppet............................|SpaceVim-layers-lang-puppet|
       96. lang#purescript....................|SpaceVim-layers-lang-purescript|
       97. lang#python............................|SpaceVim-layers-lang-python|
-      98. lang#racket............................|SpaceVim-layers-lang-racket|
-      99. lang#racket...............................|SpaceVim-layers-lang-red|
-      100. lang#reason...........................|SpaceVim-layers-lang-reason|
-      101. lang#ring..................................|SpaceVim-layers-lang-r|
+      98. lang#r......................................|SpaceVim-layers-lang-r|
+      99. lang#racket............................|SpaceVim-layers-lang-racket|
+      100. lang#racket..............................|SpaceVim-layers-lang-red|
+      101. lang#reason...........................|SpaceVim-layers-lang-reason|
       102. lang#ring...............................|SpaceVim-layers-lang-ring|
       103. lang#ruby...............................|SpaceVim-layers-lang-ruby|
       104. lang#rust...............................|SpaceVim-layers-lang-rust|
@@ -203,7 +203,7 @@ CONTENTS                                                   *SpaceVim-contents*
       107. lang#sh...................................|SpaceVim-layers-lang-sh|
       108. lang#smalltalk.....................|SpaceVim-layers-lang-smalltalk|
       109. lang#sml.................................|SpaceVim-layers-lang-sml|
-      110. lang#swig..............................|SpaceVim-layers-lang-swift|
+      110. lang#swift.............................|SpaceVim-layers-lang-swift|
       111. lang#swig...............................|SpaceVim-layers-lang-swig|
       112. lang#tcl.................................|SpaceVim-layers-lang-tcl|
       113. lang#teal...............................|SpaceVim-layers-lang-teal|
@@ -1786,18 +1786,33 @@ OPTIONS
 ==============================================================================
 COLORSCHEME                                      *SpaceVim-layers-colorscheme*
 
-The ldefault colorscheme for SpaceVim is gruvbox. The colorscheme can be
-changed with the `g:spacevim_colorscheme` option by adding the following line
-to your `~/.SpaceVim/init.vim`.
+The default colorscheme of SpaceVim is gruvbox. It can be changed via
+`colorscheme` option by adding the following code to |SpaceVim-options| file:
 >
-  let g:spacevim_colorscheme = 'solarized'
 <
+[options]   colorscheme = 'solarized' <
 
 The following colorschemes are include in SpaceVim. If the colorscheme you
 want is not included in the list below, a PR is welcome.
-
+>
+  | Name         | dark | light | term | gui | statusline |
+  | ------------ | ---- | ----- | ---- | --- | ---------- |
+  | molokai      | yes  | no    | yes  | yes | yes        |
+  | srcery       | yes  | no    | yes  | yes | yes        |
+  | onedark      | yes  | no    | yes  | yes | yes        |
+  | jellybeans   | yes  | no    | yes  | yes | yes        |
+  | palenight    | yes  | no    | yes  | yes | yes        |
+  | one          | yes  | yes   | yes  | yes | yes        |
+  | nord         | yes  | no    | yes  | yes | yes        |
+  | gruvbox      | yes  | yes   | yes  | yes | yes        |
+  | NeoSolarized | yes  | yes   | yes  | yes | yes        |
+  | hybrid       | yes  | yes   | yes  | yes | yes        |
+  | material     | yes  | yes   | yes  | yes | yes        |
+  | dracula      | yes  | yes   | yes  | yes | yes        |
+  | SpaceVim     | yes  | yes   | yes  | yes | yes        |
+<
 Also, there's one thing which everyone should know and pay attention to. NOT
-all of below colorschemes support spell check very well. For example, a
+all of above colorschemes support spell check very well. For example, a
 colorscheme called atom doesn't support spell check very well.
 
 SpaceVim is not gonna fix them since these should be in charge of each author.
@@ -2297,7 +2312,7 @@ LANG#AGDA                                          *SpaceVim-layers-lang-agda*
 
 This layer provides syntax highlighting for agda. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#agda"
 <
 
@@ -2331,7 +2346,7 @@ LANG#ASCIIDOC                                  *SpaceVim-layers-lang-asciidoc*
 
 This layer provides syntax highlighting for asciidoc. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#asciidoc"
 <
 
@@ -2340,7 +2355,7 @@ LANG#ASPECTJ                                    *SpaceVim-layers-lang-aspectj*
 
 This layer provides syntax highlighting for aspectj. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#aspectj"
 <
 
@@ -2349,7 +2364,7 @@ LANG#ASSEMBLY                                  *SpaceVim-layers-lang-assembly*
 
 This layer provides syntax highlighting for assembly. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#assembly"
 <
 
@@ -2358,7 +2373,7 @@ LANG#AUTOHOTKEY                              *SpaceVim-layers-lang-autohotkey*
 
 This layer provides syntax highlighting for autohotkey. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#autohotkey"
 <
 
@@ -2367,7 +2382,7 @@ LANG#AUTOIT                                      *SpaceVim-layers-lang-autoit*
 
 This layer provides syntax highlighting for autoit. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#autoit"
 <
 
@@ -2530,7 +2545,7 @@ This layer provides clojure language support in SpaceVim. Including syntax
 highlighting, code indent, code runner and REPL. This layer is not enabled by
 default, To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#clojure"
 <
 
@@ -2610,7 +2625,7 @@ INTRO
 The lang#crystal layer provides crystal filetype detection and syntax
 highlight, crystal tool and crystal spec integration. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#crystal"
 <
 
@@ -2640,7 +2655,7 @@ INTRO
 This layer includes utilities and language-specific mappings for csharp
 development. By default it is disabled, to enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#csharp"
 <
 
@@ -2702,7 +2717,7 @@ The lang#dart layer provides code completion, documentation lookup, jump to
 definition, dart_repl integration for dart. It uses neomake as default syntax
 checker which is loaded in |SpaceVim-layer-checkers|. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#dart"
 <
 
@@ -2738,7 +2753,12 @@ LANG#DOCKERFILE                              *SpaceVim-layers-lang-dockerfile*
 
 INTRO
 
-The lang#dockerfile layer provides syntax highlighting for dockerfile.
+The lang#dockerfile layer provides syntax highlighting for dockerfile. By
+default it is disabled, to enable this layer:
+>
+  [[layers]]
+    name = "lang#dockerfile"
+<
 
 ==============================================================================
 LANG#E                                                *SpaceVim-layers-lang-e*
@@ -2748,7 +2768,7 @@ INTRO
 This layer includes utilities and language-specific mappings for e
 development. By default it is disabled, to enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#e"
 <
 
@@ -3004,7 +3024,7 @@ option is `['golint']`. The available linters includes: `go`, `gometalinter`
   2. go_file_head: the default file head for golang source code.
 
 >
-  [layers]
+  [[layers]]
     name = "lang#go"
     go_file_head = [
       '#!/usr/bin/python3',
@@ -3124,7 +3144,7 @@ INTRO
 The lang#graphql layer provides syntax highlighting indent for graphql. To
 enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#graphql"
 <
 
@@ -3272,7 +3292,7 @@ LANG#HTML                                          *SpaceVim-layers-lang-html*
 This layer is for html development, disabled by default, to enable this layer,
 add following snippet to your SpaceVim configuration file.
 >
-  [layers]
+  [[layers]]
     name = "lang#html"
 <
 
@@ -3282,7 +3302,7 @@ OPTIONS
 `emmet_filetyps`: Set the filetypes for enabling emmet
 
 >
-  [layers]
+  [[layers]]
     name = "lang#html"
     emmet_leader_key = "<C-e>"
     emmet_filetyps = ['html']
@@ -3566,7 +3586,7 @@ LANG#JAVASCRIPT                              *SpaceVim-layers-lang-javascript*
 This layer is for JavaScript development, includes syntax lint, code
 completion etc. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#javascript"
 <
 The code linter is eslint, install eslint via:
@@ -3578,7 +3598,7 @@ LAYER OPTION
   1. auto_fix: If this option is true, --fix will be added to neomake eslint
 maker.
 >
-  [layers]
+  [[layers]]
     name = "lang#javascript"
     auto_fix = true
 <
@@ -3634,7 +3654,7 @@ LANG#JSON                                          *SpaceVim-layers-lang-json*
 
 This layer provides syntax highlighting for json file. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#json"
 <
 
@@ -3646,7 +3666,7 @@ OPTIONS
 
 
 >
-  [layers]
+  [[layers]]
     name = 'lang#json'
     conceal = false
     concealcursor = ''
@@ -3782,7 +3802,7 @@ LANG#LIQUID                                      *SpaceVim-layers-lang-liquid*
 
 This layer provides syntax highlighting for liquid. To enable this layer:
 >
-  [layers]
+  [[layers]]
     name = "lang#liquid"
 <
 
@@ -3859,7 +3879,7 @@ LAYER OPTIONS
   1. lua_file_head: the default file head for lua source code.
 
 >
-  [layers]
+  [[layers]]
     name = "lang#lua"
     ruby_file_head = [
       '--!/usr/bin/lua',
@@ -4365,7 +4385,7 @@ OPTIONS
   1. python_file_head: the default file head for python source code.
 
 >
-  [layers]
+  [[layers]]
     name = "lang#python"
     python_file_head = [
       '#!/usr/bin/python3',
@@ -4422,6 +4442,37 @@ used:
   SPC l w a       add workspace folder
   SPC l w r       remove workspace folder
 <
+
+==============================================================================
+LANG#R                                                *SpaceVim-layers-lang-r*
+
+This layer is for r development, disabled by default, to enable this layer,
+add following snippet to your SpaceVim configuration file.
+>
+  [[layers]]
+    name = 'lang#r'
+<
+
+KEY BINDINGS
+
+The command of code runner for R is `"R <%s"` `%s` will be replaced to the
+path of current R file.
+>
+  Key             Function
+  --------------------------------
+  SPC l r         run current file
+<
+
+This layer also provides REPL support for r, the key bindings are:
+>
+  Key             Function
+  ---------------------------------------------
+  SPC l s i       Start a inferior REPL process
+  SPC l s b       send whole buffer
+  SPC l s l       send current line
+  SPC l s s       send selection text
+<
+
 
 ==============================================================================
 LANG#RACKET                                      *SpaceVim-layers-lang-racket*
@@ -4492,37 +4543,6 @@ layer, add following snippet to your |SpaceVim-options| file.
 <
 
 ==============================================================================
-LANG#RING                                             *SpaceVim-layers-lang-r*
-
-This layer is for r development, disabled by default, to enable this layer,
-add following snippet to your SpaceVim configuration file.
->
-  [[layers]]
-    name = 'lang#r'
-<
-
-KEY BINDINGS
-
-The command of code runner for R is `"R <%s"` `%s` will be replaced to the
-path of current R file.
->
-  Key             Function
-  --------------------------------
-  SPC l r         run current file
-<
-
-This layer also provides REPL support for r, the key bindings are:
->
-  Key             Function
-  ---------------------------------------------
-  SPC l s i       Start a inferior REPL process
-  SPC l s b       send whole buffer
-  SPC l s l       send current line
-  SPC l s s       send selection text
-<
-
-
-==============================================================================
 LANG#RING                                          *SpaceVim-layers-lang-ring*
 
 This layer is for ring development, disabled by default, to enable this layer,
@@ -4537,7 +4557,7 @@ OPTIONS
   1. ring_repl: Set the path of ring repl.
 
 >
-  [layers]
+  [[layers]]
     name = "lang#ring"
     ring_repl = "/path/to/repl.ring"
 <
@@ -4577,7 +4597,7 @@ OPTIONS
   1. ruby_file_head: the default file head for ruby source code.
 
 >
-  [layers]
+  [[layers]]
     name = "lang#ruby"
     ruby_file_head = [
       '#!/usr/bin/ruby -w',
@@ -4977,12 +4997,12 @@ Here is an example how to use above options:
 <
 
 ==============================================================================
-LANG#SWIG                                         *SpaceVim-layers-lang-swift*
+LANG#SWIFT                                        *SpaceVim-layers-lang-swift*
 
 This layer is for swift development, including syntax highlighting and indent.
 To enable it:
 >
-  [layers]
+  [[layers]]
     name = "lang#swift"
 <
 MAPPINGS
@@ -5010,7 +5030,7 @@ LANG#SWIG                                          *SpaceVim-layers-lang-swig*
 This layer is for swig development, including syntax highlighting and indent.
 To enable it:
 >
-  [layers]
+  [[layers]]
     name = "lang#swig"
 <
 
@@ -5087,7 +5107,7 @@ LANG#TOML                                          *SpaceVim-layers-lang-toml*
 
 This layer provides basic syntax highlighting for toml. To enable it:
 >
-  [layers]
+  [[layers]]
     name = "lang#toml"
 <
 
@@ -5095,16 +5115,16 @@ This layer provides basic syntax highlighting for toml. To enable it:
 LANG#TYPESCRIPT                              *SpaceVim-layers-lang-typescript*
 
 This layer provides typescript development support for SpaceVim. To enable
-this layer, add following sinippet into SpaceVim configuration file.
+this layer, add following snippet into SpaceVim configuration file.
 >
-  [layers]
+  [[layers]]
       name = 'lang#typescript'
 <
 KEY BINDINGS
 
 The following key bindings works well in both vim and neovim.
 >
-  Ket binding          Description
+  Key binding          Description
   ----------------------------------------
   g D                  jump to type definition
   SPC l d              show document
@@ -5113,7 +5133,7 @@ The following key bindings works well in both vim and neovim.
 <
 The following key bindings only work in neovim.
 >
-  Ket binding          Description
+  Key binding          Description
   ----------------------------------------
   SPC l f              run code fix
   SPC l p              preview definition
@@ -5125,7 +5145,7 @@ The following key bindings only work in neovim.
 <
 The following key bindings only work in vim.
 >
-  Ket binding          Description
+  Key binding          Description
   ----------------------------------------
   SPC l m              interface implementations
 <
@@ -6104,7 +6124,7 @@ The following key bindings can be used to manager vim windows and tabs.
 ==============================================================================
 PLUGINS                                                     *SpaceVim-plugins*
 
-This is a list of buildin plugins.
+This is a list of builtin plugins.
 
 ==============================================================================
 AUTOSAVE                                           *SpaceVim-plugins-autosave*
@@ -6751,9 +6771,13 @@ it may cause errors.
 ==============================================================================
 CHANGELOG                                                 *SpaceVim-changelog*
 
-Following HEAD: changes in master branch since last release v1.9.0
+Following HEAD: changes in master branch since last release v2.0.0
 
 https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD
+
+2022-07-02: v2.0.0
+
+https://spacevim.org/SpaceVim-release-v2.0.0/
 
 2021-06-16: v1.9.0
 

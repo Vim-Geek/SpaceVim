@@ -1603,9 +1603,25 @@ function! s:parser_argv() abort
     " if use embed nvim
     " for exmaple: neovim-qt
     " or only run vim/neovim without argvs
-    if index(v:argv, '--embed') !=# -1
-          \ || len(v:argv) == 1
+    if len(v:argv) == 1
       return [0]
+    elseif index(v:argv, '--embed') !=# -1 
+      if  v:argv[-1] =~# '/$'
+        let f = fnamemodify(expand(v:argv[-1]), ':p')
+        if isdirectory(f)
+          return [1, f]
+        else
+          return [1, getcwd()]
+        endif
+      elseif v:argv[-1] ==# '.'
+        return [1, getcwd()]
+      elseif isdirectory(expand(v:argv[-1]))
+        return [1, fnamemodify(expand(v:argv[-1]), ':p')]
+      elseif filereadable(v:argv[-1])
+        return [2, get(v:, 'argv', ['failed to get v:argv'])]
+      else
+        return [0]
+      endif
     elseif index(v:argv, '-d') !=# -1
       " this is  diff mode
       return [2]
@@ -1619,7 +1635,7 @@ function! s:parser_argv() abort
     elseif v:argv[-1] ==# '.'
       return [1, getcwd()]
     elseif isdirectory(expand(v:argv[-1]))
-      return [1, fnamemodify(expand(v:argv[1]), ':p')]
+      return [1, fnamemodify(expand(v:argv[-1]), ':p')]
     else
       return [2, get(v:, 'argv', ['failed to get v:argv'])]
     endif
@@ -1741,7 +1757,9 @@ function! SpaceVim#welcome() abort
   endif
   if exists(':Startify') == 2
     Startify
-    if isdirectory(bufname(1))
+    if isdirectory(bufname(1)) && bufnr() !=# 1
+      " startify will not change the buffer name
+      " if you run `nvim test/`, the buffer name is `test/`.
       bwipeout! 1
     endif
   endif
@@ -2063,9 +2081,13 @@ endfunction
 
 ""
 " @section Changelog, changelog
-" Following HEAD: changes in master branch since last release v1.9.0
+" Following HEAD: changes in master branch since last release v2.0.0
 "
 " https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD
+"
+" 2022-07-02: v2.0.0
+"
+" https://spacevim.org/SpaceVim-release-v2.0.0/
 "
 " 2021-06-16: v1.9.0
 "
