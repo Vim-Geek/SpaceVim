@@ -91,7 +91,7 @@ System="$(uname -s)"
 
 XDGSpaceDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}SpaceVim"
 XDGvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}vim"
-XDGnvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}nvim"
+XDGnvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}config/nvim"
 
 # need_cmd {{{
 need_cmd () {
@@ -364,8 +364,8 @@ install_fonts () {
         fi
         cp $HOME/.local/share/fonts/* $HOME/Library/Fonts/
     else
-        need_cmd 'mkfontdir'
-        need_cmd 'mkfontscale'
+        # need_cmd 'mkfontdir'
+        # need_cmd 'mkfontscale'
         fc-cache -fv > /dev/null
         mkfontdir "$HOME/.local/share/fonts" > /dev/null
         mkfontscale "$HOME/.local/share/fonts" > /dev/null
