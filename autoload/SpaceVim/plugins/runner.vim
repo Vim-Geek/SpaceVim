@@ -1,6 +1,6 @@
 "=============================================================================
 " runner.vim --- code runner for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -18,6 +18,22 @@
 "   SPC s r         start default code runner
 "   q               close coder runner window
 "   i               insert text to background process
+" <
+"
+" @subsection defined a runner
+"
+" 1. The runner can be a string. which will be running directly.
+"
+" 2. The runner also can be a list with two items. each item has following
+" structure.
+"
+" >
+"   {
+"     "exe" : String,
+"     "opt" : a List of arguments,
+"     "targetopt" : String, the target option,
+"     "usestdin" : Bollean,
+"   }
 " <
 
 let s:runners = {}

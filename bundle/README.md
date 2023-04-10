@@ -5,8 +5,10 @@ In `bundle/` directory, there are two kinds of plugins: forked plugins without c
 <!-- vim-markdown-toc GFM -->
 
 - [Changed plugin:](#changed-plugin)
+  - [`edit` layer](#edit-layer)
 - [No changed plugins](#no-changed-plugins)
   - [`core` layer](#core-layer)
+- [`lsp` layer](#lsp-layer)
   - [`lang#ruby` layer](#langruby-layer)
   - [`lang#python` layer](#langpython-layer)
   - [`lang#liquid` layer](#langliquid-layer)
@@ -14,12 +16,13 @@ In `bundle/` directory, there are two kinds of plugins: forked plugins without c
   - [`tmux` layer](#tmux-layer)
   - [`incsearch` layer](#incsearch-layer)
   - [`lang#java` layer](#langjava-layer)
+  - [`lang#plantuml` layer](#langplantuml-layer)
 
 <!-- vim-markdown-toc -->
 
 ### Changed plugin:
 
-This plugins are changed based on a specific version of origin plugin.
+These plugins are changed based on a specific version of origin plugin.
 
 - `vim-bookmarks`: based on [`MattesGroeger/vim-bookmarks@3adeae1`](https://github.com/MattesGroeger/vim-bookmarks/commit/3adeae10639edcba29ea80dafa1c58cf545cb80e)
 - `delimitMate`: based on [`Raimondi/delimitMate@537a1da`](https://github.com/Raimondi/delimitMate/tree/537a1da0fa5eeb88640425c37e545af933c56e1b)
@@ -32,13 +35,18 @@ This plugins are changed based on a specific version of origin plugin.
 - `rainbow`: based on [`luochen1990/rainbow@c18071e5`](https://github.com/luochen1990/rainbow/tree/c18071e5c7790928b763c2e88c487dfc93d84a15)
 - `jedi-vim`: based on [`jedi-vim@e82d07`](https://github.com/davidhalter/jedi-vim/tree/e82d07faa17c3b3fe04b4fa6ab074e8e8601a596)
 - `vim-unstack`: based on [`vim-unstack@9b191419`](https://github.com/mattboehm/vim-unstack/tree/9b191419b4d3f26225a5ae3df5e409c62b426941)
+- `tagbar`: based on [`tagbar@af3ce7c`](https://github.com/preservim/tagbar/tree/af3ce7c3cec81f2852bdb0a0651d2485fcd01214)
+
+#### `edit` layer
+
+- `vim-grammarous`: based on [`rhysd/vim-grammarous@db46357`](https://github.com/rhysd/vim-grammarous/tree/db46357465ce587d5325e816235b5e92415f8c05)
+
 
 ### No changed plugins
 
 - [defx.nvim](https://github.com/Shougo/defx.nvim/tree/df5e6ea6734dc002919ea41786668069fa0b497d)
 - [dein.vim](https://github.com/Shougo/dein.vim/tree/452b4a8b70be924d581c2724e5e218bfd2bcea14)
 - [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim/tree/045d9582094b27f5ae04d8b635c6da8e97e53f1d)
-- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/tree/dcb7ebb36f0d2aafcc640f520bb1fc8a9cc1f7c8)
 - [deoplete-lsp](https://github.com/deoplete-plugins/deoplete-lsp/tree/c466c955e85d995984a8135e16da71463712e5e5)
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp/tree/3192a0c57837c1ec5bf298e4f3ec984c7d2d60c0)
 - [cmp-neosnippet](https://github.com/notomo/cmp-neosnippet/tree/2d14526af3f02dcea738b4cea520e6ce55c09979)
@@ -57,6 +65,15 @@ This plugins are changed based on a specific version of origin plugin.
 
 - [nerdtree@fc85a6f07](https://github.com/preservim/nerdtree/tree/fc85a6f07c2cd694be93496ffad75be126240068)
 
+
+### `lsp` layer
+
+- [nvim-lspconfig-0.1.4](https://github.com/neovim/nvim-lspconfig/tree/dcb7ebb36f0d2aafcc640f520bb1fc8a9cc1f7c8) for neovim(`>=0.8.0`)
+- [nvim-lspconfig-0.1.3](https://github.com/neovim/nvim-lspconfig/tree/dcb7ebb36f0d2aafcc640f520bb1fc8a9cc1f7c8) for neovim(`>=0.7.0`)
+- [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig/tree/dcb7ebb36f0d2aafcc640f520bb1fc8a9cc1f7c8) for old neovim
+
+
+
 #### `lang#ruby` layer
 
 - [vim-ruby@55335f261](https://github.com/vim-ruby/vim-ruby/tree/55335f2614f914b117f02995340886f409eddc02)
@@ -66,6 +83,7 @@ This plugins are changed based on a specific version of origin plugin.
 - [jeetsukumaran/vim-pythonsense@9200a57](https://github.com/jeetsukumaran/vim-pythonsense/tree/9200a57629c904ed2ab8c9b2e8c5649d311794ba)
 - [alfredodeza/coveragepy.vim@afcef30](https://github.com/alfredodeza/coveragepy.vim/tree/afcef301b723048c25250d2d539b9473a8e4f747)
 - [Vimjas/vim-python-pep8-indent@60ba5e](https://github.com/Vimjas/vim-python-pep8-indent/tree/60ba5e11a61618c0344e2db190210145083c91f8)
+- [mgedmin/python-imports.vim@b33323a](https://github.com/mgedmin/python-imports.vim/tree/b33323aa8c21cf93b115ccbf85e6958b351b410d)
 
 #### `lang#liquid` layer
 
@@ -91,3 +109,9 @@ This plugins are changed based on a specific version of origin plugin.
 #### `lang#java` layer
 
 - `vim-javacomplete2` based on `https://github.com/artur-shaik/vim-javacomplete2/tree/a716e32bbe36daaed6ebc9aae76525aad9536245`
+
+#### `lang#plantuml` layer
+
+- [`scrooloose/vim-slumlord@5c34739`](https://github.com/scrooloose/vim-slumlord/tree/5c34739a6ca71ef3617ed71491b3387bb2fb5620)
+- [`aklt/plantuml-syntax@845abb5`](https://github.com/aklt/plantuml-syntax/tree/845abb56dcd3f12afa6eb47684ef5ba3055802b8)
+- [`weirongxu/plantuml-previewer.vim@1dd4d0f`](https://github.com/weirongxu/plantuml-previewer.vim/tree/1dd4d0f2b09cd80a217f76d82f93830dbbe689b3)

@@ -1,6 +1,6 @@
 "=============================================================================
 " tab.vim --- tab key binding
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -26,6 +26,8 @@ if g:spacevim_snippet_engine ==# 'neosnippet'
           \   && luaeval("require('cmp').visible()")
           \ )
       return "\<C-n>"
+    elseif g:spacevim_autocomplete_method ==# 'coc' && coc#pum#visible()
+      return coc#pum#next(1)
     elseif has('patch-7.4.774')
           \ && g:spacevim_autocomplete_method !=# 'nvim-cmp'
           \ && complete_parameter#jumpable(1)

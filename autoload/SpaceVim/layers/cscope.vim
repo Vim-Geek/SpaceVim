@@ -1,6 +1,6 @@
 "=============================================================================
 " cscope.vim --- SpaceVim cscope layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -69,6 +69,13 @@ endif
 let s:cscope_command = 'cscope'
 let s:auto_update = 1
 let s:list_files_command = ['rg', '--color=never', '--files']
+
+function! SpaceVim#layers#cscope#loadable() abort
+  
+  return (!has('nvim') && has('cscope'))
+        \ || (has('nvim') && exists(':cscope') == 2)
+
+endfunction
 
 function! SpaceVim#layers#cscope#plugins() abort
   let plugins = [

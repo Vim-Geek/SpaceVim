@@ -1,6 +1,6 @@
 "=============================================================================
 " edit.vim --- SpaceVim edit layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -102,6 +102,7 @@ function! SpaceVim#layers#edit#plugins() abort
         \ [g:_spacevim_root_dir . 'bundle/vim-surround'],
         \ [g:_spacevim_root_dir . 'bundle/vim-repeat'],
         \ [g:_spacevim_root_dir . 'bundle/vim-emoji'],
+        \ [g:_spacevim_root_dir . 'bundle/vim-grammarous', {'merged' : 0}],
         \ [g:_spacevim_root_dir . 'bundle/vim-expand-region', { 'loadconf' : 1}],
         \ [g:_spacevim_root_dir . 'bundle/vim-textobj-user'],
         \ [g:_spacevim_root_dir . 'bundle/vim-textobj-indent'],
@@ -297,6 +298,20 @@ function! SpaceVim#layers#edit#config() abort
         \ 'uniquify-lines (ignorecase)', 0, 1)
   call SpaceVim#mapping#space#def('nmap', ['x', 'l', 'U'], '<Plug>UniquifyCaseSenstiveLines',
         \ 'uniquify-lines (case-senstive)', 0, 1)
+
+  let g:_spacevim_mappings_space.x.g = {'name' : '+Grammarous'}
+  " | `<Plug>(grammarous-move-to-info-window)`    | Move the cursor to the info window                   |
+  " | `<Plug>(grammarous-open-info-window)`       | Open the info window for the error under the cursor  |
+  " | `<Plug>(grammarous-reset)`                  | Reset the current check                              |
+  " | `<Plug>(grammarous-fixit)`                  | Fix the error under the cursor automatically         |
+  " | `<Plug>(grammarous-fixall)`                 | Fix all the errors in a current buffer automatically |
+  " | `<Plug>(grammarous-close-info-window)`      | Close the information window from checked buffer     |
+  " | `<Plug>(grammarous-remove-error)`           | Remove the error under the cursor                    |
+  " | `<Plug>(grammarous-disable-rule)`           | Disable the grammar rule under the cursor            |
+  " | `<Plug>(grammarous-move-to-next-error)`     | Move cursor to the next error                        |
+  " | `<Plug>(grammarous-move-to-previous-error)` | Move cursor to the previous error                    |
+  call SpaceVim#mapping#space#def('nmap', ['x', 'g', 'n'], '<Plug>(grammarous-move-to-next-error)', 'move-cursor-to-next-error', 0, 1)
+  call SpaceVim#mapping#space#def('nmap', ['x', 'g', 'p'], '<Plug>(grammarous-move-to-previous-error)', 'move-cursor-to-previous-error', 0, 1)
 
   let g:_spacevim_mappings_space.i = {'name' : '+Insertion'}
   let g:_spacevim_mappings_space.i.l = {'name' : '+Lorem-ipsum'}

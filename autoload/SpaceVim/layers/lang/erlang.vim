@@ -1,6 +1,6 @@
 "=============================================================================
 " erlang.vim --- erlang support for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -33,6 +33,7 @@
 "   SPC l s s       send selection text
 " <
 "
+
 let s:is_erlang = SpaceVim#layers#lsp#check_filetype('erlang')
       \ || SpaceVim#layers#lsp#check_server('erlang_ls')
 

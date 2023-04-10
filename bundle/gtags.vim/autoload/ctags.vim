@@ -1,6 +1,6 @@
 "=============================================================================
 " ctags.vim --- ctags generator
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -71,10 +71,12 @@ function! ctags#update(...) abort
   if !isdirectory(dir)
     if !mkdir(dir, 'p')
       call s:LOGGER.warn('failed to create data databases dir:' . dir)
+      " if failed to create databases, then do not run ctags command.
+      return
     endif
   endif
   if isdirectory(dir)
-    let cmd += ['-R', '-o', dir . '/tags', project_root]
+    let cmd += ['-R', '--extra=+f', '-o', dir . '/tags', project_root]
     call s:LOGGER.debug('ctags command:' . string(cmd))
     let jobid = s:JOB.start(cmd, {
           \ 'on_stdout' : function('s:on_update_stdout'),

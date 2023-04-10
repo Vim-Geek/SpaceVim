@@ -1,6 +1,6 @@
 "=============================================================================
 " SpaceVim.vim --- Initialization and core files for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -51,7 +51,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 ""
 " Version of SpaceVim , this value can not be changed.
-let g:spacevim_version = '2.1.0-dev'
+let g:spacevim_version = '2.2.0-dev'
 lockvar g:spacevim_version
 
 ""
@@ -76,6 +76,15 @@ let g:spacevim_default_indent          = 2
 ""
 " In Insert mode: Use the appropriate number of spaces to insert a <Tab>
 let g:spacevim_expand_tab              = 1
+
+""
+" @section enable_list_mode, options-enable_list_mode
+" @parentsection options
+" Enable/Disable list mode, by default it is disabled.
+
+""
+" Enable/Disable list mode, by default it is disabled.
+let g:spacevim_enable_list_mode        = 0
 
 ""
 " @section relativenumber, options-relativenumber
@@ -1329,6 +1338,14 @@ let g:spacevim_smartcloseignoreft      = [
       \ ]
 let g:_spacevim_altmoveignoreft         = ['Tagbar' , 'vimfiler']
 let g:spacevim_enable_javacomplete2_py = 0
+""
+" @section src_root, options-src_root
+" @parentsection options
+" set default sources root of all your projects. default is `E:\sources\`.
+" >
+"   src_root = 'E:\sources\'
+" <
+
 let g:spacevim_src_root                = 'E:\sources\'
 ""
 " The host file url. This option is for Chinese users who can not use
@@ -1497,6 +1514,7 @@ function! SpaceVim#end() abort
   set smarttab
   let &expandtab = g:spacevim_expand_tab
   let &wrap = g:spacevim_wrap_line
+  let &list = g:spacevim_enable_list_mode
 
   if g:spacevim_default_indent > 0
     let &tabstop = g:spacevim_default_indent
@@ -1624,7 +1642,7 @@ function! s:parser_argv() abort
       endif
     elseif index(v:argv, '-d') !=# -1
       " this is  diff mode
-      return [2]
+      return [2, 'diff mode, use default arguments:' . string(v:argv)]
     elseif v:argv[-1] =~# '/$'
       let f = fnamemodify(expand(v:argv[-1]), ':p')
       if isdirectory(f)
