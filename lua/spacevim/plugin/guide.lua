@@ -267,6 +267,9 @@ local function start_parser(key, dict)
     if mapd.lhs == '<Plug>.*' or mapd.lhs == '<SNR>.*' then
       goto continue
     end
+    if mapd.rhs == nil then
+      goto continue
+    end
     mapd.display = format_displaystring(mapd.rhs)
     mapd.lhs = cmp.fn.substitute(mapd.lhs, key, '', '')
     mapd.lhs = cmp.fn.substitute(mapd.lhs, '<Space>', ' ', 'g')
