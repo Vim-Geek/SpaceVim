@@ -42,7 +42,7 @@ function! s:load_plugins() abort
       endif
     endfor
   endfor
-  if has('timers')
+  if has('timers') && g:spacevim_lazy_conf_timeout > 0
     call timer_start(g:spacevim_lazy_conf_timeout, function('s:layer_config_timer'), {'repeat' : 1})
   else
     call s:layer_config_timer(0)
