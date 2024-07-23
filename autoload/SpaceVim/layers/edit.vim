@@ -132,7 +132,7 @@ function! SpaceVim#layers#edit#plugins() abort
     call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-bepo',        { 'merged' : 0}])
   endif
   if s:CMP.has('python3') || s:CMP.has('python')
-    call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-mundo',        { 'on_cmd' : 'MundoToggle'}])
+    " call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-mundo',        { 'on_cmd' : 'MundoToggle'}])
   else
     call add(plugins,[g:_spacevim_root_dir . 'bundle/undotree',        { 'on_cmd' : 'UndotreeToggle'}])
   endif
