@@ -133,7 +133,9 @@ local function format_displaystring(map)
   end
 
   local display = vim.g['leaderGuide#displayname']
-  vim.cmd('unlet g:leaderGuide#displayname')
+  if vim.g['leaderGuide#displayname'] then
+    vim.cmd('unlet g:leaderGuide#displayname')
+  end
   return display
 end
 
@@ -274,7 +276,7 @@ local function start_parser(key, dict)
     mapd.lhs = cmp.fn.substitute(mapd.lhs, key, '', '')
     mapd.lhs = cmp.fn.substitute(mapd.lhs, '<Space>', ' ', 'g')
     mapd.lhs = cmp.fn.substitute(mapd.lhs, '<Tab>', '<C-I>', 'g')
-    mapd.rhs = cmp.fn.substitute(mapd.rhs, '<SID>', '<SNR>' .. mapd['sid'] .. '_', 'g')
+    mapd.rhs = cmp.fn.substitute(mapd.rhs, '<SID>', '<SNR>' .. (mapd['sid'] or '') .. '_', 'g')
     if mapd.lhs ~= '' and mapd.display ~= 'LeaderGuide.*' then
       mapd.lhs = string_to_keys(mapd.lhs)
       if
@@ -759,9 +761,9 @@ wait_for_input = function()
       local name = M.getName(prefix_key)
       local _keys = vim.fn.join(keys, '-')
       if vim.fn.empty(_keys) == 1 then
-        warn_not_defined({ 'Key bindings is not defined: ', name .. '-' .. inp })
+        warn_not_defined({ 'Key binding not defined: ', name .. '-' .. inp })
       else
-        warn_not_defined({ 'key bindings is not defined: ', name .. '-' .. _keys .. '-' .. inp })
+        warn_not_defined({ 'Key binding not defined: ', name .. '-' .. _keys .. '-' .. inp })
       end
       prefix_key_inp = {}
       guide_help_mode = false
