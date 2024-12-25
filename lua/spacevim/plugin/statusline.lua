@@ -582,6 +582,12 @@ local special_statusline = {
   calender = function()
     return simple_name('Calendar')
   end,
+  zkbrowser = function()
+    return simple_name('Zettelkasten Browser')
+  end,
+  zktagstree = function()
+    return simple_name('ZkTags Tree')
+  end,
   ['vader-result'] = function()
     return simple_name('Vader result')
   end,

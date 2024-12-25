@@ -84,7 +84,7 @@ On_IWhite='\033[0;107m'   # White
 # }}}
 
 # version
-Version='2.4.0-dev'
+Version='2.5.0-dev'
 #System name
 System="$(uname -s)"
 
@@ -138,7 +138,7 @@ fetch_repo () {
     success "SpaceVim 更新已完成"
   else
     info "正在安装 SpaceVim..."
-    git clone --depth 1 https://spacevim.org/git/repos/SpaceVim/ "$HOME/.SpaceVim"
+    git clone --depth 1 https://github.com/SpaceVim/SpaceVim.git "$HOME/.SpaceVim"
     success "SpaceVim 安装已完成"
   fi
 }

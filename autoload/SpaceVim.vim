@@ -184,7 +184,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 ""
 " Version of SpaceVim , this value can not be changed.
-let g:spacevim_version = '2.4.0-dev'
+let g:spacevim_version = '2.5.0-dev'
 
 ""
 " @section default_indent, options-default_indent
@@ -1768,6 +1768,7 @@ let g:_spacevim_mappings_space.l = {'name' : '+Language Specified'}
 let g:_spacevim_mappings_space.s = {'name' : '+Searching/Symbol'}
 let g:_spacevim_mappings_space.r = {'name' : '+Registers/rings/resume'}
 let g:_spacevim_mappings_space.d = {'name' : '+Debug'}
+let g:_spacevim_mappings_space.F = {'name' : '+Tabs'}
 let g:_spacevim_mappings_space.e = {'name' : '+Errors/Encoding'}
 let g:_spacevim_mappings_space.B = {'name' : '+Global buffers'}
 let g:_spacevim_mappings_space.f.v = {'name' : '+Vim/SpaceVim'}
@@ -2872,10 +2873,6 @@ endfunction
 " send email to spacevim@googlegroups.com
 " 
 " To subscribe the maillist, send anything to：spacevim+subscribe@googlegroups.com
-" 
-" @subsection Forum
-"
-" - Reddit: https://www.reddit.com/r/SpaceVim/
 
 ""
 " @section Roadmap, roadmap

@@ -117,6 +117,64 @@ main () {
             _detact syntax/SpaceVimPlugManager.vim
             _detact LICENSE
             ;;
+        format.nvim)
+            git clone https://github.com/wsdjeg/format.nvim.git detach/$1
+            cd detach/$1
+            _detact LICENSE
+            _checkdir plugin
+            _detact_bundle format.nvim plugin/format.lua
+            _detact_bundle format.nvim README.md
+            _checkdir lua/format/ft
+            _detact_bundle format.nvim lua/format.lua
+            _detact_bundle format.nvim lua/format/util.lua
+            _detact_bundle format.nvim lua/format/task.lua
+            _detact_bundle format.nvim lua/format/config.lua
+            _detact_bundle format.nvim lua/format/ft/c.lua
+            _detact_bundle format.nvim lua/format/ft/json.lua
+            _detact_bundle format.nvim lua/format/ft/markdown.lua
+            _detact_bundle format.nvim lua/format/ft/rust.lua
+            # detact spacevim core files
+            _checkdir lua/spacevim/api
+            _detact lua/spacevim.lua
+            _detact lua/spacevim/logger.lua
+            _detact lua/spacevim/api.lua
+            _detact lua/spacevim/api/logger.lua
+            _detact lua/spacevim/api/job.lua
+            _detact lua/spacevim/api/notify.lua
+            _detact lua/spacevim/api/password.lua
+            _checkdir autoload/SpaceVim/api/neovim
+            _checkdir autoload/SpaceVim/api/vim
+            _checkdir autoload/SpaceVim/api/data
+            _detact autoload/SpaceVim/api.vim
+            _detact autoload/SpaceVim/api/notify.vim
+            _detact autoload/SpaceVim/api/neovim/floating.vim
+            _detact autoload/SpaceVim/api/vim/floating.vim
+            _detact autoload/SpaceVim/api/data/dict.vim
+            ;;
+        record-key.nvim)
+            git clone https://github.com/wsdjeg/record-key.nvim.git detach/$1
+            cd detach/$1
+            _checkdir plugin
+            _detact_bundle record-key.nvim plugin/record-key.lua
+            _detact_bundle record-key.nvim README.md
+            _checkdir lua/spacevim/plugin
+            _detact lua/spacevim/plugin/record-key.lua
+            _checkdir lua/spacevim/api
+            _detact lua/spacevim.lua
+            _detact lua/spacevim/logger.lua
+            _detact lua/spacevim/api.lua
+            _detact lua/spacevim/api/logger.lua
+            _detact lua/spacevim/api/notify.lua
+            _detact lua/spacevim/api/password.lua
+            _checkdir autoload/SpaceVim/api/neovim
+            _checkdir autoload/SpaceVim/api/vim
+            _checkdir autoload/SpaceVim/api/data
+            _detact autoload/SpaceVim/api.vim
+            _detact autoload/SpaceVim/api/notify.vim
+            _detact autoload/SpaceVim/api/neovim/floating.vim
+            _detact autoload/SpaceVim/api/vim/floating.vim
+            _detact autoload/SpaceVim/api/data/dict.vim
+            ;;
         cpicker.nvim)
             git clone https://github.com/wsdjeg/cpicker.nvim.git detach/$1
             cd detach/$1
@@ -339,34 +397,34 @@ EOT
             _detact_bundle git.vim lua/git/init.lua
             _detact_bundle git.vim lua/git/log.lua
             _detact_bundle git.vim lua/git/command/add.lua
-            _detach_bundle git.vim lua/git/command/add.lua
-            _detach_bundle git.vim lua/git/command/blame.lua
-            _detach_bundle git.vim lua/git/command/branch.lua
-            _detach_bundle git.vim lua/git/command/checkout.lua
-            _detach_bundle git.vim lua/git/command/cherry-pick.lua
-            _detach_bundle git.vim lua/git/command/clean.lua
-            _detach_bundle git.vim lua/git/command/commit.lua
-            _detach_bundle git.vim lua/git/command/config.lua
-            _detach_bundle git.vim lua/git/command/diff.lua
-            _detach_bundle git.vim lua/git/command/fetch.lua
-            _detach_bundle git.vim lua/git/command/grep.lua
-            _detach_bundle git.vim lua/git/command/log.lua
-            _detach_bundle git.vim lua/git/command/merge.lua
-            _detach_bundle git.vim lua/git/command/mv.lua
-            _detach_bundle git.vim lua/git/command/pull.lua
-            _detach_bundle git.vim lua/git/command/push.lua
-            _detach_bundle git.vim lua/git/command/rebase.lua
-            _detach_bundle git.vim lua/git/command/reflog.lua
-            _detach_bundle git.vim lua/git/command/remote.lua
-            _detach_bundle git.vim lua/git/command/reset.lua
-            _detach_bundle git.vim lua/git/command/rm.lua
-            _detach_bundle git.vim lua/git/command/shortlog.lua
-            _detach_bundle git.vim lua/git/command/stash.lua
-            _detach_bundle git.vim lua/git/command/status.lua
-            _detach_bundle git.vim lua/git/command/tag.lua
-            _detach_bundle git.vim lua/git/command/update-index.lua
-            _detach_bundle git.vim lua/git/ui/branch.lua
-            _detach_bundle git.vim lua/git/ui/remote.lua
+            _detact_bundle git.vim lua/git/command/add.lua
+            _detact_bundle git.vim lua/git/command/blame.lua
+            _detact_bundle git.vim lua/git/command/branch.lua
+            _detact_bundle git.vim lua/git/command/checkout.lua
+            _detact_bundle git.vim lua/git/command/cherry-pick.lua
+            _detact_bundle git.vim lua/git/command/clean.lua
+            _detact_bundle git.vim lua/git/command/commit.lua
+            _detact_bundle git.vim lua/git/command/config.lua
+            _detact_bundle git.vim lua/git/command/diff.lua
+            _detact_bundle git.vim lua/git/command/fetch.lua
+            _detact_bundle git.vim lua/git/command/grep.lua
+            _detact_bundle git.vim lua/git/command/log.lua
+            _detact_bundle git.vim lua/git/command/merge.lua
+            _detact_bundle git.vim lua/git/command/mv.lua
+            _detact_bundle git.vim lua/git/command/pull.lua
+            _detact_bundle git.vim lua/git/command/push.lua
+            _detact_bundle git.vim lua/git/command/rebase.lua
+            _detact_bundle git.vim lua/git/command/reflog.lua
+            _detact_bundle git.vim lua/git/command/remote.lua
+            _detact_bundle git.vim lua/git/command/reset.lua
+            _detact_bundle git.vim lua/git/command/rm.lua
+            _detact_bundle git.vim lua/git/command/shortlog.lua
+            _detact_bundle git.vim lua/git/command/stash.lua
+            _detact_bundle git.vim lua/git/command/status.lua
+            _detact_bundle git.vim lua/git/command/tag.lua
+            _detact_bundle git.vim lua/git/command/update-index.lua
+            _detact_bundle git.vim lua/git/ui/branch.lua
+            _detact_bundle git.vim lua/git/ui/remote.lua
             ;;
         vim-cheat)
             git clone https://github.com/wsdjeg/vim-cheat.git detach/$1
@@ -381,6 +439,56 @@ EOT
             _detact_bundle vim-cheat .vintrc.yaml
             _checkdir doc/
             _detact_bundle vim-cheat doc/vim-cheat.txt
+            ;;
+        vim-zettelkasten)
+            git clone https://github.com/wsdjeg/vim-zettelkasten.git detach/$1
+            cd detach/$1
+            _detact LICENSE
+            _checkdir plugin/
+            _detact_bundle vim-zettelkasten plugin/zettelkasten.lua
+            _detact_bundle vim-zettelkasten README.md
+            _checkdir doc/
+            _detact_bundle vim-zettelkasten doc/vim-zettelkasten.txt
+            _checkdir ftdetect
+            _detact_bundle vim-zettelkasten ftdetect/zettelkasten.lua
+            _checkdir syntax
+            _detact_bundle vim-zettelkasten syntax/zkbrowser.vim
+            _detact_bundle vim-zettelkasten syntax/zktagstree.vim
+            _checkdir ftplugin
+            _detact_bundle vim-zettelkasten ftplugin/markdown.lua
+            _detact_bundle vim-zettelkasten ftplugin/zkbrowser.lua
+            _detact_bundle vim-zettelkasten ftplugin/zktagstree.lua
+            _checkdir lua/zettelkasten
+            _detact_bundle vim-zettelkasten lua/zettelkasten.lua
+            _detact_bundle vim-zettelkasten lua/zettelkasten/browser.lua
+            _detact_bundle vim-zettelkasten lua/zettelkasten/config.lua
+            _detact_bundle vim-zettelkasten lua/zettelkasten/formatter.lua
+            _detact_bundle vim-zettelkasten lua/zettelkasten/log.lua
+            _detact_bundle vim-zettelkasten lua/zettelkasten/sidebar.lua
+            _checkdir test/
+            _detact_bundle vim-zettelkasten test/init.vim
+            _checkdir lua/telescope/_extensions
+            _detact_bundle vim-zettelkasten lua/telescope/_extensions/zettelkasten_tags.lua
+            _detact_bundle vim-zettelkasten lua/telescope/_extensions/zettelkasten_template.lua
+            _detact_bundle vim-zettelkasten lua/telescope/_extensions/zettelkasten.lua
+            # detach spacevim core files
+            _checkdir lua/spacevim/api/vim
+            _detact lua/spacevim.lua
+            _detact lua/spacevim/logger.lua
+            _detact lua/spacevim/api.lua
+            _detact lua/spacevim/api/logger.lua
+            _detact lua/spacevim/api/notify.lua
+            _detact lua/spacevim/api/password.lua
+            _detact lua/spacevim/api/vim/highlight.lua
+            _checkdir autoload/SpaceVim/api
+            _checkdir autoload/SpaceVim/api/neovim
+            _checkdir autoload/SpaceVim/api/vim
+            _checkdir autoload/SpaceVim/api/data
+            _detact autoload/SpaceVim/api.vim
+            _detact autoload/SpaceVim/api/notify.vim
+            _detact autoload/SpaceVim/api/neovim/floating.vim
+            _detact autoload/SpaceVim/api/vim/floating.vim
+            _detact autoload/SpaceVim/api/data/dict.vim
             ;;
         xmake.vim)
             git clone https://github.com/wsdjeg/xmake.vim.git detach/$1
@@ -473,7 +581,7 @@ EOT
             ;;
     esac
     git add .
-    git config user.email "eric@wsdjeg.net"
+    git config user.email "wsdjeg@outlook.com"
     git config user.name  "Eric Wong"
     git commit -m "${SpaceVim_COMMIT_MSG}"
     git remote add wsdjeg_$1 https://SpaceVimBot:${BOTSECRET}@github.com/wsdjeg/$1.git

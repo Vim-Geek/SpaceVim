@@ -3,7 +3,7 @@
 Push-Location ~
 
 $app_name = "SpaceVim"
-$repo_url = "https://spacevim.org/git/repos/SpaceVim/"
+$repo_url = "https://github.com/SpaceVim/SpaceVim.git"
 $repo_name = "SpaceVim"
 $repo_path = "$HOME\.SpaceVim"
 
@@ -19,7 +19,7 @@ echo "       \______/| ##____/ \_______/\_______/\_______/   \_/   |__|__/ |__/ 
 echo "               | ##                                                           "
 echo "               | ##                                                           "
 echo "               |__/                                                           "
-echo "                      version : v2.4.0-dev     by : spacevim.org              "
+echo "                      version : v2.5.0-dev     by : spacevim.org              "
 
 Function Pause ($Message = "Press any key to continue . . . ") {
     if ((Test-Path variable:psISE) -and $psISE) {

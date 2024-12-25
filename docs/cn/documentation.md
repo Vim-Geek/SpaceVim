@@ -48,10 +48,12 @@ lang: zh
     - [增删注释](#增删注释)
     - [编辑历史](#编辑历史)
     - [文本编码格式](#文本编码格式)
-  - [窗口管理](#窗口管理)
+  - [窗口和标签页](#窗口和标签页)
+    - [窗口管理器](#窗口管理器)
     - [常用编辑器窗口](#常用编辑器窗口)
     - [窗口操作常用快捷键](#窗口操作常用快捷键)
-  - [缓冲区管理](#缓冲区管理)
+    - [标签页操作快捷键](#标签页操作快捷键)
+  - [缓冲区与文件](#缓冲区与文件)
     - [缓冲区操作](#缓冲区操作)
     - [新建空白 buffer](#新建空白-buffer)
     - [特殊 buffer](#特殊-buffer)
@@ -287,8 +289,8 @@ SpaceVim 默认安装了一些插件，如果需要禁用某个插件，可以�
 
 ### 启动函数
 
-由于 toml 配置的局限性，SpaceVim 提供了两种启动函数 `bootstrap_before` 和 `bootstrap_after`，在该函数内可以使用 Vim script。
-可通过 `~/.SpaceVim.d/init.toml` 的 `[options]` 片段中的这两个选项 `bootstrap_before` 和 `bootstrap_after` 来指定函数名称，例如：
+由于 toml 语法的局限性，SpaceVim 提供了两种启动函数选项 `bootstrap_before` 和 `bootstrap_after`，这两个选项分别指定两个 Vim 自定义函数。
+可以在 toml 配置文件 `~/.SpaceVim.d/init.toml` 的 `[options]` 字段中设置这两个选项 `bootstrap_before` 和 `bootstrap_after` 对应的函数名称，例如：
 
 ```toml
 [options]
@@ -296,10 +298,13 @@ SpaceVim 默认安装了一些插件，如果需要禁用某个插件，可以�
     bootstrap_after  = "myspacevim#after"
 ```
 
-这两种启动函数的区别在于，`bootstrap_before`函数是在载入用户配置时候执行的，
-而`bootstrap_after`函数是在触发`VimEnter`事件时执行的。
+这两种启动函数的区别在于，`bootstrap_before` 函数是在载入用户配置时候执行的，
+而 `bootstrap_after` 函数是在触发 `VimEnter` 事件时执行的。因此，可以在 `bootstrap_after`
+函数内对默认的快捷键进行修改。
 
-启动函数文件应放置在 Vim &runtimepath 的 autoload 文件夹内。例如：
+下面展示一个启动函数的示例，包含 `bootstrap_before` 和 `bootstrap_after` 两个函数：
+
+定义启动函数的 Vim 脚本文件应放置在 Vim &runtimepath 的 autoload 文件夹内。例如：
 
 文件名：`~/.SpaceVim.d/autoload/myspacevim.vim`
 
@@ -310,7 +315,10 @@ function! myspacevim#before() abort
 endfunction
 
 function! myspacevim#after() abort
-    iunmap jk
+    " 删除默认快捷键 <F3>, 该快捷键原先设定为打开文件树
+    unmap <F3>
+    " 设定新的快捷打开文件树, 在这里假定文件树插件选择的是 defx.nvim
+    nnoremap <silent> <F3> :Defx<Cr> 
 endfunction
 ```
 
@@ -1248,7 +1256,9 @@ set enc=utf-8
 write
 ```
 
-### 窗口管理
+### 窗口和标签页
+
+#### 窗口管理器
 
 常用的窗口管理快捷键有一个统一的前缀，默认的前缀 `[Window]` 是按键 `s`，可以在配置文件中通过修改
 SpaceVim 选项 `window_leader` 的值来设为其它按键：
@@ -1339,7 +1349,17 @@ SpaceVim 选项 `window_leader` 的值来设为其它按键：
 | `SPC w W`     | 选择一个窗口                                       |
 | `SPC w x`     | 切换窗口文件                                       |
 
-### 缓冲区管理
+#### 标签页操作快捷键
+
+标签页（Tab）操作相关快捷键都是以 `SPC F` 为前缀的：
+
+| 快捷键    | 功能描述           |
+| --------- | ------------------ |
+| `SPC F d` | 关闭当前标签页     |
+| `SPC F D` | 关闭其他所有标签页 |
+| `SPC F n` | 新建一个新的标签页 |
+
+### 缓冲区与文件
 
 #### 缓冲区操作
 
