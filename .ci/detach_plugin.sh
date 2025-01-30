@@ -567,6 +567,30 @@ EOT
             _detact lua/spacevim/api/vim/window.lua
             _detact autoload/SpaceVim/logger.vim
             ;;
+        quickfix.nvim)
+            git clone https://github.com/wsdjeg/quickfix.nvim.git detach/$1
+            cd detach/$1
+            _checkdir plugin
+            _checkdir lua
+            _detact_bundle quickfix.nvim lua/quickfix.lua
+            _detact_bundle quickfix.nvim plugin/quickfix.lua
+            _detact LICENSE
+            _detact_bundle quickfix.nvim README.md
+            ;;
+        winbar.nvim)
+            git clone https://github.com/wsdjeg/winbar.nvim.git detach/$1
+            cd detach/$1
+            _checkdir plugin
+            _checkdir lua/winbar
+            _detact_bundle winbar.nvim lua/winbar/init.lua
+            _detact_bundle winbar.nvim plugin/winbar.lua
+            _detact LICENSE
+            _detact_bundle winbar.nvim README.md
+            _checkdir autoload/SpaceVim/mapping/guide/theme
+            _detact autoload/SpaceVim/mapping/guide/theme/gruvbox.vim
+            _checkdir lua/spacevim/api/vim
+            _detact lua/spacevim/api/vim/highlight.lua
+            ;;
         GitHub.vim)
             git clone https://github.com/wsdjeg/GitHub.vim.git detach/$1
             cd detach/$1
