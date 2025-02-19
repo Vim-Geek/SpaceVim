@@ -71,6 +71,7 @@ main () {
             _detact lua/spacevim/api/logger.lua
             _detact lua/spacevim/api/prompt.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/job.lua
             _detact lua/spacevim/api/password.lua
             _detact lua/spacevim/api/vim.lua
@@ -97,6 +98,23 @@ main () {
             _checkdir test
             _detact_bundle FlyGrep test/vimrc
             ;;
+        flygrep.nvim)
+            git clone https://github.com/wsdjeg/$1.git detach/$1
+            cd detach/$1
+            _detact LICENSE
+            _checkdir plugin
+            _detact_bundle flygrep.nvim plugin/flygrep.lua
+            _detact_bundle flygrep.nvim README.md
+            _checkdir lua/flygrep
+            _detact_bundle flygrep.nvim lua/flygrep.lua
+            _detact_bundle flygrep.nvim lua/flygrep/config.lua
+            _detact_bundle flygrep.nvim lua/flygrep/highlight.lua
+            _detact LICENSE
+            _detact .stylua.toml
+            _checkdir lua/spacevim/api/vim
+            _detact lua/spacevim/api/job.lua
+            _detact lua/spacevim/api/vim/highlight.lua
+            ;;
         dein-ui.vim)
             git clone https://github.com/wsdjeg/dein-ui.vim.git detach/$1
             cd detach/$1
@@ -116,6 +134,30 @@ main () {
             _detact autoload/SpaceVim/api/vim/compatible.vim
             _detact syntax/SpaceVimPlugManager.vim
             _detact LICENSE
+            _detact_bundle dein-ui.vim README.md
+            _detact_bundle dein-ui.vim plugin/deinui.vim
+            ;;
+        nvim-plug)
+            git clone https://github.com/wsdjeg/nvim-plug.git detach/$1
+            cd detach/$1
+            _checkdir lua/spacevim/api
+            _detact lua/spacevim/api/job.lua
+            _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
+            _detact lua/spacevim/api/password.lua
+            _detact LICENSE
+            _detact_bundle $1 README.md
+            _checkdir plugin
+            _detact_bundle $1 plugin/plug.lua
+            _checkdir lua/plug
+            _detact_bundle $1 lua/plug/config.lua
+            _detact_bundle $1 lua/plug/hooks.lua
+            _detact_bundle $1 lua/plug/init.lua
+            _detact_bundle $1 lua/plug/installer.lua
+            _detact_bundle $1 lua/plug/loader.lua
+            _detact_bundle $1 lua/plug/ui.lua
+            _checkdir test
+            _detact_bundle $1 test/init.lua
             ;;
         format.nvim)
             git clone https://github.com/wsdjeg/format.nvim.git detach/$1
@@ -141,6 +183,7 @@ main () {
             _detact lua/spacevim/api/logger.lua
             _detact lua/spacevim/api/job.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/password.lua
             _checkdir autoload/SpaceVim/api/neovim
             _checkdir autoload/SpaceVim/api/vim
@@ -165,6 +208,7 @@ main () {
             _detact lua/spacevim/api.lua
             _detact lua/spacevim/api/logger.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/password.lua
             _checkdir autoload/SpaceVim/api/neovim
             _checkdir autoload/SpaceVim/api/vim
@@ -199,6 +243,7 @@ main () {
             _checkdir lua/spacevim/api
             _detact lua/spacevim/api/color.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/password.lua
             _checkdir autoload/SpaceVim/api/vim
             _checkdir autoload/SpaceVim/api/data
@@ -391,6 +436,7 @@ EOT
             _detact lua/spacevim/logger.lua
             _detact lua/spacevim.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/password.lua
             _checkdir lua/git/command
             _checkdir lua/git/ui
@@ -478,6 +524,7 @@ EOT
             _detact lua/spacevim/api.lua
             _detact lua/spacevim/api/logger.lua
             _detact lua/spacevim/api/notify.lua
+            _detact lua/easing.lua
             _detact lua/spacevim/api/password.lua
             _detact lua/spacevim/api/vim/highlight.lua
             _checkdir autoload/SpaceVim/api
