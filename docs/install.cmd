@@ -19,7 +19,7 @@ echo "       \______/| ##____/ \_______/\_______/\_______/   \_/   |__|__/ |__/ 
 echo "               | ##                                                           "
 echo "               | ##                                                           "
 echo "               |__/                                                           "
-echo "                      version : v2.2.0-dev     by : spacevim.org              "
+echo "                      version : v2.5.0-dev     by : spacevim.org              "
 
 Function Pause ($Message = "Press any key to continue . . . ") {
     if ((Test-Path variable:psISE) -and $psISE) {
@@ -78,7 +78,7 @@ sleep 1
 
 if (!(Test-Path $HOME\.SpaceVim)) {
     echo "==> Trying to clone $app_name"
-    git clone $repo_url $repo_path
+    git clone --depth 1  $repo_url $repo_path
     echo "<== $app_name cloned"
 } else {
     echo "==> Trying to update $app_name"

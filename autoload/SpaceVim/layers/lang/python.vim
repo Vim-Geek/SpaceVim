@@ -119,18 +119,18 @@ function! SpaceVim#layers#lang#python#plugins() abort
     call add(plugins, [g:_spacevim_root_dir . 'bundle/jedi-vim', { 'on_ft' : 'python',
           \ 'if' : has('python') || has('python3')}])
   endif
-  call add(plugins, ['heavenshell/vim-pydocstring',
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-pydocstring',
         \ { 'on_cmd' : 'Pydocstring'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-python-pep8-indent', 
         \ { 'on_ft' : 'python'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-pythonsense', 
         \ { 'on_ft' : 'python'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/coveragepy.vim', 
-        \ { 'merged' : 0}])
+        \ { 'merged' : 0, 'on_ft' : 'python'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/python-imports.vim', 
-        \ { 'merged' : 0}])
+        \ { 'merged' : 0, 'on_ft' : 'python'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-virtualenv', 
-        \ { 'merged' : 0}])
+        \ { 'merged' : 0, 'on_ft' : 'python'}])
   return plugins
 endfunction
 
@@ -282,6 +282,9 @@ endfunction
 
 function! s:Shebang_to_cmd(line) abort
   let executable = matchstr(a:line, '#!\s*\zs[^ ]*')
+  if empty(executable)
+    return []
+  endif
   let argvs = split(matchstr(a:line, '#!\s*[^ ]\+\s*\zs.*'))
   return [executable] + argvs
 endfunction
@@ -289,7 +292,14 @@ endfunction
 func! s:getexe() abort
   let line = getline(1)
   if line =~# '^#!'
-    return s:Shebang_to_cmd(line)
+    let cmd = s:Shebang_to_cmd(line)
+    if empty(cmd)
+      call SpaceVim#logger#debug('failed to parse shebang')
+    elseif !executable(cmd[0])
+      call SpaceVim#logger#debug('shebang is not executable')
+    else
+      return cmd
+    endif
   endif
   return [s:python_interpreter]
 endf
@@ -333,4 +343,9 @@ function! SpaceVim#layers#lang#python#health() abort
   call SpaceVim#layers#lang#python#plugins()
   call SpaceVim#layers#lang#python#config()
   return 1
+endfunction
+function! SpaceVim#layers#lang#python#loadable() abort
+
+  return 1
+
 endfunction

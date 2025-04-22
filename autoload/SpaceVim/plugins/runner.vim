@@ -36,6 +36,65 @@
 "   }
 " <
 
+
+if has('nvim-0.9.0')
+  function! SpaceVim#plugins#runner#get(ft) abort
+    return luaeval('require("spacevim.plugin.runner").get(require("spacevim").eval("a:ft"))') 
+  endfunction
+  function! SpaceVim#plugins#runner#open(...) abort
+    lua require("spacevim.plugin.runner").open(
+          \ unpack(require("spacevim").eval("a:000"))
+          \ )
+    
+  endfunction
+
+  function! SpaceVim#plugins#runner#reg_runner(ft, runner) abort
+    lua require("spacevim.plugin.runner").reg_runner(
+          \ require("spacevim").eval("a:ft"),
+          \ require("spacevim").eval("a:runner")
+          \ )
+    
+  endfunction
+
+  function! SpaceVim#plugins#runner#status() abort
+    return luaeval('require("spacevim.plugin.runner").status()')
+  endfunction
+
+  function! SpaceVim#plugins#runner#close() abort
+
+    lua require("spacevim.plugin.runner").close()
+
+  endfunction
+
+  function! SpaceVim#plugins#runner#select_file() abort
+    lua require("spacevim.plugin.runner").select_file()
+  endfunction
+
+  function! SpaceVim#plugins#runner#select_language() abort
+    lua require("spacevim.plugin.runner").select_language()
+  endfunction
+
+  function! SpaceVim#plugins#runner#set_language(lang) abort
+    
+  endfunction
+
+  function! SpaceVim#plugins#runner#run_task(task) abort
+    lua require("spacevim.plugin.runner").run_task(
+          \ require("spacevim").eval("a:task")
+          \ )
+    
+  endfunction
+
+  function! SpaceVim#plugins#runner#clear_tasks() abort
+    
+  endfunction
+
+  finish
+endif
+
+
+
+
 let s:runners = {}
 
 let s:JOB = SpaceVim#api#import('job')
@@ -45,8 +104,10 @@ let s:FILE = SpaceVim#api#import('file')
 let s:VIM = SpaceVim#api#import('vim')
 let s:SYS = SpaceVim#api#import('system')
 let s:ICONV = SpaceVim#api#import('iconv')
+let s:NOTI = SpaceVim#api#import('notify')
 
 let s:LOGGER =SpaceVim#logger#derive('runner')
+call s:LOGGER.start_debug()
 
 " use code runner buffer for tab
 "
@@ -72,7 +133,8 @@ let s:task_stderr = {}
 let s:task_problem_matcher = {}
 
 function! s:open_win() abort
-  if s:code_runner_bufnr !=# 0 && bufexists(s:code_runner_bufnr) && index(tabpagebuflist(), s:code_runner_bufnr) !=# -1
+  if s:code_runner_bufnr !=# 0 && bufexists(s:code_runner_bufnr) 
+        \ && index(tabpagebuflist(), s:code_runner_bufnr) !=# -1
     return
   endif
   botright split __runner__
@@ -279,15 +341,13 @@ function! SpaceVim#plugins#runner#open(...) abort
         \ 'has_errors' : 0,
         \ 'exit_code' : 0
         \ }
-  let s:selected_language = &filetype
-  let runner = get(a:000, 0, get(s:runners, s:selected_language, ''))
+  let selected_language = &filetype
+  let runner = get(a:000, 0, get(s:runners, selected_language, ''))
   let opts = get(a:000, 1, {})
   if !empty(runner)
     call s:open_win()
     call s:async_run(runner, opts)
     call s:update_statusline()
-  else
-    let s:selected_language = get(s:, 'selected_language', '')
   endif
 endfunction
 
@@ -517,7 +577,7 @@ function! s:on_backgroud_exit(job_id, data, event) abort
   if !empty(task_problem_matcher) && !empty(output)
     call s:match_problems(output, task_problem_matcher)
   endif
-  echo 'task finished with code=' . a:data . ' in ' . s:STRING.trim(reltimestr(end_time)) . ' seconds'
+  call s:NOTI.notify('task finished with code=' . a:data . ' in ' . s:STRING.trim(reltimestr(end_time)) . ' seconds')
 endfunction
 
 function! s:run_backgroud(cmd, ...) abort
@@ -526,7 +586,7 @@ function! s:run_backgroud(cmd, ...) abort
   " echo 'tasks: 1 running, 2 done'
   let running_nr = len(filter(values(s:task_status), 'v:val.is_running')) + 1
   let running_done = len(filter(values(s:task_status), '!v:val.is_running'))
-  echo printf('tasks: %s running, %s done', running_nr, running_done)
+  call s:NOTI.notify(printf('tasks: %s running, %s done', running_nr, running_done))
   let opts = get(a:000, 0, {})
   " this line can not be removed.
   let s:start_time = reltime()

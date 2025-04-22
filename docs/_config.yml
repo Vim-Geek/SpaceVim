@@ -1,6 +1,7 @@
 theme: jekyll-theme-midnight
 title: SpaceVim
-description: A community-driven vim distribution
+description: A modular Vim/Neovim configuration
+description_cn: 一个模块化的 Vim/Neovim 配置集合
 show_downloads: false
 google_analytics: UA-89745542-1
 gitment_client_id: 8f0cd1f544d1e4219798
@@ -26,13 +27,10 @@ sass:
 social:
   name: SpaceVim
   links:
-      - https://twitter.com/SpaceVim
-      - https://github.com/SpaceVim/SpaceVim
-      - https://www.reddit.com/r/SpaceVim/
-      - https://www.facebook.com/SpaceVim
+      - https://gitlab.com/SpaceVim/SpaceVim
 
 defaults:
   - scope:
       path: ""
     values:
-      image: https://user-images.githubusercontent.com/13142418/228742293-1ca7c173-84a6-461a-9fb5-656d23953e12.png
+      image: https://img.spacevim.org/workflow.png

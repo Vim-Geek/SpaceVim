@@ -84,7 +84,7 @@ On_IWhite='\033[0;107m'   # White
 # }}}
 
 # version
-Version='2.2.0-dev'
+Version='2.5.0-dev'
 #System name
 System="$(uname -s)"
 
@@ -138,7 +138,9 @@ fetch_repo () {
     success "SpaceVim 更新已完成"
   else
     info "正在安装 SpaceVim..."
-    git clone https://github.com/SpaceVim/SpaceVim.git "$HOME/.SpaceVim"
+    git clone --depth 1 https://github.com/wsdjeg/SpaceVim.git "$HOME/.SpaceVim"
+    cd "$HOME/.SpaceVim"
+    git fetch --tags
     success "SpaceVim 安装已完成"
   fi
 }
@@ -171,7 +173,7 @@ install_vim () {
 install_package_manager () {
   if [[ ! -d "$HOME/.cache/vimfiles/repos/github.com/Shougo/dein.vim" ]]; then
     info "正在安装 dein.vim"
-    git clone https://github.com/Shougo/dein.vim.git $HOME/.cache/vimfiles/repos/github.com/Shougo/dein.vim
+    git clone --depth 1 https://github.com/Shougo/dein.vim.git $HOME/.cache/vimfiles/repos/github.com/Shougo/dein.vim
     success "dein.vim 安装已完成"
   fi
 }

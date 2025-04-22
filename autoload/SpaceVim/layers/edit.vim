@@ -99,10 +99,9 @@ endfunction
 
 function! SpaceVim#layers#edit#plugins() abort
   let plugins = [
-        \ [g:_spacevim_root_dir . 'bundle/vim-surround'],
         \ [g:_spacevim_root_dir . 'bundle/vim-repeat'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-emoji'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-grammarous', {'merged' : 0}],
+        \ [g:_spacevim_root_dir . 'bundle/vim-emoji', {'on_event' : 'BufReadPost'}],
+        \ [g:_spacevim_root_dir . 'bundle/vim-grammarous', {'merged' : 0, 'on_cmd' : ['GrammarousCheck', 'GrammarousReset']}],
         \ [g:_spacevim_root_dir . 'bundle/vim-expand-region', { 'loadconf' : 1}],
         \ [g:_spacevim_root_dir . 'bundle/vim-textobj-user'],
         \ [g:_spacevim_root_dir . 'bundle/vim-textobj-indent'],
@@ -111,12 +110,17 @@ function! SpaceVim#layers#edit#plugins() abort
         \ [g:_spacevim_root_dir . 'bundle/vim-textobj-entire'],
         \ [g:_spacevim_root_dir . 'bundle/wildfire.vim',{'on_map' : '<Plug>(wildfire-'}],
         \ [g:_spacevim_root_dir . 'bundle/editorconfig-vim', { 'merged' : 0, 'if' : has('python') || has('python3')}],
-        \ [g:_spacevim_root_dir . 'bundle/vim-jplus', { 'on_map' : '<Plug>(jplus' }],
-        \ [g:_spacevim_root_dir . 'bundle/tabular',           { 'merged' : 0}],
-        \ ['andrewradev/splitjoin.vim',{ 'on_cmd':['SplitjoinJoin', 'SplitjoinSplit'],'merged' : 0, 'loadconf' : 1}],
+        \ [g:_spacevim_root_dir . 'bundle/vim-jplus', { 'on_map' : '<Plug>(jplus', 'loadconf_before' : 1 }],
+        \ [g:_spacevim_root_dir . 'bundle/tabular',           { 'merged' : 0, 'on_cmd' : ['Tabularize']}],
+        \ [g:_spacevim_root_dir . 'bundle/splitjoin.vim',{ 'on_cmd':['SplitjoinJoin', 'SplitjoinSplit'],'merged' : 0, 'loadconf' : 1}],
         \ ]
+  if has('nvim-0.8.0')
+    call add(plugins,[g:_spacevim_root_dir . 'bundle/nvim-surround',        { 'merged' : 0, 'loadconf' : 1, 'on_event' : ['BufReadPost']}])
+  else
+    call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-surround',        { 'merged' : 0, 'loadconf' : 1}])
+  endif
   if has('nvim-0.6.0') && s:enable_hop
-    call add(plugins,[g:_spacevim_root_dir . 'bundle/hop.nvim',        { 'merged' : 0, 'loadconf' : 1}])
+    call add(plugins,[g:_spacevim_root_dir . 'bundle/hop.nvim',        { 'merged' : 0, 'loadconf' : 1, 'on_cmd' : ['HopChar1', 'HopChar2', 'HopWord', 'HopLine']}])
   else
     call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-easymotion',        { 'merged' : 0}])
     call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-easyoperator-line',        { 'merged' : 0}])
@@ -154,7 +158,7 @@ function! SpaceVim#layers#edit#config() abort
         \ 'backupdir' : s:autosave_location,
         \ 'event' : s:autosave_events,
         \ }
-  
+
   if has('nvim-0.7.0')
     lua require('spacevim.plugin.autosave').config(vim.api.nvim_eval('autosave_opt'))
   else
@@ -170,22 +174,16 @@ function! SpaceVim#layers#edit#config() abort
   let g:user_emmet_mode='a'
   let g:user_emmet_settings = {
         \ 'javascript': {
-          \ 'extends': 'jsx',
-          \ },
-          \ 'jsp' : {
-            \ 'extends': 'html',
-            \ },
-            \ }
+        \ 'extends': 'jsx',
+        \ },
+        \ 'jsp' : {
+        \ 'extends': 'html',
+        \ },
+        \ }
 
   "noremap <SPACE> <Plug>(wildfire-fuel)
   vnoremap <C-SPACE> <Plug>(wildfire-water)
   let g:wildfire_objects = ["i'", 'i"', 'i)', 'i]', 'i}', 'ip', 'it']
-
-  " osyo-manga/vim-jplus {{{
-  nmap <silent> J <Plug>(jplus)
-  vmap <silent> J <Plug>(jplus)
-  " }}}
-
 
   if s:CMP.has('python3') || s:CMP.has('python')
     nnoremap <silent> <F7> :MundoToggle<CR>
@@ -217,7 +215,6 @@ function! SpaceVim#layers#edit#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['x', 'a', '¦'], 'Tabularize /¦', 'align-region-at-¦', 1, 1)
   call SpaceVim#mapping#space#def('nnoremap', ['x', 'a', '<Bar>'], 'Tabularize /[|｜]', 'align-region-at-|', 1, 1)
   call SpaceVim#mapping#space#def('nmap', ['x', 'a', '[SPC]'], 'Tabularize /\s\ze\S/l0', 'align-region-at-space', 1, 1)
-  " @fixme SPC x a SPC make vim flick
   nmap <Space>xa<Space> [SPC]xa[SPC]
   call SpaceVim#mapping#space#def('nnoremap', ['x', 'a', 'r'], 'call call('
         \ . string(s:_function('s:align_at_regular_expression')) . ', [])',
@@ -271,6 +268,11 @@ function! SpaceVim#layers#edit#config() abort
   call SpaceVim#mapping#space#def('nmap' , ['x' , 'U'] , '<Plug>Uppercase'  , 'uppercase-text'   , 0, 1)
   call SpaceVim#mapping#space#def('nmap' , ['x' , '~'] , '<Plug>ToggleCase' , 'toggle-case-text' , 0, 1)
 
+  " 定义 SpaceVim 键映射
+  call SpaceVim#mapping#space#def('nmap', ['x', 'H'], '<Plug>ConvertToFullWidth', 'convert to fullWidth', 0, 1)
+  call SpaceVim#mapping#space#def('nmap', ['x', 'h'], '<Plug>ConvertToHalfWidth', 'convert to halfWidth', 0, 1)
+  call SpaceVim#mapping#space#def('nmap', ['x', 'W'], '<Plug>ToggleFullHalfWidth', 'toggle fullWidth and halfWidth', 0, 1)
+
   " word
   let g:_spacevim_mappings_space.x.w = {'name' : '+Word'}
   call SpaceVim#mapping#space#def('vnoremap', ['x', 'w', 'c'], 'normal! ' . ":'<,'>s/\\\w\\+//gn" . "\<cr>", 'count the words in the select region', 1)
@@ -313,10 +315,6 @@ function! SpaceVim#layers#edit#config() abort
   call SpaceVim#mapping#space#def('nmap', ['x', 'g', 'n'], '<Plug>(grammarous-move-to-next-error)', 'move-cursor-to-next-error', 0, 1)
   call SpaceVim#mapping#space#def('nmap', ['x', 'g', 'p'], '<Plug>(grammarous-move-to-previous-error)', 'move-cursor-to-previous-error', 0, 1)
 
-  let g:_spacevim_mappings_space.i = {'name' : '+Insertion'}
-  let g:_spacevim_mappings_space.i.l = {'name' : '+Lorem-ipsum'}
-  let g:_spacevim_mappings_space.i.p = {'name' : '+Passwords'}
-  let g:_spacevim_mappings_space.i.U = {'name' : '+UUID'}
   call SpaceVim#mapping#space#def('nnoremap', ['i', 'p', 1], 'call call('
         \ . string(s:_function('s:insert_simple_password')) . ', [])',
         \ 'insert-simple-password', 1)
@@ -353,7 +351,11 @@ function! SpaceVim#layers#edit#config() abort
         \ 'move-text-up(enter-transient-state)', 1)
 
   " transpose
-  let g:_spacevim_mappings_space.x.t = {'name' : '+transpose'}
+  if has_key(g:_spacevim_mappings_space.x, 't')
+    let g:_spacevim_mappings_space.x.t.name = '+Transpose/Translate'
+  else
+    let g:_spacevim_mappings_space.x.t = {'name' : '+Transpose'}
+  endif
   call SpaceVim#mapping#space#def('nnoremap', ['x', 't', 'c'], 'call call('
         \ . string(s:_function('s:transpose_with_previous')) . ', ["character"])',
         \ 'swap-current-character-with-previous-one', 1)
@@ -405,33 +407,8 @@ function! SpaceVim#layers#edit#config() abort
 endfunction
 
 if has('nvim-0.6.0')
-" Hop
-lua << EOF
--- Like hop.jump_target.regex_by_line_start_skip_whitespace() except it also
--- marks empty or whitespace only lines
-function regexLines()
-  return {
-    oneshot = true,
-    match = function(str)
-      return vim.regex("http[s]*://"):match_str(str)
-    end
-  }
-end
-
--- Like :HopLineStart except it also jumps to empty or whitespace only lines
-function hintLines(opts)
-  -- Taken from override_opts()
-  opts = setmetatable(opts or {}, {__index = require'hop'.opts})
-
-  local gen = require'hop.jump_target'.jump_targets_by_scanning_lines
-  require'hop'.hint_with(gen(regexLines()), opts)
-end
-EOF
-
-
-  " See `:h forced-motion` for these operator-pending mappings
   function! s:jump_to_url() abort
-    lua hintLines()
+    lua require('spacevim.plugin.hop').hintLines()
   endfunction
 else
   function! s:jump_to_url() abort
@@ -559,27 +536,27 @@ function! s:text_transient_state() abort
   call state.set_title('Move Text Transient State')
   call state.defind_keys(
         \ {
-          \ 'layout' : 'vertical split',
-          \ 'left' : [
-            \ {
-              \ 'key' : 'J',
-              \ 'desc' : 'move text down',
-              \ 'func' : '',
-              \ 'cmd' : 'noautocmd silent! m .+1',
-              \ 'exit' : 0,
-              \ },
-              \ ],
-              \ 'right' : [
-                \ {
-                  \ 'key' : 'K',
-                  \ 'func' : '',
-                  \ 'desc' : 'move text up',
-                  \ 'cmd' : 'noautocmd silent! m .-2',
-                  \ 'exit' : 0,
-                  \ },
-                  \ ],
-                  \ }
-                  \ )
+        \ 'layout' : 'vertical split',
+        \ 'left' : [
+        \ {
+        \ 'key' : 'J',
+        \ 'desc' : 'move text down',
+        \ 'func' : '',
+        \ 'cmd' : 'noautocmd silent! m .+1',
+        \ 'exit' : 0,
+        \ },
+        \ ],
+        \ 'right' : [
+        \ {
+        \ 'key' : 'K',
+        \ 'func' : '',
+        \ 'desc' : 'move text up',
+        \ 'cmd' : 'noautocmd silent! m .-2',
+        \ 'exit' : 0,
+        \ },
+        \ ],
+        \ }
+        \ )
   call state.open()
 endfunction
 
@@ -1014,6 +991,77 @@ function! s:parse(line) abort
   return s:VIM.parse_string(a:line)
 endfunction
 
+" 为插件定义普通模式和视觉模式映射
+nnoremap <silent> <Plug>ConvertToFullWidth :call <sid>ConvertFullHalfWidth('normal', 'fullWidth')<cr>
+vnoremap <silent> <Plug>ConvertToFullWidth :call <sid>ConvertFullHalfWidth('visual', 'fullWidth')<cr>
+
+nnoremap <silent> <Plug>ConvertToHalfWidth :call <sid>ConvertFullHalfWidth('normal', 'halfWidth')<cr>
+vnoremap <silent> <Plug>ConvertToHalfWidth :call <sid>ConvertFullHalfWidth('visual', 'halfWidth')<cr>
+
+nnoremap <silent> <Plug>ToggleFullHalfWidth :call <sid>ConvertFullHalfWidth('normal', 'toggleWidth')<cr>
+vnoremap <silent> <Plug>ToggleFullHalfWidth :call <sid>ConvertFullHalfWidth('visual', 'toggleWidth')<cr>
+
+" 定义转换函数
+function! s:ConvertFullHalfWidth(mode, widthType) abort
+  let save_cursor = getcurpos()
+  let save_register = getreg("k")
+  if a:mode == 'normal'
+    let cword = expand('<cword>')
+    if !empty(cword)
+      let rst = FullHalfWidthTranslator#Translate(cword, a:widthType)
+      if rst != cword
+          let @k = rst
+          normal! viw"kp
+      endif
+    endif
+  elseif a:mode == 'visual'
+    normal! gv
+    if mode() == "\<C-V>" " 块选择模式
+        let [line_start, column_start] = getpos("'<")[1:2]
+        let [line_end, column_end] = getpos("'>")[1:2]
+        if column_end < column_start
+            let [column_start, column_end] = [column_end, column_start]
+        endif
+        for line_num in range(line_start, line_end)
+            let line = getline(line_num)
+            " 将行文本转换为UTF-8编码
+            let line_utf8 = iconv(line, &encoding, 'UTF-8')
+            let selectedText = line_utf8[column_start - 1: column_end - 1]
+            let translatedText = FullHalfWidthTranslator#Translate(selectedText, a:widthType)
+            let newLine = line[:column_start - 2] . translatedText . line[column_end:]
+            call setline(line_num, newLine)
+        endfor
+    else
+    " 对其他模式的处理
+        if mode() == 'line'
+            normal! '[V']
+        elseif mode() == 'char'
+            normal! `[v`]
+        elseif mode() ==? 'v'
+            normal! gv
+        else
+            normal! '[v']
+        endif
+        " 行选择或字符选择模式的处理
+        normal! "ky
+        let selectedText = @k
+        let translatedText = FullHalfWidthTranslator#Translate(selectedText, a:widthType)
+        if translatedText != selectedText
+          call setreg('k', translatedText)
+          normal! gv"kp
+        endif
+    endif
+  endif
+  call setpos('.', save_cursor)
+  call setreg("k", save_register)
+endfunction
+
 function! SpaceVim#layers#edit#add_ft_head_tamplate(ft, tamp) abort
   call extend(s:ft_head_tp, {a:ft : a:tamp})
+endfunction
+
+function! SpaceVim#layers#edit#loadable() abort
+
+  return 1
+
 endfunction

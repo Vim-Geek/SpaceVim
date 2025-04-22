@@ -1,22 +1,28 @@
 <h1 align="center">
-<a href="https://github.com/SpaceVim/SpaceVim#readme">
+<a href="https://spacevim.org">
   <img src="https://spacevim.org/logo.png" width="440" alt="SpaceVim"/>
   </a>
 </h1>
 
 [Quick Start Guide](https://spacevim.org/quick-start-guide/) \|
 [Chat](https://chat.mozilla.org/#/room/#spacevim:matrix.org) \|
-[Twitter](https://twitter.com/SpaceVim)
+[Documentation](https://spacevim.org/documentation/) \|
+[Layers](https://spacevim.org/layers/)
 
 [![build](https://img.shields.io/github/actions/workflow/status/SpaceVim/SpaceVim/check.yml?branch=master)](https://github.com/SpaceVim/SpaceVim/actions/workflows/check.yml?query=branch%3Amaster)
 [![Codecov coverage](https://img.shields.io/codecov/c/github/SpaceVim/SpaceVim.svg)](https://codecov.io/gh/SpaceVim/SpaceVim)
-[![Release](https://img.shields.io/badge/Release-2.1.0-8700FF.svg)](https://spacevim.org/SpaceVim-release-v2.1.0/)
+[![Release](https://img.shields.io/badge/Release-2.4.0-8700FF.svg)](https://spacevim.org/SpaceVim-release-v2.4.0/)
 [![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/SpaceVim/SpaceVim/blob/master/LICENSE)
-[![Docker Pulls](https://img.shields.io/docker/pulls/spacevim/spacevim)](https://hub.docker.com/r/spacevim/spacevim)
 
-[SpaceVim](https://spacevim.org/) is a vim configuration inspired by [spacemacs](https://github.com/syl20bnr/spacemacs), it is compatible with [Vim](https://github.com/vim/vim) and [Neovim](https://github.com/neovim/neovim).
+![work-flow](https://img.spacevim.org/workflow.png)
 
-The latest release [v2.1.0](https://spacevim.org/SpaceVim-release-v2.1.0/) was released at 2023-03-30, check out [following-HEAD](https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD) page for what happened since last release.
+
+SpaceVim is a modular configuration of Vim and Neovim.
+It's inspired by spacemacs. It manages collections of plugins in layers,
+which help to collect related packages together to provide features.
+This approach helps keep the configuration organized and reduces
+overhead for the user by keeping them from having to think about
+what packages to install.
 
 ## Features
 
@@ -30,9 +36,6 @@ The latest release [v2.1.0](https://spacevim.org/SpaceVim-release-v2.1.0/) was r
 - **Lower the risk of RSI:** by heavily using the space bar instead of modifiers.
 - **Consistent experience:** consistent experience between terminal and gui
 
-## Screenshots
-
-![welcome page](https://user-images.githubusercontent.com/13142418/228742293-1ca7c173-84a6-461a-9fb5-656d23953e12.png)
 
 ## Project Layout
 
@@ -59,7 +62,7 @@ The latest release [v2.1.0](https://spacevim.org/SpaceVim-release-v2.1.0/) was r
 
 ## Contribute
 
-This project wouldn't exist without all the people who [contributed](CONTRIBUTING.md),
+This project wouldn't exist without all the people who contributed,
 We are thankful for any contributions from the community.
 
 <a href="https://github.com/SpaceVim/SpaceVim/graphs/contributors"><img src="https://opencollective.com/spacevim/contributors.svg?width=890&button=false" /></a>
@@ -71,7 +74,8 @@ We are thankful for any contributions from the community.
 - [10-minutes-to-SpaceVim](https://github.com/Jackiexiao/10-minutes-to-SpaceVim) by [@Jackiexiao](https://github.com/Jackiexiao)
 - [A First Look At SpaceVim](https://www.youtube.com/watch?v=iXPS_NHLj9k) by [@DistroTube](https://www.youtube.com/channel/UCVls1GmFKf6WlTraIb_IaJg)
 - [Getting Started With SpaceVim](https://www.youtube.com/watch?v=3xB501CJDB8) by [FOSS King](https://www.youtube.com/channel/UCfU_sitghekwveLh6yM_xuA)
-- [vimdoc](https://github.com/google/vimdoc) generate doc file for SpaceVim
+- [vimdoc](https://github.com/google/vimdoc): Vim help file generator
+- [spacemacs](https://www.spacemacs.org/): A community-driven Emacs distribution
 - Authors of all the plugins used in SpaceVim.
 
 <!-- vim:set nowrap: -->

@@ -2,7 +2,7 @@
 title: "Mnemonic key bindings navigation"
 categories: [feature, blog]
 description: "Key bindings are organized using mnemonic prefixes like b for buffer, p for project, s for search, h for help, etc…"
-image: https://user-images.githubusercontent.com/13142418/89091735-5de96a00-d3de-11ea-85e1-b0fc64537836.gif
+image: https://img.spacevim.org/89091735-5de96a00-d3de-11ea-85e1-b0fc64537836.gif
 commentsID: "Mnemonic key bindings navigation"
 comments: true
 ---
@@ -20,11 +20,11 @@ This will be shown in floating windows if your vim/neovim support this feature.
 - vim: `8.1.1364`
 - neovim: `v0.4.2`
 
-![float_guide](https://user-images.githubusercontent.com/13142418/89091735-5de96a00-d3de-11ea-85e1-b0fc64537836.gif)
+![float_guide](https://img.spacevim.org/89091735-5de96a00-d3de-11ea-85e1-b0fc64537836.gif)
 
 Otherwise, it will be displayed in split Window.
 
-![mapping guide](https://user-images.githubusercontent.com/13142418/35568184-9a318082-058d-11e8-9d88-e0eafd1d498d.gif)
+![mapping guide](https://img.spacevim.org/35568184-9a318082-058d-11e8-9d88-e0eafd1d498d.gif)
 
 ## default key binding prefixes
 
@@ -38,7 +38,7 @@ By default the guide buffer will be displayed 1000ms after the key has been pres
 
 for example, after pressing `<Space>` in normal mode, you will see :
 
-![mapping-guide](https://cloud.githubusercontent.com/assets/13142418/25778673/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
+![mapping-guide](https://img.spacevim.org/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
 
 this guide show you all the available key bindings begin with `[SPC]`, you can type `b` for all the buffer mappings, `p` for project mappings, etc.
 

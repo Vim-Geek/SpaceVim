@@ -6,6 +6,16 @@
 " License: GPLv3
 "=============================================================================
 
+if has('nvim-0.9.0')
+  function! toml#preview() abort
+
+    lua require('spacevim.plugin.tomlprew').preview()
+
+  endfunction
+
+  finish
+endif
+
 
 let s:preview_bufnr = -1
 let s:toml_bufnr = -1
@@ -30,4 +40,6 @@ function! toml#preview() abort
   silent Neoformat! json
   setlocal nomodifiable
   set syntax=json
+
+
 endfunction

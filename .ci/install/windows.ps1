@@ -28,20 +28,26 @@ function install_nvim($ver)
   {
     $url = 'https://github.com/neovim/neovim/releases/download/' + $ver + '/nvim-win64.zip'
   }
-  $Env:VIM_BIN = $Env:DEPS + '\Neovim\bin\nvim.exe'
   $zip = $Env:DEPS + '\nvim.zip'
   (New-Object Net.WebClient).DownloadFile($url, $zip)
   [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
   [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $Env:DEPS)
+  if (Test-Path '$DEPS\Neovim\bin\nvim.exe') {
+    $Env:VIM_BIN = $Env:DEPS + '\Neovim\bin\nvim.exe'
+  }else{
+    $Env:VIM_BIN = $Env:DEPS + '\nvim-win64\bin\nvim.exe'
+
+  }
+  echo "VIM_BIN is: $Env:VIM_BIN"
 }
 
 function download_lua()
 {
   $url = 'https://github.com/wsdjeg/vim-galore-zh_cn/releases/download/downdows/lua53.zip'
-  $zip = $Env:DEPS + '\lua53.zip'
-  (New-Object Net.WebClient).DownloadFile($url, $zip)
-  [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
-  [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $Env:DEPS + '\vim\vim82')
+    $zip = $Env:DEPS + '\lua53.zip'
+    (New-Object Net.WebClient).DownloadFile($url, $zip)
+    [Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') > $null
+    [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, $Env:DEPS + '\vim\vim82')
 }
 
 if ($Env:VIM_BIN.StartsWith("nvim"))

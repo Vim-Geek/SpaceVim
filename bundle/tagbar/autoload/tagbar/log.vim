@@ -10,7 +10,9 @@ if exists('s:debug_enabled')
   finish
 endif
 
-let s:LOGGER =SpaceVim#logger#derive('tagbar')
+let s:LOGGER = SpaceVim#logger#derive('tagbar')
+
+" call s:LOGGER.stop_debug()
 
 function! tagbar#log#start_debug(...) abort
   call s:LOGGER.info('enable debug mode!')
@@ -28,6 +30,12 @@ endfunction
 
 function! tagbar#log#info(msg) abort
   call s:LOGGER.info(a:msg)
+endfunction
+
+function! tagbar#log#warn(msg) abort
+
+  call s:LOGGER.warn(a:msg)
+
 endfunction
 
 function! tagbar#log#debug_enabled() abort

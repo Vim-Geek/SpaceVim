@@ -34,10 +34,17 @@ if has('nvim-0.5.0')
   function! SpaceVim#plugins#projectmanager#RootchandgeCallback() abort
     lua require("spacevim.plugin.projectmanager").RootchandgeCallback()
   endfunction
-  function! SpaceVim#plugins#projectmanager#reg_callback(func) abort
-    lua require("spacevim.plugin.projectmanager").reg_callback(
-          \ require("spacevim").eval("string(a:func)")
-          \ )
+  function! SpaceVim#plugins#projectmanager#reg_callback(func, ...) abort
+    if a:0 == 0
+      lua require("spacevim.plugin.projectmanager").reg_callback(
+            \ require("spacevim").eval("string(a:func)")
+            \ )
+    else
+      lua require("spacevim.plugin.projectmanager").reg_callback(
+            \ require("spacevim").eval("string(a:func)"),
+            \ require("spacevim").eval("a:1")
+            \ )
+    endif
   endfunction
   function! SpaceVim#plugins#projectmanager#current_root() abort
     return luaeval('require("spacevim.plugin.projectmanager").current_root()')
@@ -61,6 +68,7 @@ else
   " the name projectmanager is too long
   " use rooter instead
   let s:LOGGER =SpaceVim#logger#derive('rooter')
+  call s:LOGGER.start_debug()
   let s:TIME = SpaceVim#api#import('time')
   let s:JSON = SpaceVim#api#import('data#json')
   let s:LIST = SpaceVim#api#import('data#list')
@@ -94,7 +102,13 @@ else
   let s:project_cache_path = s:FILE.unify_path(g:spacevim_data_dir, ':p') . 'SpaceVim/projects.json'
 
   function! s:cache() abort
-    call writefile([s:JSON.json_encode(s:project_paths)], s:FILE.unify_path(s:project_cache_path, ':p'))
+    try
+      let rst = writefile([s:JSON.json_encode(s:project_paths)], s:FILE.unify_path(s:project_cache_path, ':p'))
+      if rst !=# 0
+        call s:LOGGER.info('failed to write cache')
+      endif
+    catch
+    endtry
   endfunction
 
   function! s:load_cache() abort
@@ -187,8 +201,16 @@ else
     augroup END
   endif
   function! s:find_root_directory() abort
-    " @question confused about expand and fnamemodify
+    " confused about expand and fnamemodify
     " ref: https://github.com/vim/vim/issues/6793
+    " response from Bram Moolenaar
+    " When there is no file name there also isn't a directory in which that
+    " file exists.  Perhaps expand('%:p') should result in an error.
+    " Returning an empty string is basically the same as returning an error.
+    "
+    " fnamemodify() doesn't use the current file name.  Now what should it do
+    " with an empty string?  Not sure.  Anyway, the current behavoir is what
+    " users rely on, so let's not change it.
 
 
     " get the current path of buffer or working dir
@@ -327,24 +349,31 @@ else
     let g:_spacevim_project_name = project.name
     let b:_spacevim_project_name = g:_spacevim_project_name
     for Callback in s:project_callback
-      call call(Callback, [])
+      try
+        call call(Callback, [])
+      catch
+      endtry
     endfor
   endfunction
 
   let s:project_callback = []
-  function! SpaceVim#plugins#projectmanager#reg_callback(func) abort
+  function! SpaceVim#plugins#projectmanager#reg_callback(func, ...) abort
+    " support second argv
     if type(a:func) == 2
       call add(s:project_callback, a:func)
     else
-      call SpaceVim#logger#warn('can not register the project callback: ' . string(a:func))
+      call SpaceVim#logger#warn('can not register the project callback: ' . get(a:000, 0, string(a:func)))
     endif
   endfunction
 
   function! SpaceVim#plugins#projectmanager#current_root() abort
-    " @todo skip some plugin buffer
+    " skip specific buffer for plugins
+    " - denite.nvim
+    " - defx
     if bufname('%') =~# '\[denite\]'
           \ || bufname('%') ==# 'denite-filter'
           \ || bufname('%') ==# '\[defx\]'
+          \ || &autochdir == 1
       return
     endif
     if join(g:spacevim_project_rooter_patterns, ':') !=# join(s:spacevim_project_rooter_patterns, ':')
@@ -383,13 +412,13 @@ else
     if name !=# ''
       call s:BUFFER.filter_do(
             \ {
-              \ 'expr' : [
-                \ 'buflisted(v:val)',
-                \ 'getbufvar(v:val, "_spacevim_project_name") == "' . name . '"',
-                \ ],
-                \ 'do' : 'bd %d'
-                \ }
-                \ )
+            \ 'expr' : [
+            \ 'buflisted(v:val)',
+            \ 'getbufvar(v:val, "_spacevim_project_name") == "' . name . '"',
+            \ ],
+            \ 'do' : 'bd %d'
+            \ }
+            \ )
     endif
 
   endfunction

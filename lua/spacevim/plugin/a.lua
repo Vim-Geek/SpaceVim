@@ -13,8 +13,10 @@ local cmd = require('spacevim').cmd
 local sp_file = require('spacevim.api').import('file')
 local sp_opt = require('spacevim.opt')
 local sp_json = require('spacevim.api').import('data.json')
+local toml = require('spacevim.api.data.toml')
 local logger = require('spacevim.logger').derive('a.lua')
 local fn = vim.fn or require('spacevim').fn
+local nt = require('spacevim.api').import('notify')
 
 local alternate_conf = {}
 alternate_conf['_'] = '.project_alt.json'
@@ -61,22 +63,30 @@ function M.alt(request_parse, ...)
   local alt = nil
   if fn.exists('b:alternate_file_config') ~= 1 then
     local conf_file_path = M.getConfigPath()
+    if vim.fn.filereadable(conf_file_path) ~= 1 then
+      nt.notify('no alternate config file!', 'WarningMsg')
+      return
+    end
     local file = sp_file.unify_path(fn.bufname('%'), ':.')
     alt = M.get_alt(file, conf_file_path, request_parse, alt_type)
   end
-  logger.info('  > found alternate file: ' .. alt)
   if alt ~= nil and alt ~= '' then
+    logger.info('  > found alternate file: ' .. alt)
     cmd('e ' .. alt)
   else
-    vim.api.nvim_eval(
-      'SpaceVim#api#notify#get().notify("failed to find alternate file!", "WarningMsg")'
-    )
+    logger.info('  > failed to find alternate file')
+    nt.notify('failed to find alternate file!', 'WarningMsg')
   end
 end
 
 local function get_project_config(conf_file)
-  local context = fn.join(fn.readfile(conf_file), '\n')
-  local conf = sp_json.json_decode(context)
+  local conf
+  if conf_file:sub(-4) == 'toml' then
+    conf = toml.parse_file(conf_file)
+  else
+    conf = sp_json.json_decode(fn.join(fn.readfile(conf_file), '\n'))
+  end
+  -- logger.debug(vim.inspect(conf))
   if type(conf) ~= 'table' then
     conf = {}
   end

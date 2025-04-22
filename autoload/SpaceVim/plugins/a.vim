@@ -10,6 +10,45 @@ let s:save_cpo = &cpo
 set cpo&vim
 scriptencoding utf-8
 
+""
+" @section alternate, plugins-alternate
+" @parentsection plugins
+" To manage the alternate file of the project, you need to create a `.project_alt.json` file
+" in the root of your project. Then you can use the command `:A` to jump to the alternate file of
+" current file. You can also specific the type of alternate file, for example `:A doc`.
+" With a bang `:A!`, SpaceVim will parse the configuration file additionally. If no type is specified,
+" the default type `alternate` will be used.
+" 
+" here is an example of `.project_alt.json`:
+" 
+" >
+"   {
+"     "autoload/SpaceVim/layers/lang/*.vim": {
+"       "doc": "docs/layers/lang/{}.md",
+"       "test": "test/layer/lang/{}.vader"
+"     }
+"   }
+" <
+" 
+" instead of using `.project_alt.json`, `b:alternate_file_config`
+" can be used in bootstrap function, for example:
+" 
+" >
+"   augroup myspacevim
+"       autocmd!
+"       autocmd BufNewFile,BufEnter *.c let b:alternate_file_config = {
+"             \ "src/*.c" : {
+"                 \ "doc" : "docs/{}.md",
+"                 \ "alternate" : "include/{}.h",
+"                 \ }
+"             \ }
+"       autocmd BufNewFile,BufEnter *.h let b:alternate_file_config = {
+"             \ "include/*.h" : {
+"                 \ "alternate" : "scr/{}.c",
+"                 \ }
+"             \ }
+"   augroup END
+" <
 
 if has('nvim-0.5.0')
   function! SpaceVim#plugins#a#alt(request_parse, ...) abort
@@ -47,7 +86,8 @@ else
   let s:CMP = SpaceVim#api#import('vim#compatible')
   let s:JSON = SpaceVim#api#import('data#json')
   let s:FILE = SpaceVim#api#import('file')
-  let s:LOGGER =SpaceVim#logger#derive('a.vim')
+  let s:LOGGER = SpaceVim#logger#derive('a.vim')
+  let s:TOML = SpaceVim#api#import('data#toml')
 
 
   " local value
@@ -68,7 +108,13 @@ else
   " saving cache
 
   function! s:cache() abort
-    silent call writefile([s:JSON.json_encode(s:project_config)], s:FILE.unify_path(s:cache_path, ':p'))
+    try
+      let rst = writefile([s:JSON.json_encode(s:project_config)], s:FILE.unify_path(s:cache_path, ':p'))
+      if rst !=# 0
+        call s:LOGGER.info('failed to write cache')
+      endif
+    catch
+    endtry
   endfunction
 
   function! s:load_cache() abort
@@ -83,8 +129,12 @@ else
   " the project_config info is cleared.
   function! s:get_project_config(conf_file) abort
     call s:LOGGER.info('read context from: '. a:conf_file)
-    let context = join(readfile(a:conf_file), "\n")
-    let conf = s:JSON.json_decode(context)
+    if a:conf_file =~# 'toml$'
+      let conf = s:TOML.parse_file(a:conf_file)
+    else
+      let context = join(readfile(a:conf_file), "\n")
+      let conf = s:JSON.json_decode(context)
+    endif
     if type(conf) !=# type({})
       " in Old vim we get E706
       " Variable type mismatch for conf, so we need to unlet conf first
@@ -142,7 +192,7 @@ else
     call s:LOGGER.info('  >   type: ' . get(a:000, 0, 'alternate'))
     call s:LOGGER.info('  >  parse: ' . a:request_parse)
     call s:LOGGER.info('  > config: ' . a:conf_path)
-    " @question when should the cache be loaded?
+    " when should the cache be loaded?
     " if the local value s:project_config do not has the key a:conf_path
     " and the file a:conf_path has not been updated since last cache
     " and no request_parse specified
@@ -188,12 +238,11 @@ else
   function! s:parse(alt_config_json) abort
     call s:LOGGER.info('Start to parse alternate files for: ' . a:alt_config_json.root)
     let s:project_config[a:alt_config_json.root] = {}
-    " @question why need sory()
-    " if we have two key docs/*.md and docs/cn/*.md
+    " if we have two keys docs/*.md and docs/cn/*.md
     " with the first key, we can also find files in
     " docs/cn/ directory, for example docs/cn/index.md
     " and the alt file will be
-    " docs/cn/cn/index.md. this should be overrided by login in
+    " docs/cn/cn/index.md. this should be overrided by
     " docs/cn/*.md
     "
     " so we need to use sort, and make sure `docs/cn/*.md` is parsed after

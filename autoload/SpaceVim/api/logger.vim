@@ -90,7 +90,7 @@ function! s:self.warn(msg, ...) abort
     return
   endif
   let log = self._build_msg(a:msg, 2)
-  if (!self.silent && self.verbose >= 2) || get(a:000, 0, 0) == 1
+  if (!self.silent && self.verbose >= 2) || get(a:000, 0, 1) == 0
     echohl WarningMsg
     echom log
     echohl None
@@ -158,6 +158,6 @@ function! s:self._comp(msg, l) abort
   end
 endfunction
 
-function! s:self.clear(level) abort
-  let self.temp = filter(deepcopy(self.temp), '!self._comp(v:val, a:level)')
+function! s:self.clear() abort
+  let self.temp = []
 endfunction

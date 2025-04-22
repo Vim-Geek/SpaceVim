@@ -49,7 +49,8 @@ function M.setOutput(file)
 end
 
 function M.viewRuntimeLog()
-  local info = '### SpaceVim runtime log :\n\n' .. logger.view(logger.level)
+  -- this function should be more faster, and view runtime log without filter
+  local info = '### SpaceVim runtime log :\n\n' .. logger.view_all()
   cmd('tabnew')
   cmd('setl nobuflisted')
   cmd('nnoremap <buffer><silent> q :tabclose!<CR>')
@@ -59,6 +60,10 @@ function M.viewRuntimeLog()
   cmd('setl buftype=nofile')
   cmd('setl filetype=SpaceVimLog')
   -- M.syntax_extra()
+end
+
+function M.clearRuntimeLog()
+  logger.clear()
 end
 
 function M.viewLog(...)
@@ -106,7 +111,7 @@ end
 function M.derive(name)
   local derive = {
     origin_name = logger.get_name(),
-    _debug_mode = false,
+    _debug_mode = true,
     derive_name = fn.printf('%' .. fn.strdisplaywidth(logger.get_name()) .. 'S', name),
   }
 

@@ -13,7 +13,12 @@
 
 function! SpaceVim#layers#treesitter#plugins() abort
   let plugins = []
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-treesitter',
+  if has('nvim-0.8.0')
+    let l:version = '-0.9.1'
+  else
+    let l:version = ''
+  endif
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-treesitter' . l:version,
         \ {
           \ 'merged' : 0,
           \ 'loadconf' : 1 ,
@@ -26,6 +31,12 @@ endfunction
 function! SpaceVim#layers#treesitter#health() abort
   call SpaceVim#layers#treesitter#plugins()
   return 1
+endfunction
+
+function! SpaceVim#layers#treesitter#setup() abort
+
+  lua require('spacevim.treesitter').setup()
+
 endfunction
 
 function! SpaceVim#layers#treesitter#loadable() abort

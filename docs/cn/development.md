@@ -6,19 +6,17 @@ lang: zh
 
 # 开发者文档
 
+SpaceVim 是每个志愿者的努力的结晶，我们鼓励你参与进来，SpaceVim 是由社区驱动的。
+下面是关于每个贡献者都应当遵守的简单规则的引导。
+
+你可以只阅读下面内容中的，你需要用到的部分：
+
 <!-- vim-markdown-toc GFM -->
 
-- [寻求帮助](#寻求帮助)
-- [反馈问题](#反馈问题)
 - [贡献代码](#贡献代码)
-  - [项目代码结构](#项目代码结构)
-  - [证书](#证书)
+  - [许可](#许可)
   - [公约](#公约)
-  - [拉取请求](#拉取请求)
-    - [标题前缀](#标题前缀)
-    - [新建拉取请求步骤](#新建拉取请求步骤)
-    - [抽象化的简单 PRs（绝大多数 PRs 都是这样的）：](#抽象化的简单-prs绝大多数-prs-都是这样的)
-    - [复杂的 PRs (大的重构，等)：](#复杂的-prs-大的重构等)
+  - [Commit Message 格式规范](#commit-message-格式规范)
   - [贡献一个模块](#贡献一个模块)
     - [文件头](#文件头)
     - [新 layer 的作者](#新-layer-的作者)
@@ -27,62 +25,16 @@ lang: zh
       - [特定语言的按键绑定](#特定语言的按键绑定)
     - [欢迎界面LOGO](#欢迎界面logo)
 - [基于 SpaceVim 开发](#基于-spacevim-开发)
+- [Newsletters](#newsletters)
 - [更新日志](#更新日志)
 
 <!-- vim-markdown-toc -->
 
-SpaceVim 是每个志愿者的努力的结晶，我们鼓励你参与进来，SpaceVim 是由社区驱动的。
-下面是关于每个贡献者都应当遵守的简单规则的引导。
-
-你可以只阅读下面内容中的，你需要用到的部分：
-
-- [Asking for help](#寻求帮助) 建立 issue 的帮助
-- [Reporting issues](#反馈错误) 反馈问题的帮助
-- [Contributing code](#贡献代码) 建立 PR 的帮助
-
-## 寻求帮助
-
-在你建立 issue 之前，先确认你已经浏览过下面的 FAQ 以及 SpaceVim 文档。
-
-- <kbd>:h SpaceVim-faq</kbd>: 一些常见问题及解决方法
-- [SpaceVim documentation](https://spacevim.org/cn/documentation): SpaceVim 的官方文档
-
-## 反馈问题
-
-请先阅读下面内容，再通过 [issues tracker](https://github.com/SpaceVim/SpaceVim/issues)进行反馈：
-
-- 检查错误追踪中是否存在重复的问题，你可以通过在错误追踪中搜索关键词来确认错误追踪中是否存在重复的问题
-
-- 检查问题是否在最新版的 SpaceVim 中修复，请更新你的 SpaceVim，然后进行 Bug 重现操作
-
-- 按照下面的问题格式，建立清晰的问题标题
-
-- 包括 Bug 出现的细节，一步一步重现 Bug 出现的操作
-
 ## 贡献代码
 
-我们非常期待您的贡献。在此之前，请您认真阅读下面的内容。在任何情况下，都可以轻松的加入我们[gitter chat](https://gitter.im/SpaceVim/cn)进行提问和贡献代码。
+SpaceVim 的源码托管在 [Github](https://github.com/SpaceVim/SpaceVim) 上，欢迎参与。
 
-### 项目代码结构
-
-
-```txt
-├─ .ci/                           自动构建脚本
-├─ .github/                       issue/PR templates
-├─ .SpaceVim.d/                   开发者配置
-├─ autoload/SpaceVim.vim          核心逻辑文件
-├─ autoload/SpaceVim/api/         公共函数（API）
-├─ autoload/SpaceVim/layers/      可用模块
-├─ autoload/SpaceVim/plugins/     内置插件
-├─ autoload/SpaceVim/mapping/     快捷键
-├─ doc/                           帮助文档
-├─ docs/                          网站源码
-├─ wiki/                          维基源码
-├─ bin/                           可执行命令
-└─ test/                          测试文件
-```
-
-### 证书
+### 许可
 
 SpaceVim 所有部分采用 GPLv3 许可。
 
@@ -97,89 +49,63 @@ SpaceVim 所有部分采用 GPLv3 许可。
 快捷键定义的规范等，具体内容可以查阅[《格式规范》](../conventions/),
 在您进行贡献前，请确认您已经了解了以上公约的内容。
 
-### 拉取请求
+### Commit Message 格式规范
 
-#### 标题前缀
+参考《[conventional commits guidelines](https://www.conventionalcommits.org/)》，具体的格式如下：
 
-新开拉取请求时，应当通过标题前缀来标记该拉取请求的性质：
+```
+<type>([optional scope]): <description>
 
-- `Add:` 添加新的特性
-- `Change:` 修改已有特性的行为
-- `Fix:` 修复某些问题
-- `Remove:` 移除原先支持的某些特性
-- `Doc:` 更新帮助文档
-- `Website:` 更新网站内容
-- `Type:` 更新错别字
+[optional body]
 
-示例如下：
-
-`Website: update the lang#c layer page.`
-
-#### 新建拉取请求步骤
-
-- fork SpaceVim 仓库
-- 克隆你自己的仓库
-
-```sh
-git clone ${YOUR_OWN_REPOSITORY_URL}
+[optional footer(s)]
 ```
 
-- 添加上游远程仓库地址
+**types:**
 
-```sh
-git remote add upstream https://github.com/SpaceVim/SpaceVim.git
+- `feat`: 增加新特性
+- `fix`: 修复某个问题
+- `docs`: 文档相关的修改
+- `style`: 代码格式的修改，不涉及逻辑变更
+- `refactor`: 代码重构
+- `pref`: 提升已有特性使用体验
+- `test`: 增加或者修正测试文件
+- `ci`: ci 集成配置相关修改
+- `chore`: 源码或者测试文件以外的修改
+- `revert`: 撤销过往提交
+
+**scopes:**
+
+- `api`: 包含文件夹 `autoload/SpaceVim/api/` 和 `docs/api/` 内的所有文件
+- `layer`: 包含文件夹 `autoload/SpaceVim/layers/` 和 `docs/layers/` 内的所有文件
+- `plugin`: 包含文件夹 `autoload/SpaceVim/plugins/` 内的所有文件
+- `bundle`: 包含文件夹 `bundle/` 内的所有文件
+- `core`: 其他文件
+
+除了以上列出的 scopes 之外，还可以使用模块的名称或者插件的名称作为 scope。
+
+**subject:**
+
+主题（subject）应当小于50个字符，不应该以大写字母开头，也不应该以句号结尾。
+并且需要使用祈使句来描述具体在做什么。
+
+**body:**
+
+并不是每一个提交信息都需要写这部分内容，通常只有比较复杂的 commit message 才需要。
+
+**footer**
+
+`footer` 也是可选的内容，通常用于列出相关的 issue IDs。
+
+**Breaking change**
+
+非兼容性的提交必须在 `type/scope` 之后添加 `!` 符号。并且在 `footer` 内添加 `BREAKING CHANGE` 以描述具体变更的内容。例如：
+
 ```
+refactor(tools#mpv)!: change default musics_directory
 
-- 在上游的主分支中取回并且重新定位上游
-
-```sh
-git fetch upstream
-git rebase upstream/master
-```
-#### 抽象化的简单 PRs（绝大多数 PRs 都是这样的）：
-
-- `master`中的分支
-- 每个 PR 一个主题
-- 每个 PR 一个提交
-- 如果你有一些不同主题的提交，请关闭 PR 然后为每个主题创建一个新的 PR
-- 如果你仍然有很多提交，请把它们打包成一个提交
-
-#### 复杂的 PRs (大的重构，等)：
-
-只打包一些枯燥的提交，比如修改错别字，语法修复，等等。把重要和独立的步骤分别放在不同的提交中。
-这些 PRs 被合并并且明示非快速转发。
-提交信息
-根据编写的内容提交信息 [Tim Pope’s guidelines](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)：
-
-- 用现在时和祈使句：例如："Fix bug"，而不是"fixed bug" 或者"fixes bug"。
-- 以大写字母开头，短摘要开头（72 个字符或者更少），以空行结尾。
-- 如果需要的话，可以用每行 72 个字符的格式添加一个或多个详细的段落。
-- 每个独立的段落以空行结尾。
-
-这是一个提交信息的模版：
-
-```gitcommit
-Capitalized, short (72 chars or less) summary
-
-More detailed explanatory text, if necessary.  Wrap it to about 72
-characters or so.  In some contexts, the first line is treated as the
-subject of an email and the rest of the text as the body.  The blank
-line separating the summary from the body is critical (unless you omit
-the body entirely); tools like rebase can get confused if you run the
-two together.
-
-Write your commit message in the imperative: "Fix bug" and not "Fixed bug"
-or "Fixes bug."  This convention matches up with commit messages generated
-by commands like git merge and git revert.
-
-Further paragraphs come after blank lines.
-
-- Bullet points are okay, too
-
-    - Typically a hyphen or asterisk is used for the bullet, followed by a
-      single space, with blank lines in between, but conventions vary here
-
-    - Use a hanging indent
+BREAKING CHANGE: `~/Music` is standard on macOS and
+also on FreeDesktop's XDG.
 ```
 
 ### 贡献一个模块
@@ -322,6 +248,19 @@ markdown 语法如下：
 ```md
 [![](https://spacevim.org/img/build-with-SpaceVim.svg)](https://spacevim.org/cn/)
 ```
+
+## Newsletters
+
+<ul>
+    {% for post in site.categories.newsletter_cn %}
+            <li>
+               <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+               <span class="post-date">{{ post.date | date_to_string }}</span>
+               <p>{{ post.description | truncatewords: 100 }}</p>
+            </li>
+    {% endfor %}
+</ul>
+
 
 ## 更新日志
 

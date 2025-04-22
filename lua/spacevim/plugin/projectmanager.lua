@@ -7,6 +7,12 @@
 --=============================================================================
 
 local logger = require('spacevim.logger').derive('project')
+
+local sp_buffer = require('spacevim.api').import('vim.buffer')
+
+-- start debug mode
+logger.start_debug()
+
 local sp = require('spacevim')
 local sp_file = require('spacevim.api.file')
 local sp_json = require('spacevim.api.data.json')
@@ -115,9 +121,16 @@ local function load_cache()
   end
 end
 
+local function compare_time(d1, d2)
+  local proj1 = project_paths[d1] or {}
+  local proj1time = proj1['opened_time'] or 0
+  local proj2 = project_paths[d2] or {}
+  local proj2time = proj2['opened_time'] or 0
+  return proj2time < proj1time
+end
 local function sort_by_opened_time()
   local paths = {}
-  for k, v in pairs(project_paths) do
+  for k, _ in pairs(project_paths) do
     table.insert(paths, k)
   end
   table.sort(paths, compare_time)
@@ -130,13 +143,6 @@ local function sort_by_opened_time()
   return paths
 end
 
-local function compare_time(d1, d2)
-  local proj1 = project_paths[d1] or {}
-  local proj1time = proj1['opened_time'] or 0
-  local proj2 = project_paths[d2] or {}
-  local proj2time = proj2['opened_time'] or 0
-  return proj2time - proj1time
-end
 local function change_dir(dir)
   if dir == sp_file.unify_path(fn.getcwd()) then
     return false
@@ -152,9 +158,8 @@ local function compare(d1, d2)
   -- logger.debug('al is ' .. al)
   -- logger.debug('bl is ' .. bl)
   -- the project_rooter_outermost is 0/false or 1 true
-  if sp_opt.project_rooter_outermost == 0
-    or sp_opt.project_rooter_outermost == false then
-    if bl > al then
+  if sp_opt.project_rooter_outermost == 0 or sp_opt.project_rooter_outermost == false then
+    if bl >= al then
       return false
     else
       return true
@@ -273,7 +278,7 @@ let g:unite_source_menu_menus.Projects.command_candidates = get(g:unite_source_m
 if sp_opt.project_auto_root == 1 then
   sp.cmd('augroup spacevim_project_rooter')
   sp.cmd('autocmd!')
-  sp.cmd('autocmd VimEnter,BufEnter * call SpaceVim#plugins#projectmanager#current_root()')
+  sp.cmd('autocmd VimEnter,BufEnter * ++nested call SpaceVim#plugins#projectmanager#current_root()')
   sp.cmd(
     "autocmd BufWritePost * :call setbufvar('%', 'rootDir', '') | call SpaceVim#plugins#projectmanager#current_root()"
   )
@@ -290,6 +295,8 @@ function M.list()
     sp.cmd('FzfMenu Projects')
   elseif layer.isLoaded('leaderf') then
     sp.cmd("call SpaceVim#layers#leaderf#run_menu('Projects')")
+  elseif layer.isLoaded('telescope') then
+    sp.cmd('Telescope project')
   else
     logger.warn('fuzzy find layer is needed to find project!')
   end
@@ -297,7 +304,7 @@ end
 
 function M.open(project)
   local path = project_paths[project]['path']
-  local name = project_paths[project]['name']
+  -- local name = project_paths[project]['name']
   sp.cmd('tabnew')
   -- I am not sure we should set the project name here.
   -- sp.cmd('let t:_spacevim_tab_name = "[' .. name .. ']"')
@@ -308,6 +315,8 @@ function M.open(project)
     sp.cmd('Startify | NERDTree')
   elseif sp_opt.filemanager == 'defx' then
     sp.cmd('Startify | Defx -new')
+  elseif sp_opt.filemanager == 'neo-tree' then
+    sp.cmd('Startify | NeoTreeFocusToggle')
   end
 end
 
@@ -334,21 +343,38 @@ function M.RootchandgeCallback()
   -- let b:_spacevim_project_name = g:_spacevim_project_name
   fn.setbufvar('%', '_spacevim_project_name', project.name)
   for _, Callback in pairs(project_callback) do
-    logger.debug('     run callback:' .. Callback)
-    fn.call(Callback, {})
+    if type(Callback.func) == 'string' then
+      if Callback.desc then
+        logger.debug('     run callback:' .. Callback.desc)
+      else
+        logger.debug('     run callback:' .. Callback.func)
+      end
+      fn.call(Callback.func, {})
+    elseif type(Callback.func) == 'function' then
+      if Callback.desc then
+        logger.debug('     run callback:' .. Callback.desc)
+      else
+        logger.debug('     run callback:' .. tostring(Callback.func))
+      end
+      pcall(Callback.func)
+    end
   end
 end
 
-function M.reg_callback(func)
-  if type(func) == 'string' then
-    if string.match(func, '^function%(') ~= nil then
-      table.insert(project_callback, string.sub(func, 11, -3))
-    else
-      table.insert(project_callback, func)
+function M.reg_callback(func, ...)
+  local callback = { func = func }
+  local argv = { ... }
+  if argv[1] then
+    callback.desc = argv[1]
+  end
+  if type(callback.func) == 'string' or type(callback.func) == 'function' then
+    if type(callback.func) == 'string' and string.match(callback.func, '^function%(') ~= nil then
+      callback.func = string.sub(callback.func, 11, -3)
     end
+    table.insert(project_callback, callback)
   else
-    logger.warn('type of func is:' .. type(func))
-    logger.warn('can not register the project callback: ' .. fn.string(func))
+    logger.warn('type of func is:' .. type(callback.func))
+    logger.warn('can not register the project callback: ' .. fn.string(callback.func))
   end
 end
 
@@ -392,8 +418,11 @@ function M.current_root()
     or bufname:match('denite-filter')
     or bufname:match('%[defx%]')
     or bufname:match('^git://') -- this is for git.vim
+    or vim.fn.empty(bufname) == 1
+    or bufname:match('^neo%-tree') -- this is for neo-tree.nvim
+    or vim.o.autochdir
   then
-    return
+    return fn.getcwd()
   end
   if
     table.concat(sp_opt.project_rooter_patterns, ':')
@@ -436,5 +465,10 @@ function M.current_root()
   end
   return rootdir
 end
+
+function M.get_project_history() -- {{{
+  return project_paths
+end
+-- }}}
 
 return M

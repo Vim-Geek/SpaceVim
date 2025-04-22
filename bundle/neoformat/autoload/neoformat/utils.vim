@@ -7,7 +7,12 @@
 "=============================================================================
 
 
-let s:LOGGER =SpaceVim#logger#derive('neoformat')
+let s:LOGGER = SpaceVim#logger#derive('neoformat')
+let s:NT = SpaceVim#api#import('notify')
+let s:formatopt = SpaceVim#layers#format#get_format_option()
+let s:NT.notify_max_width = s:formatopt.format_notify_width
+let s:NT.timeout = s:formatopt.format_notify_timeout
+
 
 function! neoformat#utils#log(msg) abort
     call s:LOGGER.info(a:msg)
@@ -39,9 +44,11 @@ endfunction
 
 function! s:better_echo(msg) abort
     if type(a:msg) != type('')
-        echom 'Neoformat: ' . string(a:msg)
+        call s:LOGGER.debug('Neoformat: ' . string(a:msg))
+        call s:NT.notify('Neoformat: ' . string(a:msg))
     else
-        echom 'Neoformat: ' . a:msg
+        call s:LOGGER.debug('Neoformat: ' . a:msg)
+        call s:NT.notify('Neoformat: ' . a:msg)
     endif
 endfunction
 

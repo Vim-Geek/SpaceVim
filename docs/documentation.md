@@ -7,11 +7,9 @@ description: "General documentation about how to use SpaceVim, including the qui
 
 <!-- vim-markdown-toc GFM -->
 
-- [Core Pillars](#core-pillars)
-- [Highlighted features](#highlighted-features)
+- [Highlighted Features](#highlighted-features)
 - [Screenshots](#screenshots)
-- [Concepts](#concepts)
-- [Who can benefit from this?](#who-can-benefit-from-this)
+- [New Concepts](#new-concepts)
 - [Update and Rollback](#update-and-rollback)
   - [Update SpaceVim itself](#update-spacevim-itself)
   - [Update plugins](#update-plugins)
@@ -49,9 +47,11 @@ description: "General documentation about how to use SpaceVim, including the qui
     - [Commenting](#commenting)
     - [Undo tree](#undo-tree)
     - [Multi-Encodings](#multi-encodings)
-  - [Window manager](#window-manager)
+  - [Windows and Tabs](#windows-and-tabs)
+    - [Windows Manager](#windows-manager)
     - [General Editor windows](#general-editor-windows)
     - [Window manipulation key bindings](#window-manipulation-key-bindings)
+    - [Tabs manipulation key bindings](#tabs-manipulation-key-bindings)
   - [Buffers and Files](#buffers-and-files)
     - [Buffers manipulation key bindings](#buffers-manipulation-key-bindings)
     - [Create a new empty buffer](#create-a-new-empty-buffer)
@@ -97,65 +97,31 @@ description: "General documentation about how to use SpaceVim, including the qui
 
 <!-- vim-markdown-toc -->
 
-## Core Pillars
+## Highlighted Features
 
-Four core pillars: Mnemonic, Discoverable, Consistent and “Crowd-Configured”.
-
-If any of these core pillars are violated open an issue, and we’ll try our best to fix it.
-
-**Mnemonic**
-
-Key bindings are organized using mnemonic prefixes,
-like b for buffer, p for project, s for search, h for help,
-etc…
-
-**Discoverable**
-
-Innovative real-time display of available key bindings.
-Simple query system to quickly find available layers,
-packages, and more.
-
-**Consistent**
-
-Similar functionalities have the same key bindings
-everywhere thanks to a clearly defined set of conventions.
-Documentation is mandatory for any layer that ships with
-SpaceVim.
-
-**Crowd-Configured**
-
-Community-driven configuration provides curated
-packages tuned by power users and bugs are fixed quickly.
-
-## Highlighted features
-
-- **Modularization:** plugins and functions are organized in [layers](https://spacevim.org/layers/).
-- **Compatible api:** a series of [compatible APIs](https://spacevim.org/api/) for Vim/Neovim.
-- **Great documentation:** online [documentation](https://spacevim.org/documentation/) and `:h SpaceVim`.
-- **Better experience:** rewrite core plugins using lua
-- **Beautiful UI:** you'll love the awesome UI and its useful features.
-- **Mnemonic key bindings:** key binding guide will be displayed automatically
-- **Fast boot time:** Lazy-load 90% of plugins with [dein.vim](https://github.com/Shougo/dein.vim)
-- **Lower the risk of RSI:** by heavily using the space bar instead of modifiers.
-- **Consistent experience:** consistent experience between terminal and gui
+- **Modularization:** Plugins are organized in [layers](https://spacevim.org/layers/).
+- **Compatible API:** A series of [compatible API](https://spacevim.org/api/) for Vim/Neovim.
+- **Great documentation:** Everything is documented in `:h SpaceVim`.
+- **Better experience:** Most of the core plugins have been rewritten using Lua.
+- **Beautiful UI:** The interface has been carefully designed.
+- **Mnemonic key bindings:** Key bindings are organized using mnemonic prefixes.
+- **Lower the risk of RSI:** Heavily using the `<Space>` key instead of modifiers.
 
 ## Screenshots
 
 **welcome page**
 
-![welcome-page](https://user-images.githubusercontent.com/13142418/68079142-904e4280-fe1f-11e9-993e-b834ea3d39ea.png)
+![welcome-page](https://img.spacevim.org/68079142-904e4280-fe1f-11e9-993e-b834ea3d39ea.png)
 
 **workflow**
 
-![work-flow](https://cloud.githubusercontent.com/assets/296716/25455341/6af0b728-2a9d-11e7-9721-d2a694dde1a8.png)
+![work-flow](https://img.spacevim.org/workflow.png)
 
-Neovim on iTerm2 using the SpaceVim color scheme _base16-solarized-dark_
+- colorscheme: one
+- windows: Git remotes, outline, Todos, Code runner, Terminal, file explore.
+- code completion engine: nvim-cmp
 
-Depicts a common frontend development scenario with JavaScript (jQuery), SASS, and PHP buffers.
-
-Non-code buffers show a Neovim terminal, a TagBar window, a Vimfiler window and a TernJS definition window.
-
-## Concepts
+## New Concepts
 
 **Transient-states**
 
@@ -168,15 +134,7 @@ transient state buffer. Additional information may as well be displayed in it.
 
 Move Text Transient State:
 
-![Move Text Transient State](https://user-images.githubusercontent.com/13142418/28489559-4fbc1930-6ef8-11e7-9d5a-716fe8dbb881.png)
-
-## Who can benefit from this?
-
-- **Elementary** Vim users.
-- Vim users pursuing a beautiful appearance.
-- Vim users wanting to lower the [risk of RSI](http://en.wikipedia.org/wiki/Repetitive_strain_injury).
-- Vim users wanting to learn a different way to edit files.
-- Vim users wanting a simple but deep configuration system.
+![Move Text Transient State](https://img.spacevim.org/28489559-4fbc1930-6ef8-11e7-9d5a-716fe8dbb881.png)
 
 ## Update and Rollback
 
@@ -242,12 +200,9 @@ You can also use `SPC h I` to open a buffer with SpaceVim's issue template.
 ## Custom Configuration
 
 The very first time SpaceVim starts up, it will ask you to
-choose a mode,
-[`basic mode`](https://github.com/SpaceVim/SpaceVim/blob/master/mode/basic.toml)
-or [`dark powered mode`](https://github.com/SpaceVim/SpaceVim/blob/master/mode/dark_powered.toml).
+choose a mode, `basic mode` or `dark powered mode`.
 Then it will create a `SpaceVim.d/init.toml` in your
-`HOME` directory. All the configuration files can be stored in the
-`~/.SpaceVim.d/` directory.
+`$HOME` directory. All the user configuration files are stored in `~/.SpaceVim.d/` directory.
 
 `~/.SpaceVim.d/` will be added to `&runtimepath`.
 
@@ -327,11 +282,11 @@ you can use SpaceVim `disabled_plugins` in the `[options]` section of your confi
 
 ### Bootstrap Functions
 
-SpaceVim provides two kinds of bootstrap functions
-for custom configurations and key bindings,
-namely `bootstrap_before` and `bootstrap_after`.
+Due to the limitations of toml syntax, SpaceVim provides two bootstrap function options
+`bootstrap_before` and `bootstrap_after`, which specify two Vim custom functions.
 
-To enable them you need to add the following into lines to the `[options]` section of your configuration file.
+To enable this feature you need to add the following config to the `[options]` section of your
+configuration file `~/.SpaceVim.d/init.toml`.
 
 ```toml
 [options]
@@ -340,7 +295,8 @@ To enable them you need to add the following into lines to the `[options]` secti
 ```
 
 The difference is that the bootstrap before function will be called before SpaceVim core,
-and the bootstrap after function is called on autocmd `VimEnter`.
+and the bootstrap after function is called on autocmd `VimEnter`, so you can override defaults
+key bindings in `bootstrap_after` function.
 
 The bootstrap functions should be placed in the `autoload` directory
 in `~/.SpaceVim.d/`. In our case, create file `~/.SpaceVim.d/autoload/myspacevim.vim`
@@ -356,7 +312,10 @@ endfunction
 
 function! myspacevim#after() abort
     " you can remove key binding in bootstrap_after function
-    iunmap kj
+    " for example, remove F3 which is to open file tree by default.
+    unmap <F3>
+    " create new key binding to open file tree.
+    nnoremap <silent> <F3> :Defx<Cr> 
 endfunction
 ```
 
@@ -549,13 +508,14 @@ enable_guicolors = false
 
 ### Font
 
-The default font used by SpaceVim is [SourceCodePro Nerd Font Mono](https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/SourceCodePro.zip).
+The default font used by SpaceVim is [Sauce Code Nerd Font](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro).
 It is recommended to install it on your system if you wish to use it.
 
 To change the default font set the variable `guifont` in your `~/.SpaceVim.d/init.toml` file. By default its value is:
 
 ```toml
-guifont = "SourceCodePro Nerd Font Mono:h11"
+[options]
+    guifont = "SauceCodePro Nerd Font Mono:h11"
 ```
 
 If the specified font is not found, the fallback one will be used (depends on your system).
@@ -567,7 +527,7 @@ Also note that changing this value has no effect if you are running Vim/Neovim i
 | ------------ | ------------------------- |
 | `SPC z .`    | open font transient state |
 
-![font transient state](https://user-images.githubusercontent.com/13142418/170854166-bbcd5448-47d3-4fb5-ab7a-97540140d975.png)
+![font transient state](https://img.spacevim.org/170854166-bbcd5448-47d3-4fb5-ab7a-97540140d975.png)
 
 In font transient state:
 
@@ -607,27 +567,27 @@ To enable the scrollbar, you need to change `enable_scrollbar` option in [ui lay
 
 Some UI indicators can be toggled on and off (toggles start with t and T):
 
-| Key Bindings | Descriptions                                                               |
-| ------------ | -------------------------------------------------------------------------- |
-| `SPC t 8`    | highlight characters past the 80th column                                  |
-| `SPC t a`    | toggle autocomplete (only available with `autocomplete_method = deoplete`) |
-| `SPC t f`    | display the fill column (by default `max_column` is 120)                   |
-| `SPC t h h`  | toggle highlight of the current line                                       |
-| `SPC t h i`  | toggle highlight indentation levels                                        |
-| `SPC t h c`  | toggle highlight current column                                            |
-| `SPC t h s`  | toggle syntax highlighting                                                 |
-| `SPC t i`    | toggle indentation guide at point                                          |
-| `SPC t n`    | toggle line numbers                                                        |
-| `SPC t b`    | toggle background                                                          |
-| `SPC t c`    | toggle conceal                                                             |
-| `SPC t p`    | toggle paste mode                                                          |
-| `SPC t P`    | toggle auto parens mode                                                    |
-| `SPC t t`    | open tabs manager                                                          |
-| `SPC T ~`    | display ~ in the fringe on empty lines                                     |
-| `SPC T F`    | toggle frame fullscreen                                                    |
-| `SPC T f`    | toggle display of the fringe                                               |
-| `SPC T m`    | toggle menu bar                                                            |
-| `SPC T t`    | toggle tool bar                                                            |
+| Key Bindings      | Descriptions                                                               |
+| ----------------- | -------------------------------------------------------------------------- |
+| `SPC t 8`         | highlight characters past the 80th column                                  |
+| `SPC t a`         | toggle autocomplete (only available with `autocomplete_method = deoplete`) |
+| `SPC t f`         | display the fill column (by default `max_column` is 120)                   |
+| `SPC t h h`       | toggle highlight of the current line                                       |
+| `SPC t h i`       | toggle highlight indentation levels                                        |
+| `SPC t h c`       | toggle highlight current column                                            |
+| `SPC t h s`       | toggle syntax highlighting                                                 |
+| `SPC t i`         | toggle indentation guide at point                                          |
+| `SPC t n`         | toggle line numbers                                                        |
+| `SPC t b`         | toggle background                                                          |
+| `SPC t c`         | toggle conceal                                                             |
+| `SPC t p`         | toggle paste mode                                                          |
+| `SPC t P`         | toggle auto parens mode                                                    |
+| `SPC t t`         | open tabs manager                                                          |
+| `SPC T ~`         | display ~ in the fringe on empty lines                                     |
+| `SPC T F` / `F11` | toggle frame fullscreen                                                    |
+| `SPC T f`         | toggle display of the fringe                                               |
+| `SPC T m`         | toggle menu bar                                                            |
+| `SPC T t`         | toggle tool bar                                                            |
 
 ### Statusline
 
@@ -639,7 +599,7 @@ The `core#statusline` layer provides a heavily customized powerline with the fol
 - show the index of search results
 - toggle syntax checking info
 - toggle battery info
-- toggle minor mode lighters
+- toggle major mode lighters
 - show VCS information (branch, hunk summary) (requires `git` and `VersionControl` layers)
 
 | Key Bindings | Descriptions                                 |
@@ -664,8 +624,8 @@ Some elements can be dynamically toggled:
 | `SPC t m b`  | toggle the battery status (need to install acpi)                    |
 | `SPC t m c`  | toggle the org task clock (available in org layer)(TODO)            |
 | `SPC t m i`  | toggle the input method                                             |
-| `SPC t m m`  | toggle the minor mode lighters                                      |
-| `SPC t m M`  | toggle the major mode                                               |
+| `SPC t m m`  | toggle the major mode lighters                                      |
+| `SPC t m M`  | toggle the filetype section                                         |
 | `SPC t m n`  | toggle the cat! (If colors layer is declared in your dotfile)(TODO) |
 | `SPC t m p`  | toggle the cursor position                                          |
 | `SPC t m t`  | toggle the time                                                     |
@@ -679,7 +639,16 @@ By default SpaceVim uses nerd-fonts, which can be downloaded from their [website
 
 **syntax checking integration:**
 
-When syntax checking minor mode is enabled, a new element appears showing the number of errors and warnings.
+When syntax checking major mode is enabled, a new element appears showing the number of errors and warnings.
+
+The default highlight group and colors are:
+
+| highlight group             | color     |
+| --------------------------- | --------- |
+| `SpaceVim_statusline_error` | `#ffc0b9` |
+| `SpaceVim_statusline_warn`  | `#fce094` |
+| `SpaceVim_statusline_info`  | `#8cf8f7` |
+| `SpaceVim_statusline_hint`  | `#a6dbff` |
 
 **Search index integration:**
 
@@ -687,7 +656,7 @@ Search index shows the number of occurrences when performing a search via `/` or
 SpaceVim integrates the search status nicely by displaying it temporarily when `n` or `N` are being pressed.
 See the 20/22 segment in the screenshot below.
 
-![search status](https://cloud.githubusercontent.com/assets/13142418/26313080/578cc68c-3f3c-11e7-9259-a27419d49572.png)
+![search status](https://img.spacevim.org/578cc68c-3f3c-11e7-9259-a27419d49572.png)
 
 Search index is provided by `incsearch` layer, to enable this layer:
 
@@ -721,17 +690,17 @@ It is possible to easily customize the statusline separator by setting the `stat
 
 Here is an exhaustive set of screenshots for all the available separators:
 
-| Separator | Screenshot                                                                                                                |
-| --------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `arrow`   | ![separator-arrow](https://cloud.githubusercontent.com/assets/13142418/26234639/b28bdc04-3c98-11e7-937e-641c9d85c493.png) |
-| `curve`   | ![separator-curve](https://cloud.githubusercontent.com/assets/13142418/26248272/42bbf6e8-3cd4-11e7-8792-665447040f49.png) |
-| `slant`   | ![separator-slant](https://cloud.githubusercontent.com/assets/13142418/26248515/53a65ea2-3cd5-11e7-8758-d079c5a9c2d6.png) |
-| `nil`     | ![separator-nil](https://cloud.githubusercontent.com/assets/13142418/26249776/645a5a96-3cda-11e7-9655-0aa1f76714f4.png)   |
-| `fire`    | ![separator-fire](https://cloud.githubusercontent.com/assets/13142418/26274142/434cdd10-3d75-11e7-811b-e44cebfdca58.png)  |
+| Separator | Screenshot                                                                            |
+| --------- | ------------------------------------------------------------------------------------- |
+| `arrow`   | ![separator-arrow](https://img.spacevim.org/b28bdc04-3c98-11e7-937e-641c9d85c493.png) |
+| `curve`   | ![separator-curve](https://img.spacevim.org/42bbf6e8-3cd4-11e7-8792-665447040f49.png) |
+| `slant`   | ![separator-slant](https://img.spacevim.org/53a65ea2-3cd5-11e7-8758-d079c5a9c2d6.png) |
+| `nil`     | ![separator-nil](https://img.spacevim.org/645a5a96-3cda-11e7-9655-0aa1f76714f4.png)   |
+| `fire`    | ![separator-fire](https://img.spacevim.org/434cdd10-3d75-11e7-811b-e44cebfdca58.png)  |
 
-**Minor Modes:**
+**major modes:**
 
-The minor mode area can be toggled on and off with `SPC t m m`.
+The major mode area can be toggled on and off with `SPC t m m`.
 
 Unicode symbols are displayed by default. Add `statusline_unicode = false` to your custom configuration file to use ASCII characters instead (may be useful in the terminal if you cannot set an appropriate font).
 
@@ -745,6 +714,15 @@ The letters displayed in the statusline correspond to the key bindings used to t
 | `SPC t S`    | Ⓢ       | S     | enabled in spell checking                       |
 | `SPC t w`    | ⓦ       | w     | whitespace mode (highlight trailing whitespace) |
 | `SPC t W`    | Ⓦ       | W     | wrap line mode                                  |
+
+The status of major mode will be cached, the cache will be loaded when spacevim startup.
+If you want to disable major mode cache, you need to charge the layer option of `core#statusline` layer.
+
+```toml
+[[layers]]
+  name = 'core#statusline'
+  major_mode_cache = false
+```
 
 **colorscheme of statusline:**
 
@@ -845,6 +823,13 @@ of them will be listed on the tabline. Each item can be quickly accessed by usin
 | `<Leader> 9` | Jump to index 9 on tabline                      |
 | `g r`        | Switch to alternate tab (switch back and forth) |
 
+The following two key bindings require neovim v0.10.0+.
+
+| Key Bindings       | Descriptions                     |
+| ------------------ | -------------------------------- |
+| `Ctrl-Shift-Right` | move current buffer to the right |
+| `Ctrl-Shift-Left`  | move current buffer to the left  |
+
 **Note:** `SPC Tab` is the key binding for switching to alternate buffer.
 Read [Buffers and Files](#buffers-and-files) section for more info.
 
@@ -888,6 +873,7 @@ To change the filemanager plugin insert the following to the `[options]` section
     # - nerdtree (default)
     # - vimfiler: you need to build the vimproc.vim in bundle/vimproc.vim directory
     # - defx: requires +py3 feature
+    # - neo-tree: require neovim 0.7.0
     filemanager = "nerdtree"
 ```
 
@@ -896,7 +882,7 @@ this feature may make filetree slow, so it is not enabled by default.
 To enable this feature, add `enable_filetree_gitstatus = true`
 to your custom configuration file. Here is a picture of this feature:
 
-![file-tree](https://user-images.githubusercontent.com/13142418/80496111-5065b380-899b-11ea-95c7-02af4d304aaf.png)
+![file-tree](https://img.spacevim.org/80496111-5065b380-899b-11ea-95c7-02af4d304aaf.png)
 
 There is also an option to configure show/hide the file tree, default to show. To hide the file tree by default, you can use the `enable_vimfiler_welcome` in the `[options]` section:
 
@@ -946,7 +932,7 @@ Navigation is centered on the `hjkl` keys with the hope of providing a fast navi
 | `<`                   | decrease filetree screenwidth                     |
 | `<Home>`              | Jump to first line                                |
 | `<End>`               | Jump to last line                                 |
-| `Ctrl-Home`           | Switch to project root directory                  |
+| `Ctrl-h`              | Switch to project root directory                  |
 | `Ctrl-r`              | Redraw                                            |
 
 #### Open file with file tree.
@@ -1033,8 +1019,9 @@ can be used in command line mode:
 
 ### Mappings guide
 
-A guide buffer is displayed each time the prefix key is pressed in normal mode. It lists the available key bindings and their short descriptions.
-The prefix can be `[SPC]`, `[WIN]` and `<Leader>`.
+The mapping guide windows will be opened each time the prefix key is pressed
+in normal/visual mode. It will list all available key bindings and the short
+descriptions. The prefix can be `[SPC]`, `[WIN]` or `<Leader>`.
 
 The prefixes are mapped to the following keys by default:
 
@@ -1063,7 +1050,7 @@ You can change the delay by adding vim option `'timeoutlen'` to your bootstrap f
 
 For example, after pressing `<Space>` in normal mode, you will see:
 
-![mapping-guide](https://cloud.githubusercontent.com/assets/13142418/25778673/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
+![mapping-guide](https://img.spacevim.org/ae8c3168-3337-11e7-8536-ee78d59e5a9c.png)
 
 This guide shows you all the available key bindings that begin with `[SPC]`, you can type `b` for all the buffer mappings, `p` for project mappings, etc.
 
@@ -1093,9 +1080,19 @@ It is possible to search for specific key bindings by pressing `?` in the root o
 
 To narrow the list down, just insert the mapping keys or descriptions of what mappings you want, Unite/Denite will fuzzy find the mappings, to find buffer related mappings:
 
-![unite-mapping](https://cloud.githubusercontent.com/assets/13142418/25779196/2f370b0a-3345-11e7-977c-a2377d23286e.png)
+![unite-mapping](https://img.spacevim.org/2f370b0a-3345-11e7-977c-a2377d23286e.png)
 
 Then use `<Tab>` or `<Up>` and `<Down>` to select the mapping, press `<Enter>` to execute that command.
+
+**Mapping guide theme:**
+
+The default mapping guide theme is `leaderguide`, which is same as [vim-leaderguide](https://github.com/hecal3/vim-leader-guide), there is alse another available theme called `whichkey`. To set the mapping guide theme, use following snippet:
+
+```toml
+[options]
+    # the value can be `leaderguide` or `whichkey`
+    leader_guide_theme = 'whichkey'
+```
 
 ### Editing
 
@@ -1360,7 +1357,9 @@ set enc=utf-8
 write
 ```
 
-### Window manager
+### Windows and Tabs
+
+#### Windows Manager
 
 Window manager key bindings can only be used in normal mode. The default leader `[WIN]` is `s`, you
 can change it via `windows_leader` in the `[options]` section:
@@ -1455,35 +1454,41 @@ Windows manipulation commands (start with `w`):
 | `SPC w W`             | select window using vim-choosewin                                             |
 | `SPC w x`             | exchange current window with next one                                         |
 
+#### Tabs manipulation key bindings
+
+Tab manipulation commands (start with `F`):
+
+| Key Bindings | Descriptions      |
+| ------------ | ----------------- |
+| `SPC F d`    | close current tab |
+| `SPC F D`    | close other tabs  |
+| `SPC F n`    | create a new tab  |
+
 ### Buffers and Files
 
 #### Buffers manipulation key bindings
 
 Buffer manipulation commands (start with `b`):
 
-| Key Bindings         | Descriptions                                                                   |
-| -------------------- | ------------------------------------------------------------------------------ |
-| `SPC <Tab>`          | switch to alternate buffer in the current window (switch back and forth)       |
-| `SPC b .`            | buffer transient state                                                         |
-| `SPC b b`            | switch to a buffer (via denite/unite)                                          |
-| `SPC b d`            | kill the current buffer (does not delete the visited file)                     |
-| `SPC u SPC b d`      | kill the current buffer and window (does not delete the visited file) (TODO)   |
-| `SPC b D`            | kill a visible buffer using vim-choosewin                                      |
-| `SPC u SPC b D`      | kill a visible buffer and its window using ace-window(TODO)                    |
-| `SPC b Ctrl-d`       | kill other buffers                                                             |
-| `SPC b Ctrl-Shift-d` | kill buffers using a regular expression                                        |
-| `SPC b e`            | erase the content of the buffer (ask for confirmation)                         |
-| `SPC b h`            | open _SpaceVim_ home buffer                                                    |
-| `SPC b n`            | switch to next buffer avoiding special buffers                                 |
-| `SPC b m`            | open _Messages_ buffer                                                         |
-| `SPC b o`            | kill all saved buffers and windows except the current one                      |
-| `SPC b p`            | switch to previous buffer avoiding special buffers                             |
-| `SPC b P`            | copy clipboard and replace buffer (useful when pasting from a browser)         |
-| `SPC b R`            | revert the current buffer (reload from disk)                                   |
-| `SPC b s`            | switch to the _scratch_ buffer (create it if needed)                           |
-| `SPC b w`            | toggle read-only (writable state)                                              |
-| `SPC b Y`            | copy whole buffer to clipboard (useful when copying to a browser)              |
-| `z f`                | Make current function or comments visible in buffer as much as possible (TODO) |
+| Key Bindings         | Descriptions                                                             |
+| -------------------- | ------------------------------------------------------------------------ |
+| `SPC <Tab>`          | switch to alternate buffer in the current window (switch back and forth) |
+| `SPC b .`            | buffer transient state                                                   |
+| `SPC b b`            | switch to a buffer (via denite/unite)                                    |
+| `SPC b d`            | kill the current buffer (does not delete the visited file)               |
+| `SPC b D`            | kill a visible buffer using vim-choosewin                                |
+| `SPC b Ctrl-d`       | kill other buffers                                                       |
+| `SPC b Ctrl-Shift-d` | kill buffers using a regular expression                                  |
+| `SPC b e`            | erase the content of the buffer (ask for confirmation)                   |
+| `SPC b n`            | switch to next buffer avoiding special buffers                           |
+| `SPC b m`            | open _Messages_ buffer                                                   |
+| `SPC b o`            | kill all saved buffers and windows except the current one                |
+| `SPC b p`            | switch to previous buffer avoiding special buffers                       |
+| `SPC b P`            | copy clipboard and replace buffer (useful when pasting from a browser)   |
+| `SPC b R`            | revert the current buffer (reload from disk)                             |
+| `SPC b s`            | switch to the _scratch_ buffer (create it if needed)                     |
+| `SPC b w`            | toggle read-only (writable state)                                        |
+| `SPC b Y`            | copy whole buffer to clipboard (useful when copying to a browser)        |
 
 #### Create a new empty buffer
 
@@ -1536,7 +1541,7 @@ so you need to put the scoop binary path before `C:\WINDOWS\system32` in `PATH`.
 After pressing `SPC f /`, the find window will be opened. It is going to run `find` or `fd` command asynchronously.
 By default, `find` is the default tool, you can use `ctrl-e` to switch tools.
 
-![find](https://user-images.githubusercontent.com/13142418/97999590-79717000-1e26-11eb-91b1-458ab30d6254.gif)
+![find](https://img.spacevim.org/97999590-79717000-1e26-11eb-91b1-458ab30d6254.gif)
 
 To change the default file searching tool, you can use `file_searching_tools` in the `[options]` section.
 It is `[]` by default.
@@ -1781,6 +1786,25 @@ Key bindings in FlyGrep buffer:
 | `Ctrl-k`            | remove the Line after the cursor   |
 | `Ctrl-a` / `<Home>` | Go to the beginning of the line    |
 | `Ctrl-e` / `<End>`  | Go to the end of the line          |
+
+The next version of FlyGrep.vim is WIP, If you want to have a try. Set `flygrep_next_version` to `true`.
+This option maybe removed when `flygrep.nvim` development is done.
+
+```
+[options]
+  flygrep_next_version = true
+```
+
+When this option is `true`, `SPC s /` and `SPC s P` will use `flygrep.nvim`. And the key binding in `flygrep.nvim` window is:
+
+| Key bindings | descretion                         |
+| ------------ | ---------------------------------- |
+| `<Enter>`    | open cursor item                   |
+| `<Tab>`      | next item                          |
+| `<S-Tab>`    | previous item                      |
+| `<C-s>`      | open item in split window          |
+| `<C-v>`      | open item in vertical split window |
+| `<C-t>`      | open item in new tabpage           |
 
 #### Persistent highlighting
 
@@ -2096,7 +2120,17 @@ here is an example of `.project_alt.json`:
 }
 ```
 
-instead of using `.project_alt.json`, `b:alternate_file_config`
+Instead of using json file, the alternate file manager also support toml file, for example:
+
+```toml
+["autoload/SpaceVim/layers/lang/*.vim"]
+    # You can use comments in toml file.
+    doc = "docs/layers/lang/{}.md"
+    test = "test/layer/lang/{}.vader"
+```
+
+If you do not want to use configuration file,
+or want to override the default configuration in alternate config file, `b:alternate_file_config`
 can be used in bootstrap function, for example:
 
 ```vim
@@ -2166,11 +2200,11 @@ tasks configuration.
 
 The `SPC p t l` will open the tasks manager windows, in the tasks manager windows, you can use `Enter` to run task under the cursor.
 
-![task_manager](https://user-images.githubusercontent.com/13142418/94822603-69d0c700-0435-11eb-95a7-b0b4fef91be5.png)
+![task_manager](https://img.spacevim.org/94822603-69d0c700-0435-11eb-95a7-b0b4fef91be5.png)
 
 If the `telescope` layer is loaded, you can also use `SPC p t f` to fuzzy find specific task, and run the select task.
 
-![fuzzy-task](https://user-images.githubusercontent.com/13142418/199057483-d5cce17c-2f06-436d-bf7d-24a78d0eeb11.png)
+![fuzzy-task](https://img.spacevim.org/199057483-d5cce17c-2f06-436d-bf7d-24a78d0eeb11.png)
 
 #### Custom tasks
 
@@ -2183,7 +2217,7 @@ and print the results to the runner window.
     args = ['hello world']
 ```
 
-![task hello world](https://user-images.githubusercontent.com/13142418/74582981-74049900-4ffd-11ea-9b38-7858042225b9.png)
+![task hello world](https://img.spacevim.org/74582981-74049900-4ffd-11ea-9b38-7858042225b9.png)
 
 To run the task in the background, you need to set `isBackground` to `true`:
 
@@ -2287,7 +2321,7 @@ Currently, SpaceVim can auto-detect tasks for npm.
 the tasks manager will parse the `package.json` file for npm packages.
 If you have cloned the [eslint-starter](https://github.com/spicydonuts/eslint-starter). for example, pressing `SPC p t r` shows the following list:
 
-![task-auto-detection](https://user-images.githubusercontent.com/13142418/75089003-471d2c80-558f-11ea-8aea-cbf7417191d9.png)
+![task-auto-detection](https://img.spacevim.org/75089003-471d2c80-558f-11ea-8aea-cbf7417191d9.png)
 
 #### Task provider
 
@@ -2326,9 +2360,46 @@ endfunction
 call SpaceVim#plugins#tasks#reg_provider(function('s:make_tasks'))
 ```
 
+The provider also can be implemented in lua, for example:
+
+```lua
+local task = require('spacevim.plugin.tasks')
+
+local function make_tasks()
+  if vim.fn.filereadable('Makefile') then
+    local subcmds = {}
+    local conf = {}
+    for _, v in ipairs(vim.fn.readfile('Makefile', '')) do
+      if vim.startwith(v, '.PHONY') then
+        table.insert(subcmds, v)
+      end
+    end
+    for _, subcmd in ipairs(subcmds) do
+      local comamnds = vim.fn.split(subcmd)
+      table.remove(commands, 1)
+      for _, cmd in ipairs(commands) do
+        conf = vim.tbl_extend('forces', conf, {
+          [cmd] = {
+            command = 'make',
+            args = {cmd}
+            isDetected = true,
+            detectedName = 'make:'
+          }
+        })
+      end
+    end
+    return conf
+  else
+    return {}
+  end
+end
+
+task.reg_provider(make_tasks)
+```
+
 With the above configuration, you will see the following tasks in the SpaceVim repo:
 
-![task-make](https://user-images.githubusercontent.com/13142418/75105016-084cac80-564b-11ea-9fe6-75d86a0dbb9b.png)
+![task-make](https://img.spacevim.org/75105016-084cac80-564b-11ea-9fe6-75d86a0dbb9b.png)
 
 ### Todo manager
 
@@ -2344,7 +2415,22 @@ Example:
    todo_prefix = '@'
 ```
 
-![todo manager](https://user-images.githubusercontent.com/13142418/61462920-0bd9d000-a9a6-11e9-8e1f-c70d6ec6ca1e.png)
+![todo manager](https://img.spacevim.org/61462920-0bd9d000-a9a6-11e9-8e1f-c70d6ec6ca1e.png)
+
+**Known bug:**
+
+If you are using windows, and `grep.exe` do not support searching in subdirectory. and the stderr will shown:
+
+```
+[     todo ] [00:00:03:107] [ Debug ] stderr: grep.exe: ./wiki: warning: recursive directory loop
+```
+
+To fix this issue, you need to install other searching tool, for example `rg`. and change the search_tools option:
+
+```
+[options]
+    search_tools = ["rg", "ag", "grep"]
+```
 
 ### Replace text with iedit
 
@@ -2417,7 +2503,7 @@ The default color for iedit is `red`/`green` which is based on the current color
 
 SpaceVim provides an asynchronous code runner plugin. In most language layers,
 the key binding `SPC l r` is defined for running the current buffer.
-To close the code runner windows, you can use `` Ctrl-`  `` key binding.
+To close the code runner windows, you can use ``Ctrl-` `` key binding.
 If you need to add new commands, you can use the bootstrap function. For example:
 Use `F5` to build the project asynchronously.
 
@@ -2460,39 +2546,39 @@ Key bindings within repl buffer:
 
 ### Highlight current symbol
 
-SpaceVim supports highlighting of the current symbol on demand and add a transient state to easily navigate and rename these symbols.
+SpaceVim supports highlighting current symbol on demand and add a transient
+state to easily navigate and rename these symbols.
 
-It is also possible to change the range of the navigation on the fly to:
+It is also possible to change the range of the navigation on the fly, the
+available ranges are:
 
-- buffer
-- function
-- visible area
+1. buffer: the whole buffer
+2. function: in current function
+3. visible area: in current visible area of the buffer
 
-To Highlight the current symbol under the cursor press `SPC s h`.
+The default key binding to Highlight the symbol under the cursor is `SPC s h`.
 
-Navigation between the highlighted symbols can be done with the commands:
+| Key Bindings | Descriptions                                  |
+| ------------ | --------------------------------------------- |
+| `*`          | highlight current symbol and jump forwards    |
+| `#`          | highlight current symbol and jump backwards   |
+| `SPC s e`    | start iedit mode on current symbol            |
+| `SPC s h`    | highlight current symbol within default range |
+| `SPC s H`    | highlight last symbol within default range    |
 
-| Key Bindings | Descriptions                                                                 |
-| ------------ | ---------------------------------------------------------------------------- |
-| `*`          | initiate navigation transient state on current symbol and jump forwards      |
-| `#`          | initiate navigation transient state on current symbol and jump backwards     |
-| `SPC s e`    | edit all occurrences of the current symbol                                   |
-| `SPC s h`    | highlight the current symbol and all its occurrence within the current range |
-| `SPC s H`    | go to the last searched occurrence of the last highlighted symbol            |
+In highlight symbol transient state, the following key bindings can be used:
 
-In highlight symbol transient state:
-
-| Key Bindings  | Descriptions                                                  |
-| ------------- | ------------------------------------------------------------- |
-| `e`           | edit occurrences (`*`)                                        |
-| `n`           | go to next occurrence                                         |
-| `N` / `p`     | go to previous occurrence                                     |
-| `b`           | search occurrence in all buffers                              |
-| `/`           | search occurrence in whole project                            |
-| `<Tab>`       | toggle highlight current occurrence                           |
-| `r`           | change range (function, display area, whole buffer)           |
-| `R`           | go to home occurrence (reset position to starting occurrence) |
-| Any other key | leave the navigation transient state                          |
+| Key Bindings  | Descriptions                         |
+| ------------- | ------------------------------------ |
+| `e`           | start iedit mode                     |
+| `n`           | go to next occurrence                |
+| `N` / `p`     | go to previous occurrence            |
+| `b`           | search occurrence in all buffers     |
+| `/`           | search occurrence in whole project   |
+| `<Tab>`       | toggle highlight current occurrence  |
+| `r`           | change range                         |
+| `R`           | go to home occurrence                |
+| Any other key | leave the navigation transient state |
 
 ### Error handling
 
@@ -2518,7 +2604,7 @@ Custom sign symbol:
 
 | Symbol | Descriptions | Custom options   |
 | ------ | ------------ | ---------------- |
-| `✖`    | Error        | `error_symbol`   |
+| `✖`   | Error        | `error_symbol`   |
 | `➤`    | warning      | `warning_symbol` |
 | `ⓘ`    | Info         | `info_symbol`    |
 
@@ -2550,7 +2636,4 @@ export PATH=$PATH:$HOME/.SpaceVim/bin
 ```
 
 Use `svc` to open a file in the existing Vim server, or use `nsvc` to open a file in the existing Neovim server.
-
-![server-and-client](https://user-images.githubusercontent.com/13142418/32554968-7164fe9c-c4d6-11e7-95f7-f6a6ea75e05b.gif)
-
-<!-- vim:set nowrap: -->
+![server-and-client](https://img.spacevim.org/32554968-7164fe9c-c4d6-11e7-95f7-f6a6ea75e05b.gif)

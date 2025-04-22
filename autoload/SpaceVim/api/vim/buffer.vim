@@ -32,6 +32,14 @@
 "     initfunc: the function which will be call after creating buffer
 "
 "     cmd: the ex command which will be run after the new buffer is created
+"
+" get_option(bufnr, name)
+"
+" Gets a buffer option value. 
+"
+" set_option(buf, opt, value)  
+"
+" Set a buffer option value.
 
 
 let s:self = {}
@@ -63,6 +71,19 @@ function! s:self.bufnr(...) abort
       return bufnr('%')
     else
       return call('bufnr', a:000)
+    endif
+  endif
+endfunction
+
+" bufname needs atleast one argv before patch-8.1.1924 has('patch-8.1.1924')
+function! s:self.bufname(...) abort
+  if has('patch-8.1.1924')
+    return call('bufname', a:000)
+  else
+    if a:0 ==# 0
+      return bufname('%')
+    else
+    return call('bufname', a:000)
     endif
   endif
 endfunction
@@ -248,6 +269,10 @@ lines = vim.eval("a:replacement")
 vim.buffers[bufnr][start_line:end_line] = lines
 EOF
   elseif has('python3')
+    " https://github.com/vim/vim/issues/3117
+    " https://github.com/Azure/WALinuxAgent/issues/2326
+    " https://github.com/powerline/powerline/issues/1925#issuecomment-402635097
+  silent! python3 1
 py3 << EOF
 import vim
 import string
@@ -311,8 +336,6 @@ endfunction
 function! s:self.add_highlight(bufnr, hl, line, col, long) abort
   if exists('*nvim_buf_add_highlight')
     call nvim_buf_add_highlight(a:bufnr, 0, a:hl, a:line, a:col, a:col + a:long)
-  else
-    call SpaceVim#logger#warn('vim#buffer.add_highlight api only support neovim', 0)
   endif
 endfunction
 

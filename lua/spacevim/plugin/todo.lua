@@ -11,6 +11,8 @@ local M = {}
 local sys = require('spacevim.api').import('system')
 local reg = require('spacevim.api').import('vim.regex')
 
+local project_manager_registered = false
+
 local bufnr = -1
 local todo_jobid = -1
 local todos = {}
@@ -27,7 +29,9 @@ local logger = require('spacevim.logger').derive('todo')
 
 local jobstart = vim.fn.jobstart
 
+-- the labels_partten is used for viml function: matchstr etc
 local labels_partten = ''
+-- labels_regex is for command line argv
 local labels_regex = ''
 
 local function empty(d) -- {{{
@@ -42,41 +46,74 @@ local function stderr(id, data, event) -- {{{
     return
   end
   for _, d in ipairs(data) do
-    logger.info('stderr: ' .. d)
+    logger.debug('stderr: ' .. d)
   end
 end
 -- }}}
+
+local function data_to_todo(d) -- {{{
+  logger.debug('stdout:' .. d)
+  local f = vim.split(d, ':%d+:')[1]
+  logger.debug('file is:' .. f)
+  local i, j = string.find(d, ':%d+:')
+  local line = string.sub(d, i + 1, j - 1)
+  logger.debug('line is:' .. line)
+  local column = string.sub(vim.fn.matchstr(d, [[\(:\d\+\)\@<=:\d\+:]]), 1, -2)
+  local label = string.sub(vim.fn.matchstr(d, labels_partten), #prefix + 1, -1)
+  logger.debug('label is:' .. label)
+  local title = vim.fn.get(vim.fn.split(d, prefix .. label), 1, '')
+  logger.debug('title is:' .. title)
+  return {
+    file = f,
+    line = line,
+    column = column,
+    title = title,
+    label = label,
+  }
+end
+-- }}}
+
 local function stdout(id, data, event) -- {{{
   if id ~= todo_jobid then
     return
   end
   for _, d in ipairs(data) do
     if not empty(d) then
-      logger.info('stdout:' .. d)
-      local f = vim.split(d, ':%d+:')[1]
-      local i, j = string.find(d, ':%d+:')
-      local line = string.sub(d, i + 1, j - 1)
-      local column = string.sub(vim.fn.matchstr(d, [[\(:\d\+\)\@<=:\d\+:]]), 1, -2)
-      local label = string.sub(vim.fn.matchstr(d, labels_partten), #prefix + 1, -1)
-      local title = vim.fn.get(vim.fn.split(d, label), 1, '')
-      table.insert(todos, {
-        file = f,
-        line = line,
-        column = column,
-        title = title,
-        label = label,
-      })
+      table.insert(todos, data_to_todo(d))
     end
   end
 end
 -- }}}
 local function open_todo() -- {{{
   local t = todos[vim.fn.line('.')]
-  vim.cmd('close')
+  if vim.g.spacevim_todo_close_list == 1 or vim.g.spacevim_todo_close_list == true then
+    vim.cmd('close')
+  end
   vim.cmd(winnr .. 'wincmd w')
   vim.cmd('e ' .. t.file)
   vim.fn.cursor(t.line, t.column)
   vim.cmd('noautocmd normal! :')
+end
+-- }}}
+--
+local function apply_to_quickfix() -- {{{
+  local qf = {}
+  for _, v in ipairs(todos) do
+    table.insert(qf, {
+      filename = v.file,
+      lnum = v.line,
+      col = v.column,
+      text = v.title,
+      type = v.label,
+    })
+  end
+  vim.fn.setqflist({}, 'r', {
+    title = 'Todos',
+    items = qf,
+  })
+  vim.cmd('close')
+  vim.cmd(winnr .. 'wincmd w')
+  vim.cmd('botright copen')
 end
 -- }}}
 
@@ -110,13 +147,13 @@ end
 local function max_len(t, k) -- {{{
   local l = 0
   for _, v in ipairs(t) do
-    l = math.max(#v[k], l) 
+    l = math.max(#v[k], l)
   end
   return l
 end
 -- }}}
 
-function exit(id, data, event) -- {{{
+local function on_exit(id, data, event) -- {{{
   if id ~= todo_jobid then
     return
   end
@@ -126,17 +163,27 @@ function exit(id, data, event) -- {{{
   local fw = max_len(todos, 'file') + 1
   local lines = {}
   for _, v in ipairs(todos) do
-    table.insert(lines, 
-      prefix .. v.label .. string.rep(' ', lw - #v.label) .. v.file .. string.rep(' ', fw - #v.file) .. v.title
+    table.insert(
+      lines,
+      prefix
+        .. v.label
+        .. string.rep(' ', lw - #v.label)
+        .. v.file
+        .. string.rep(' ', fw - #v.file)
+        .. v.title
     )
   end
   local ma = vim.fn.getbufvar(bufnr, '&ma')
-  vim.fn.setbufvar(bufnr,'&ma', 1)
-  vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
-  vim.fn.setbufvar(bufnr,'&ma', ma)
+  vim.fn.setbufvar(bufnr, '&ma', 1)
+  -- update the buffer only when the buffer exists.
+  if vim.fn.bufexists(bufnr) == 1 then
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+  end
+  vim.fn.setbufvar(bufnr, '&ma', ma)
 end
 -- }}}
 
+-- labels to command line regex
 local function get_labels_regex() -- {{{
   local sep = ''
   if grep_default_exe == 'rg' then
@@ -160,7 +207,21 @@ end
 -- }}}
 
 local function get_labels_partten() -- {{{
-  return reg.parser(get_labels_regex(), false)
+  local sep = '|'
+  local rst = [[\v]]
+  local i = 1
+  local p = prefix
+  if prefix == '@' then
+    p = [[\@]]
+  end
+  for _, v in ipairs(labels) do
+    rst = rst .. p .. v .. [[>]]
+    if i ~= #labels then
+      rst = rst .. sep
+    end
+    i = i + 1
+  end
+  return rst
 end
 -- }}}
 
@@ -193,7 +254,7 @@ local function update_todo_content() -- {{{
   todo_jobid = jobstart(argv, {
     on_stdout = stdout,
     on_stderr = stderr,
-    on_exit = exit,
+    on_exit = on_exit,
   })
   logger.info('jobid:' .. todo_jobid)
 end
@@ -214,14 +275,27 @@ local function open_win() -- {{{
   bufnr = vim.fn.bufnr('%')
   update_todo_content()
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Enter>', '', {
-    callback = open_todo
-  } )
+    callback = open_todo,
+  })
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-q>', '', {
+    callback = apply_to_quickfix,
+  })
 end
 -- }}}
 
 function M.list() -- {{{
+  if not project_manager_registered then
+    require('spacevim.plugin.projectmanager').reg_callback(M.on_cwd_changed, 'update_todo_content')
+  end
   open_win()
 end
 -- }}}
+
+
+function M.on_cwd_changed()
+  if vim.api.nvim_buf_is_valid(bufnr) then
+    update_todo_content()
+  end
+end
 
 return M

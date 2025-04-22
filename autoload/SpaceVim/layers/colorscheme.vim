@@ -41,6 +41,10 @@
 "
 " SpaceVim is not gonna fix them since these should be in charge of each author.
 
+if exists('s:JSON')
+  finish
+endif
+
 let s:JSON = SpaceVim#api#import('data#json')
 
 function! SpaceVim#layers#colorscheme#plugins() abort
@@ -50,15 +54,15 @@ function! SpaceVim#layers#colorscheme#plugins() abort
         \ ['Gabirel/molokai', { 'merged' : 0 }],
         \ ['joshdick/onedark.vim', { 'merged' : 0 }],
         \ ['nanotech/jellybeans.vim', { 'merged' : 0 }],
-        \ ['rakr/vim-one', { 'merged' : 0 }],
         \ ['arcticicestudio/nord-vim', { 'merged' : 0 }],
         \ ['icymind/NeoSolarized', { 'merged' : 0 }],
-        \ ['w0ng/vim-hybrid', { 'merged' : 0 }],
         \ ['SpaceVim/vim-material', { 'merged' : 0}],
         \ ['srcery-colors/srcery-vim', { 'merged' : 0}],
         \ [ 'drewtempelmeyer/palenight.vim', {'merged': 0 }],
         \ ]
   call add(plugins, [g:_spacevim_root_dir . 'bundle/dracula', {'merged' : 0}])
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-one', {'merged' : 0}])
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-hybrid', {'merged' : 0}])
   "
   " TODO:
   " \ ['mhartington/oceanic-next', { 'merged' : 0 }],
@@ -168,6 +172,12 @@ function! SpaceVim#layers#colorscheme#health() abort
   call SpaceVim#layers#colorscheme#plugins()
   call SpaceVim#layers#colorscheme#config()
   return 1
+endfunction
+
+function! SpaceVim#layers#colorscheme#loadable() abort
+
+  return 1
+
 endfunction
 
 " function() wrapper

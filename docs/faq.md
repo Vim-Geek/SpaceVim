@@ -51,7 +51,7 @@ The following section will document how to install SpaceVim manually on Linux.
 First, you need to clone the repository to `~/.SpaceVim`.
 
 ```
-git clone https://github.com/SpaceVim/SpaceVim.git ~/.SpaceVim
+git clone https://spacevim.org/git/repos/SpaceVim/ ~/.SpaceVim
 ```
 
 Then, backup your old Neovim/Vim configuration file:
@@ -81,7 +81,7 @@ overwriting your own Vim configuration you can:
 Clone SpaceVim manually.
 
 ```sh
-git clone https://github.com/SpaceVim/SpaceVim.git ~/.SpaceVim
+git clone https://spacevim.org/git/repos/SpaceVim/ ~/.SpaceVim
 ```
 
 Then, start Vim via `vim -u ~/.SpaceVim/vimrc`. You can also put this alias into your bashrc.

@@ -18,11 +18,6 @@ You can only think about reading the part that is relevant to what you are going
   - [License](#license)
   - [Conventions](#conventions)
   - [Commit style guide](#commit-style-guide)
-  - [Pull Request](#pull-request)
-    - [Prefix of title](#prefix-of-title)
-    - [Workflow](#workflow)
-    - [Simple PRs](#simple-prs)
-    - [Complex PRs](#complex-prs)
   - [Contributing a layer](#contributing-a-layer)
     - [File header](#file-header)
     - [Author of a new layer](#author-of-a-new-layer)
@@ -30,6 +25,7 @@ You can only think about reading the part that is relevant to what you are going
   - [Contributing a keybinding](#contributing-a-keybinding)
     - [Language specified key bindings](#language-specified-key-bindings)
   - [Contributing a banner](#contributing-a-banner)
+- [Bundle plugins](#bundle-plugins)
 - [Build with SpaceVim](#build-with-spacevim)
 - [Newsletters](#newsletters)
 - [Changelog](#changelog)
@@ -39,8 +35,8 @@ You can only think about reading the part that is relevant to what you are going
 
 ## Contributing code
 
+The source code of spacevim is hosted at [github](https://github.com/SpaceVim/SpaceVim).
 Code and documentation contributions of any kind are welcome. 
-In any case, feel free to [chat with us](../community/#chat) to ask questions about contributing!
 
 ### License
 
@@ -126,60 +122,6 @@ refactor(tools#mpv)!: change default musics_directory
 BREAKING CHANGE: `~/Music` is standard on macOS and
 also on FreeDesktop's XDG.
 ```
-
-### Pull Request
-
-#### Prefix of title
-
-The title of a pull request should contain one of the following prefixes::
-
-- `Add:` Adding new features.
-- `Change:` Change default behaviors or the existing features.
-- `Fix:` Fix some bugs.
-- `Remove:` Remove some existing features.
-- `Doc:` Update the help files.
-- `Website:` Update the content of website.
-
-Here is an example:
-
-`Website: Update the lang#c layer page.`
-
-#### Workflow
-
-- Fork SpaceVim repository
-- Clone your repository
-
-```sh
-git clone ${YOUR_OWN_REPOSITORY_URL}
-```
-
-- Add upstream remote
-
-```sh
-git remote add upstream https://github.com/SpaceVim/SpaceVim.git
-```
-
-- Fetch upstream and rebase on top of upstream master
-
-```sh
-git fetch upstream
-git rebase upstream/master
-```
-
-#### Simple PRs
-
-- Branch from `master`
-- One topic per PR
-- One commit per PR
-- If you have several commits on different topics, close the PR and create one PR per topic
-- If you still have several commits, squash them into only one commit
-
-#### Complex PRs
-
-Squash only the commits with uninteresting changes like typos, syntax fixes, etc.
-And keep the important and isolated steps in different commits.
-
-Those PRs are merged and explicitly not fast-forwarded.
 
 ### Contributing a layer
 
@@ -332,6 +274,16 @@ If you have some ASCII skills you can submit your artwork!
 
 You are free to choose a reasonable height size.
 but the width size should be around 75 characters.
+
+## Bundle plugins
+
+In `bundle/` directory, there are two kinds of plugins:
+
+1. unmodified plugins, same as the upstream.
+2. modified plugins based on specific commit.
+
+checkout the [bundle plugins](../bundle-plugins/) page for more info.
+
 
 ## Build with SpaceVim
 

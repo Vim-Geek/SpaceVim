@@ -47,6 +47,11 @@
 "   SPC g h r     undo cursor hunk
 "   SPC g h v     preview cursor hunk
 " <
+" @subsection commit omni function
+" This layer also provides an omnifunc for git commit messages. It supports:
+" 1. complete commit title, `fix:`, `doc:` etc.
+" 2. complete github issue list
+" 3. complete co-author info
 
 
 if exists('s:git_plugin')
@@ -60,7 +65,7 @@ let s:git_plugin = 'git'
 function! SpaceVim#layers#git#plugins() abort
   let plugins = [
         \ ]
-  call add(plugins, ['airblade/vim-gitgutter',   { 'merged' : 0}])
+  call add(plugins, ['airblade/vim-gitgutter',   { 'merged' : 0, 'on_event' : ['BufReadPost']}])
   if s:git_plugin ==# 'gina'
     call add(plugins, [g:_spacevim_root_dir . 'bundle/gina.vim', { 'merged' : 0}])
   elseif s:git_plugin ==# 'fugitive'
@@ -69,7 +74,7 @@ function! SpaceVim#layers#git#plugins() abort
   elseif s:git_plugin ==# 'gita'
     call add(plugins, ['lambdalisue/vim-gita', { 'on_cmd' : 'Gita'}])
   else
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/git.vim', { 'merged' : 0}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/git.vim', { 'merged' : 0, 'on_cmd' : ['Git'], 'on_func' : 'git#branch#current'}])
   endif
   return plugins
 endfunction
@@ -129,6 +134,8 @@ function! SpaceVim#layers#git#config() abort
     call SpaceVim#mapping#space#def('nnoremap', ['g', 'V'], 'Git log %', 'git-log-of-current-file', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['g', 'v'], 'Git log', 'git-log-of-current-repo', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['g', 'm'], 'Git branch', 'branch-manager', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['g', 'r'], 'Git remote', 'remote-manager', 1)
+    call SpaceVim#plugins#projectmanager#reg_callback(function('git#branch#detect'))
   endif
   augroup spacevim_layer_git
     autocmd!
@@ -183,6 +190,12 @@ endfunction
 function! SpaceVim#layers#git#health() abort
   call SpaceVim#layers#git#plugins()
   call SpaceVim#layers#git#config()
+
+  return 1
+
+endfunction
+
+function! SpaceVim#layers#git#loadable() abort
 
   return 1
 

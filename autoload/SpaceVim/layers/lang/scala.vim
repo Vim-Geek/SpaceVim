@@ -147,7 +147,7 @@ function! SpaceVim#layers#lang#scala#plugins() abort
   let plugins = []
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-scala', {'merged' : 0}])
   if has('python3') || has('python')
-    call add(plugins, ['ensime/ensime-vim', {'on_ft': 'scala'}])
+    call add(plugins, ['wsdjeg/ensime-vim', {'on_ft': 'scala'}])
   endif
   return plugins
 endfunction
@@ -165,7 +165,12 @@ function! SpaceVim#layers#lang#scala#config() abort
     autocmd BufRead,BufNewFile *.sbt set filetype=scala
   augroup END
 
-  let g:neoformat_enabled_scala = neoformat#formatters#scala#enabled()
+  try
+    
+    let g:neoformat_enabled_scala = neoformat#formatters#scala#enabled()
+  catch
+    let g:neoformat_enabled_scala = []
+  endtry
   let g:neoformat_scala_scalariform = {
         \ 'exe': 'java',
         \ 'args': ['-jar', s:scalariform_jar, '-'],

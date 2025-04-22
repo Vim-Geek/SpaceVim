@@ -84,14 +84,14 @@ On_IWhite='\033[0;107m'   # White
 # }}}
 
 # version
-Version='2.2.0-dev'
+Version='2.5.0-dev'
 #System name
 System="$(uname -s)"
 # }}}
 
 XDGSpaceDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}SpaceVim"
 XDGvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}vim"
-XDGnvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}config/nvim"
+XDGnvimDir="${XDG_CONFIG_HOME:-${HOME}/.config/}${XDG_CONFIG_HOME:+/}nvim"
 
 # need_cmd {{{
 need_cmd () {
@@ -139,11 +139,18 @@ fetch_repo () {
         (
             cd "${XDGSpaceDir:?}"
             git pull
+            git fetch --tags
         )
         success "Successfully update SpaceVim"
     else
         info "Trying to clone SpaceVim"
-        git clone https://github.com/SpaceVim/SpaceVim.git "${XDGSpaceDir:-}"
+        git clone --depth 1 https://github.com/wsdjeg/SpaceVim.git "${XDGSpaceDir:-}"
+        info "fetch spacevim tags"
+        (
+            cd "${XDGSpaceDir:?}"
+            git fetch --tags
+        )
+        success "fetch tags done"
         if [ $? -eq 0 ]; then
             success "Successfully clone SpaceVim"
         else
@@ -186,6 +193,10 @@ install_neovim () {
 
         mv "${XDGnvimDir:?}" "${XDGnvimDir:-}_back"
         success "BackUp '${XDGnvimDir}' to '${XDGnvimDir}_back'"
+    fi
+
+    if [[ ! -d "$(dirname "${XDGnvimDir}")" ]]; then
+        mkdir "$(dirname "${XDGnvimDir}")"
     fi
 
     ln -s "${XDGSpaceDir:?}" "${XDGnvimDir:?}"

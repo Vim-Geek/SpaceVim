@@ -1,3 +1,10 @@
+--=============================================================================
+-- browser.lua --- browser zknotes
+-- Copyright (c) 2019-2024 Wang Shidong & Contributors
+-- Author: Wang Shidong < wsdjeg@outlook.com >
+-- URL: https://spacevim.org
+-- License: GPLv3
+--=============================================================================
 local M = {}
 local fn = vim.fn
 
@@ -10,6 +17,7 @@ local ZK_FILE_NAME_PATTERN = '%d+-%d+-%d+-%d+-%d+-%d+.md'
 local s_note_cache_with_file_path = {}
 local s_note_cache_with_id = {}
 
+-- list all zettelkasten notes in specific folder
 local function get_files(folder)
   local files = fn.split(fn.globpath(folder, '*.md'), '\\n')
   files = vim.tbl_filter(function(file)
@@ -216,4 +224,19 @@ function M.get_tags()
   return tags
 end
 
+function M.browse(opt)
+  vim.cmd('edit zk://browser')
+  vim.opt_local.syntax = ''
+  vim.opt_local.modifiable = true
+  vim.api.nvim_buf_set_lines(
+    0,
+    0,
+    -1,
+    false,
+    require('zettelkasten').get_note_browser_content({ tags = opt })
+  )
+  vim.opt_local.syntax = 'zkbrowser'
+  vim.opt_local.buflisted = false
+  vim.opt_local.modifiable = false
+end
 return M

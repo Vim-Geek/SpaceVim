@@ -80,7 +80,7 @@ npm install --global prettier
 
 设置无序列表前缀 (`'-'`, `'*'`, or `'+'`, 默认: `'-'`)。
 
-**enabled_formater**
+**enabled_formatters**
 
 为 markdown 文件指定启用的格式化工具，默认值是`["remark"]`，您也可以添加其它格式化工具到此列表，例如：`["remark", "prettier"]`。
 
@@ -99,6 +99,8 @@ npm install --global prettier
 | `SPC l C` | Normal/Visual | 删除目录                                |
 | `SPC l k` | Normal/Visual | 为光标下的单词或者选中文本增加 URL 链接 |
 | `SPC l K` | Normal/Visual | 为光标下的单词或者选中文本增加图片链接  |
-| `SPC l r` | Normal/Visual | 运行区块中的代码                        |
+| `SPC l r` | Normal/Visual | 运行 Markdown 中当前代码块              |
+| `SPC l f` | Normal/Visual | 格式化 Markdown 中当前代码块            |
 | `SPC l u` | Normal/Visual | 更新目录                                |
 | `SPC l p` | Normal        | 通过浏览器实时预览当前文件              |
+| `SPC l t` | Normal        | 切换待办事项状态                        |

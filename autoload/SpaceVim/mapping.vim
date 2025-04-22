@@ -98,7 +98,13 @@ if get(g:, 'spacevim_snippet_engine', 'neosnippet') ==# 'neosnippet'
   endfunction
 elseif get(g:, 'spacevim_snippet_engine', 'neosnippet') ==# 'ultisnips'
   function! SpaceVim#mapping#shift_tab() abort
-    return pumvisible() ? "\<C-p>" : "\<C-R>=UltiSnips#JumpForwards()\<CR>\<C-R>=cmp#ultisnips#JumpForward()\<CR>"
+    if pumvisible()
+      return "\<C-p>"
+    elseif g:spacevim_autocomplete_method ==# 'coc' && coc#pum#visible()
+      return coc#pum#prev(1)
+    else
+      return "\<C-R>=UltiSnips#JumpForwards()\<CR>\<C-R>=cmp#ultisnips#JumpForward()\<CR>"
+    endif
   endfunction
 endif
 
@@ -182,6 +188,10 @@ function! SpaceVim#mapping#vertical_split_previous_buffer(...) abort
 endfunction
 
 function! SpaceVim#mapping#close_current_buffer(...) abort
+  if has('nvim-0.9.5')
+    lua require('spacevim.plugin.tabline').close_current_buffer()
+    return
+  endif
   if index(
         \ ['startify', 'defx'],
         \ &filetype) !=# -1
@@ -331,6 +341,12 @@ function! SpaceVim#mapping#clear_saved_buffers() abort
             \ 'do' : 'noautocmd bd %d'
             \ }
             \ )
+  " after update to neovim 0.9.1 the tabline does not redraw when clear
+  " buffers.
+  " https://github.com/neovim/neovim/issues/23989
+  if exists(':redrawtabline') == 2
+    redrawtabline
+  endif
 endfunction
 
 function! SpaceVim#mapping#format() abort

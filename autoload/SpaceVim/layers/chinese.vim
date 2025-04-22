@@ -1,6 +1,6 @@
 "=============================================================================
 " chinese.vim --- SpaceVim chinese layer
-" Copyright (c) 2016-2023 Wang Shidong & Contributors
+" Copyright (c) 2016-2024 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -30,9 +30,10 @@
 function! SpaceVim#layers#chinese#plugins() abort
   let plugins = [
         \ ['yianwillis/vimcdoc'          , {'merged' : 0}],
+        \ ['NamelessUzer/Vim-Natural-Language-Number-Translator'          , {'merged' : 0}],
         \ ['voldikss/vim-translator' , {'merged' : 0, 'on_cmd' : ['Translate', 'TranslateW', 'TranslateR', 'TranslateX']}],
-        \ ['wsdjeg/ChineseLinter.vim'    , {'merged' : 0, 'on_cmd' : 'CheckChinese', 'on_ft' : ['markdown', 'text']}],
         \ ]
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/ChineseLinter.vim'    , {'merged' : 0, 'on_cmd' : 'CheckChinese', 'on_ft' : ['markdown', 'text']}])
   if SpaceVim#layers#isLoaded('ctrlp')
     call add(plugins, ['vimcn/ctrlp.cnx', {'merged' : 0}])
   endif
@@ -40,11 +41,20 @@ function! SpaceVim#layers#chinese#plugins() abort
 endfunction
 
 function! SpaceVim#layers#chinese#config() abort
-  let g:_spacevim_mappings_space.x.g = {'name' : '+translate'}
-  call SpaceVim#mapping#space#def('nnoremap', ['x', 'g', 't'], 'Translate'         , 'translate current word'  , 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['l', 'c']     , 'CheckChinese', 'Check with ChineseLinter', 1)
+  if has_key(g:_spacevim_mappings_space.x, 't')
+    let g:_spacevim_mappings_space.x.t.name = '+Transpose/Translate'
+  else
+    let g:_spacevim_mappings_space.x.t = {'name' : '+Translate'}
+  endif
+  call SpaceVim#mapping#space#def('nnoremap', ['x', 't', 't'], 'Translate'         , 'translate-current-word'  , 1)
+  if !has_key(g:_spacevim_mappings_space.x, 'g')
+    let g:_spacevim_mappings_space.x.g = {'name' : '+Grammarous'}
+  endif
+  call SpaceVim#mapping#space#def('nnoremap', ['x', 'g', 'c']     , 'CheckChinese', 'check-with-ChineseLinter', 1)
   let g:_spacevim_mappings_space.n.c = {'name' : '+Convert'}
   call SpaceVim#mapping#space#def('nmap', ['n', 'c', 'd'], '<Plug>ConvertChineseNumberToDigit', 'convert Chinese number to digit', 0, 1)
+  call SpaceVim#mapping#space#def('nmap', ['n', 'c', 'z'], '<Plug>ConvertDigitToChineseNumberLower', 'convert digit to Lower Chinese number', 0, 1)
+  call SpaceVim#mapping#space#def('nmap', ['n', 'c', 'Z'], '<Plug>ConvertDigitToChineseNumberUpper', 'convert digit to Upper Chinese number', 0, 1)
   " do not load vimcdoc plugin 
   let g:loaded_vimcdoc = 1
 endfunction
@@ -55,102 +65,120 @@ function! SpaceVim#layers#chinese#health() abort
   return 1
 endfunction
 
-command! -nargs=0 -range ConvertChineseNumberToDigit :<line1>,<line2>call s:ConvertChineseNumberToDigit()
-nnoremap <silent> <Plug>ConvertChineseNumberToDigit  :ConvertChineseNumberToDigit<cr>
-vnoremap <silent> <Plug>ConvertChineseNumberToDigit  :ConvertChineseNumberToDigit<cr>
-function! s:ConvertChineseNumberToDigit() range
+
+" 定义快捷键映射
+nnoremap <silent> <Plug>ConvertChineseNumberToDigit  :call <sid>ConvertChineseNumberToDigit('normal')<cr>
+vnoremap <silent> <Plug>ConvertChineseNumberToDigit  :call <sid>ConvertChineseNumberToDigit('visual')<cr>
+
+" 函数定义
+function! s:ConvertChineseNumberToDigit(mode) range
   let save_cursor = getcurpos()
-  let ChineseNumberPattern = '[〇一二三四五六七八九十百千万亿兆零壹贰叁肆伍陆柒捌玖拾佰仟萬億两点]\+'
-  if mode() ==? 'n' && a:firstline == a:lastline
+  let save_register = @k
+  if a:mode == 'normal'
+    " 正常模式处理
     let cword = expand('<cword>')
-    let cword = substitute(cword, ChineseNumberPattern, '\=s:Chinese2Digit(submatch(0))', "g")
-    let save_register_k = getreg("k")
-    call setreg("k", cword)
-    normal! viw"kp
-    call setreg("k", save_register_k)
+    let rst = substitute(cword, Zh2Num#getZhNumPattern(), '\=Zh2Num#Translator(submatch(0))', "g")
+    if rst != cword
+      let @k = rst
+      normal! viw"kp
+    endif
   else
-    silent execute a:firstline . "," . a:lastline . 'substitute/' . ChineseNumberPattern . '/\=s:Chinese2Digit(submatch(0))/g'
+    " 可视模式处理
+    normal! gv
+    if mode() == "\<C-V>"
+      " 块选择模式
+      let [line_start, column_start] = getpos("'<")[1:2]
+      let [line_end, column_end] = getpos("'>")[1:2]
+      if column_end < column_start
+        let [column_start, column_end] = [column_end, column_start]
+      endif
+      for line_num in range(line_start, line_end)
+        let line = getline(line_num)
+        let line_utf8 = iconv(line, &encoding, 'UTF-8')
+        let selectedText = line_utf8[column_start - 1: column_end - 1]
+        let translatedText = substitute(selectedText, Zh2Num#getZhNumPattern(), '\=Zh2Num#Translator(submatch(0))', 'g')
+        let newLine = line[:column_start - 2] . translatedText . line[column_end:]
+        call setline(line_num, newLine)
+      endfor
+    else
+      " 其他可视模式
+      normal! "ky
+      let selectedText = iconv(@k, &encoding, 'UTF-8')
+      let translatedText = substitute(selectedText, Zh2Num#getZhNumPattern(), '\=Zh2Num#Translator(submatch(0))', 'g')
+      if translatedText != selectedText
+        call setreg('k', translatedText)
+        normal! gv"kp
+      endif
+    endif
   endif
   call setpos('.', save_cursor)
+  let @k = save_register
 endfunction
 
-function! s:Chinese2Digit(cnDigitString)
-  let CN_NUM = {
-        \ '〇': 0, '一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
-        \ '零': 0, '壹': 1, '贰': 2, '叁': 3, '肆': 4, '伍': 5, '陆': 6, '柒': 7, '捌': 8, '玖': 9,
-        \ '貮': 2, '两': 2, '点': '.'
-        \ }
-  let CN_UNIT = {
-        \ '十': 10, '拾': 10, '百': 100, '佰': 100, '千': 1000, '仟': 1000, '万': 10000, '萬': 10000,
-        \ '亿': 100000000, '億': 100000000, '兆': 1000000000000
-        \ }
+nnoremap <silent> <Plug>ConvertDigitToChineseNumberLower  :call <sid>ConvertDigitToChineseNumber('normal', "lower")<cr>
+vnoremap <silent> <Plug>ConvertDigitToChineseNumberLower  :call <sid>ConvertDigitToChineseNumber('visual', "lower")<cr>
 
-  if a:cnDigitString =~ '^[点两貮〇一二三四五六七八九零壹贰叁肆伍陆柒捌玖]\+$'
-    let result = substitute(a:cnDigitString, ".", {m -> CN_NUM[m[0]]}, 'g')
-  else
-    let cnList = split(a:cnDigitString, "点")
-    let integer = map(str2list(cnList[0]), 'nr2char(v:val)')  " 整数部分
-    let decimal = len(cnList) == 2 ? cnList[1] : [] " 小数部分
-    let unit = 0  " 当前单位
-    let parse = []  " 解析数组
-    while !empty(integer)
-      let x = remove(integer, -1)
-      if has_key(CN_UNIT, x)
-        " 当前字符是单位
-        let unit = CN_UNIT[x]
-        if unit == 10000 " 万位
-          call add(parse, "w")
-          let unit = 1
-        elseif unit == 100000000 " 亿位
-          call add(parse, "y")
-          let unit = 1
-        elseif unit == 1000000000000  " 兆位
-          call add (parse, "z")
-          let unit = 1
-        endif
-        continue
-      else
-        " 当前字符是数字
-        let dig = CN_NUM[x]
-        if unit
-          let dig *= unit
-          let unit = 0
-        endif
-        call add(parse, dig)
+nnoremap <silent> <Plug>ConvertDigitToChineseNumberUpper  :call <sid>ConvertDigitToChineseNumber('normal', "upper")<cr>
+vnoremap <silent> <Plug>ConvertDigitToChineseNumberUpper  :call <sid>ConvertDigitToChineseNumber('visual', "upper")<cr>
+
+function! s:ConvertDigitToChineseNumber(mode, caseType) abort
+  let save_cursor = getcurpos()
+  let save_register = @k
+  let cword = expand('<cword>')
+  if a:mode == 'normal'
+    if !empty(cword)
+      let rst = substitute(cword, Num2Zh#getNumberPattern(), '\=Num2Zh#Translator(submatch(0), "'. a:caseType .'")', "g")
+      if rst != cword
+          let @k = rst
+          normal! viw"kp
       endif
-    endwhile
-    if unit == 10  " 处理10-19的数字
-      call add(parse, 10)
     endif
-    let result = 0
-    let tmp = 0
-    while !empty(parse)
-      let x = remove(parse, -1)
-      if type(x) == type("")
-        if x == 'w'
-            let tmp *= 10000
-            let result += tmp
-            let tmp = 0
-        elseif x == 'y'
-            let tmp *= 100000000
-            let result += tmp
-            let tmp = 0
-        elseif x == 'z'
-            let tmp *= 1000000000000
-            let result += tmp
-            let tmp = 0
+    " 如果是block模式，则特别处理
+  elseif a:mode == 'visual'
+    normal! gv
+    if mode() == "\<C-V>"
+        let [line_start, column_start] = getpos("'<")[1:2]
+        let [line_end, column_end] = getpos("'>")[1:2]
+        if column_end < column_start
+            let [column_start, column_end] = [column_end, column_start]
         endif
-      else
-          let tmp += x
-      endif
-    endwhile
-    let result += tmp
-    if !empty(decimal)
-      let decimal = substitute(decimal, ".", {m -> CN_NUM[m[0]]}, 'g')
-      let result .= "." . decimal
+        for line_num in range(line_start, line_end)
+            let line = getline(line_num)
+            " 将行文本转换为UTF-8编码
+            let line_utf8 = iconv(line, &encoding, 'UTF-8')
+            let selectedText = line_utf8[column_start - 1: column_end - 1]
+            let translatedText = substitute(selectedText, Num2Zh#getNumberPattern(), '\=Num2Zh#Translator(submatch(0), "' . a:caseType . '")', 'g')
+            let newLine = line[:column_start - 2] . translatedText . line[column_end:]
+            call setline(line_num, newLine)
+        endfor
+    else
+        " 对其他模式的处理
+        if mode() == 'line'
+            normal! '[V']
+        elseif mode() == 'char'
+            normal! `[v`]
+        elseif mode() ==? 'v'
+            normal! gv
+        else
+            normal! '[v']
+        endif
+
+        " 获取选择的文本，将其保存在寄存器t中
+        normal! "ky
+        let selectedText = iconv(@k, &encoding, 'UTF-8')
+
+        " 转换文本
+        let translatedText = substitute(selectedText, Num2Zh#getNumberPattern(), '\=Num2Zh#Translator(submatch(0), "' . a:caseType . '")', 'g')
+
+        if translatedText != selectedText
+          " 替换原文本
+          call setreg('k', translatedText)
+          normal! gv"kp
+        endif
     endif
   endif
-  return result
+  call setpos('.', save_cursor)
+  let @k = save_register
 endfunction
 
 " function() wrapper

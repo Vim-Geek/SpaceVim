@@ -21,17 +21,21 @@ let g:_spacevim_root_dir = escape(fnamemodify(resolve(fnamemodify(expand('<sfile
       \ || has('win64'))?'\':'/') . '?')), ':p:gs?[\\/]?/?'), ' ')
 lockvar g:_spacevim_root_dir
 if has('nvim')
-  let s:qtdir = split(&rtp, ',')[-1]
-  if s:qtdir =~# 'nvim-qt'
-    let &rtp = s:qtdir . ',' . g:_spacevim_root_dir . ',' . $VIMRUNTIME
-  else
-    let &rtp = g:_spacevim_root_dir . ',' . $VIMRUNTIME
-  endif
+  let rtps = [g:_spacevim_root_dir]
+  for rtp in split(&rtp, ',')
+    if rtp =~# 'nvim-qt'
+      call insert(rtps, 0, rtp)
+    else
+      call add(rtps, rtp)
+    endif
+  endfor
+  let &rtp = join(rtps, ',')
 else
   let &rtp = g:_spacevim_root_dir . ',' . $VIMRUNTIME
 endif
 call SpaceVim#logger#info('Loading SpaceVim from: ' . g:_spacevim_root_dir)
-
+call SpaceVim#logger#info('default rtp is:')
+call map(split(&rtp, ','), 'SpaceVim#logger#info("  > " . v:val)')
 if has('vim_starting')
   " python host
   " @bug python2 error on neovim 0.6.1
@@ -59,7 +63,12 @@ call SpaceVim#begin()
 
 call SpaceVim#custom#load()
 
-call SpaceVim#default#keyBindings()
+if has('timers')
+  call timer_start(g:spacevim_lazy_conf_timeout, 'SpaceVim#default#keyBindings') 
+else
+  call SpaceVim#default#keyBindings()
+endif
+
 
 call SpaceVim#end()
 

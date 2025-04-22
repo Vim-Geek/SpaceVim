@@ -22,11 +22,11 @@ function! SpaceVim#layers#tools#plugins() abort
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-cheat',   { 'on_cmd' : 'Cheat'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-unstack', { 'merged' : 0}])
   call add(plugins, ['wsdjeg/Mysql.vim',                          { 'on_cmd' : 'SQLGetConnection'}])
-  call add(plugins, ['wsdjeg/SourceCounter.vim',                  { 'on_cmd' : 'SourceCounter'}])
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/SourceCounter.vim',                  { 'on_cmd' : 'SourceCounter'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/calendar.vim',{ 'on_cmd' : 'Calendar'}])
   call add(plugins, ['junegunn/limelight.vim',                    { 'on_cmd' : 'Limelight'}])
   call add(plugins, ['junegunn/goyo.vim',                         { 'on_cmd' : 'Goyo', 'loadconf' : 1}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-bookmarks',
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/bookmarks.vim',
         \ {'merged': 0,
         \ 'loadconf_before' : 1}])
   if s:CMP.has('python3')
@@ -39,7 +39,6 @@ function! SpaceVim#layers#tools#plugins() abort
 endfunction
 
 function! SpaceVim#layers#tools#config() abort
-  let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'markdown', 'leaderGuide']
   call SpaceVim#mapping#space#def('nnoremap', ['a', 'l'], 'Calendar', 'vim-calendar', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['e', 'a'], 'FencAutoDetect',
         \ 'auto-detect-file-encoding', 1)
@@ -63,11 +62,21 @@ function! SpaceVim#layers#tools#config() abort
     nnoremap <silent> <C-_> <Esc>:Ydc<CR>
   endif
 endfunction
+function! SpaceVim#layers#tools#set_variable(var) abort
+  let g:bookmarks_sign_text = get(a:var, 'bookmarks_sign_text', '=>')
+  let g:bookmarks_sign_highlight = get(a:var, 'bookmarks_sign_highlight', 'Normal')
+endfunction
 
 function! SpaceVim#layers#tools#health() abort
   call SpaceVim#layers#tools#plugins()
   call SpaceVim#layers#tools#config()
   return 1
+endfunction
+
+function! SpaceVim#layers#tools#loadable() abort
+
+  return 1
+
 endfunction
 
 " vim:set et sw=2 cc=80:

@@ -1,6 +1,7 @@
 let s:JOB = SpaceVim#api#import('job')
 let s:BUFFER = SpaceVim#api#import('vim#buffer')
 
+" @todo rewrite Git config in lua
 function! git#config#run(argvs)
 
     if empty(a:argvs)
@@ -9,7 +10,7 @@ function! git#config#run(argvs)
         let cmd = ['git', 'config'] + a:argvs
     endif
     let s:lines = []
-    call git#logger#info('git-config cmd:' . string(cmd))
+    call git#logger#debug('git-config cmd:' . string(cmd))
     call s:JOB.start(cmd,
                 \ {
                 \ 'on_exit' : function('s:on_exit'),
@@ -21,13 +22,13 @@ endfunction
 
 function! s:on_stdout(id, data, event) abort
     for data in a:data
-        call git#logger#info('git-config stdout:' . data)
+        call git#logger#debug('git-config stdout:' . data)
     endfor
     let s:lines += a:data
 endfunction
 
 function! s:on_exit(id, data, event) abort
-    call git#logger#info('git-config exit data:' . string(a:data))
+    call git#logger#debug('git-config exit data:' . string(a:data))
     if a:data ==# 0
         let s:bufnr = s:openConfigBuffer(len(s:lines))
         call s:BUFFER.buf_set_lines(s:bufnr, 0 , -1, 0, s:lines)

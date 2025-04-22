@@ -15,10 +15,34 @@
 "   [[layers]]
 "     name = 'go'
 " <
+" @subsection Language server
+"
+" There are two ways to setup the golang language server protocol.
+" 
+" neovim(`>=0.5.0`)
+" 
+" If you are using `nvim(>=0.5.0)`. You need to use `enabled_clients` option of `lsp` layer to specific the language servers.
+" for example:
+" >
+"   [[layers]]
+"     name = 'lsp'
+"     enabled_clients = ['gopls']
+" <
+" vim or neovim(`<0.5.0`)
+" 
+" To enable language server protocol support, you may need to enable lsp layer.
+" >
+"   [[layers]]
+"     name = "lsp"
+"     filetypes = [
+"       "go"
+"     ]
+" <
 " @subsection layer options
+"
 " 1. `enabled_linters`: set a list of enabled lint for golang. by default this
-" option is `['golint']`. The available linters includes: `go`,
-" `gometalinter`
+" option is `['golangci_lint']`. The available linters includes: `go`,
+" `gometalinter`, etc.
 " 2. go_file_head: the default file head for golang source code.
 " >
 "   [[layers]]
@@ -89,7 +113,7 @@ if exists('s:enabled_linters')
   finish
 endif
 
-let s:enabled_linters = ['golint']
+let s:enabled_linters = ['golangci_lint']
 let s:format_on_save = 0
 let s:go_file_head = [
       \ '// @Title',

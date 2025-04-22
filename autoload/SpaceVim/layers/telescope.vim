@@ -10,6 +10,10 @@ if exists('s:file')
   finish
 endif
 
+let s:telescope_hidden = v:false
+
+let s:telescope_no_ignore = v:false
+
 ""
 " @section telescope, layers-telescope
 " @parentsection layers
@@ -45,12 +49,22 @@ endfunction
 
 function! SpaceVim#layers#telescope#plugins() abort
   let plugins = []
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim', {'merged' : 0, 'loadconf' : 1}])
+  if  has('nvim-0.10.0')
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.8', {'merged' : 0, 'loadconf' : 1}])
+  elseif  has('nvim-0.7.2')
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.5', {'merged' : 0, 'loadconf' : 1}])
+  elseif has('nvim-0.7.0')
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.2', {'merged' : 0, 'loadconf' : 1}])
+  endif
   call add(plugins, [g:_spacevim_root_dir . 'bundle/plenary.nvim', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-menu', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-ctags-outline.nvim', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/neoyank.vim',        { 'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-fzf-native.nvim',        { 'merged' : 0}])
+  if g:spacevim_snippet_engine ==# 'ultisnips'
+    call add(plugins, ['fhill2/telescope-ultisnips.nvim', { 'merged' : 0}])
+  endif
+
   return plugins
 endfunction
 
@@ -62,24 +76,24 @@ function! SpaceVim#layers#telescope#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['?'], 'Telescope menu menu=CustomKeyMaps default_text=[SPC]',
         \ ['show-mappings',
         \ [
-          \ 'SPC ? is to show mappings',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC ? is to show mappings',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'call call('
         \ . string(s:_function('s:get_help')) . ', ["SpaceVim"])',
         \ ['find-SpaceVim-help',
         \ [
-          \ 'SPC h SPC is to find SpaceVim help',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC h SPC is to find SpaceVim help',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
   " @fixme SPC h SPC make vim flick
   exe printf('nmap %sh%s [SPC]h[SPC]', g:spacevim_default_custom_leader, g:spacevim_default_custom_leader)
 
@@ -87,102 +101,107 @@ function! SpaceVim#layers#telescope#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'b'], 'Telescope buffers',
         \ ['list-buffer',
         \ [
-          \ 'SPC b b is to open buffer list',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC b b is to open buffer list',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
-  call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'Telescope oldfiles',
+  call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'Telescope neomru',
         \ ['open-recent-file',
         \ [
-          \ 'SPC f r is to open recent file list',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC f r is to open recent file list',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['j', 'i'], 'Telescope ctags_outline outline',
         \ ['jump-to-definition-in-buffer',
         \ [
-          \ 'SPC j i is to jump to a definition in buffer',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC j i is to jump to a definition in buffer',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['T', 's'], 'Telescope colorscheme',
         \ ['fuzzy-find-colorschemes',
         \ [
-          \ 'SPC T s is to fuzzy find colorschemes',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ 'SPC T s is to fuzzy find colorschemes',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'f'],
         \ "exe 'Telescope find_files cwd=' . fnamemodify(bufname('%'), ':p:h')",
         \ ['find-files-in-buffer-directory',
         \ [
-          \ '[SPC f f] is to find files in the directory of the current buffer',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC f f] is to find files in the directory of the current buffer',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['p', 'f'],
-        \ 'Telescope find_files',
+        \ join(['Telescope find_files ', s:telescope_hidden ? 'hidden=true' : 'hidden=false', s:telescope_no_ignore ? 'no_ignore=true' : 'no_ignore=false'], ' '),
         \ ['find-files-in-project',
         \ [
-          \ '[SPC p f] is to find files in the root of the current project',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC p f] is to find files in the root of the current project',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
 
-  nnoremap <silent> <C-p> :<C-u>Telescope find_files<cr>
+  call execute('nnoremap <silent> <C-p> :<C-u>' .. join(['Telescope find_files ', s:telescope_hidden ? 'hidden=true' : 'hidden=false', s:telescope_no_ignore ? 'no_ignore=true' : 'no_ignore=false'], ' ') .. '<cr>')
 
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'call call('
         \ . string(s:_function('s:get_help_with_cursor_symbol')) . ', [])',
         \ ['get-help-for-cursor-symbol',
         \ [
-          \ '[SPC h i] is to get help with the symbol at point',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ],
-          \ 1)
+        \ '[SPC h i] is to get help with the symbol at point',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ],
+        \ 1)
 
   call SpaceVim#mapping#space#def('nnoremap', ['p', 't', 'f'],
         \ 'Telescope task', 'fuzzy-find-tasks', 1)
   let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
   call s:defind_fuzzy_finder()
 
+  " this autocmd should only be called when using deoplete
   augroup spacevim_telescope_layer
     autocmd!
-    " https://github.com/nvim-telescope/telescope.nvim/issues/161
-    autocmd FileType TelescopePrompt call deoplete#custom#buffer_option('auto_complete', v:false)
+    if g:spacevim_autocomplete_method == 'deoplete'
+      " https://github.com/nvim-telescope/telescope.nvim/issues/161
+      autocmd FileType TelescopePrompt call deoplete#custom#buffer_option('auto_complete', v:false)
+    endif
+    " @fixme 无法移除 jk 映射
+    " autocmd FileType TelescopePrompt iunmap <buffer> jk
   augroup END
 endfunction
 
 function! s:get_help_with_cursor_symbol() abort
-  call v:lua.require('telescope.builtin').help_tags({ 'default_text' : expand('<cword>')}) 
+  exe 'Telescope help_tags default_text=' . expand('<cword>')
 endfunction
 
 function! s:get_help(word) abort
-  call v:lua.require('telescope.builtin').help_tags({ 'default_text' : a:word}) 
+  exe 'Telescope help_tags default_text=' . a:word
 endfunction
 
 function! s:get_menu(menu, input) abort
@@ -202,44 +221,44 @@ function! s:defind_fuzzy_finder() abort
   let g:_spacevim_mappings.f.e = ['Telescope registers',
         \ 'fuzzy find registers',
         \ [
-          \ '[Leader f e ] is to fuzzy find registers',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f e ] is to fuzzy find registers',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
   nnoremap <silent> <Leader>fr
         \ :<C-u>Telescope resume<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f.r = ['Telescope resume',
         \ 'resume telescope window',
         \ [
-          \ '[Leader f r ] is to resume telescope window',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f r ] is to resume telescope window',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
   nnoremap <silent> <Leader>fh
         \ :<C-u>Telescope neoyank<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f.h = ['Telescope neoyank',
         \ 'fuzzy find yank history',
         \ [
-          \ '[Leader f h] is to fuzzy find history and yank content',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f h] is to fuzzy find history and yank content',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
   nnoremap <silent> <Leader>fj
         \ :<C-u>Telescope jumplist<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f.j = ['Telescope jumplist',
         \ 'fuzzy find jump list',
         \ [
-          \ '[Leader f j] is to fuzzy find jump list',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f j] is to fuzzy find jump list',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>fl
         \ :<C-u>Telescope loclist<CR>
@@ -247,11 +266,11 @@ function! s:defind_fuzzy_finder() abort
   let g:_spacevim_mappings.f.l = ['Telescope loclist',
         \ 'fuzzy find local list',
         \ [
-          \ '[Leader f q] is to fuzzy find local list',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f q] is to fuzzy find local list',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>fm
         \ :<C-u>Telescope messages<CR>
@@ -259,11 +278,11 @@ function! s:defind_fuzzy_finder() abort
   let g:_spacevim_mappings.f.m = ['Telescope messages',
         \ 'fuzzy find and yank message history',
         \ [
-          \ '[Leader f m] is to fuzzy find and yank message history',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f m] is to fuzzy find and yank message history',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>fq
         \ :<C-u>Telescope quickfix<CR>
@@ -271,55 +290,83 @@ function! s:defind_fuzzy_finder() abort
   let g:_spacevim_mappings.f.q = ['Telescope quickfix',
         \ 'fuzzy find quickfix list',
         \ [
-          \ '[Leader f q] is to fuzzy find quickfix list',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f q] is to fuzzy find quickfix list',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>fo  :<C-u>Telescope ctags_outline outline<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f.o = ['Telescope ctags_outline outline',
         \ 'fuzzy find outline',
         \ [
-          \ '[Leader f o] is to fuzzy find outline',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f o] is to fuzzy find outline',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>f<Space> :Telescope menu menu=CustomKeyMaps<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f['[SPC]'] = ['Telescope menu menu=CustomKeyMaps',
         \ 'fuzzy find custom key bindings',
         \ [
-          \ '[Leader f SPC] is to fuzzy find custom key bindings',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
+        \ '[Leader f SPC] is to fuzzy find custom key bindings',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
 
   nnoremap <silent> <Leader>fp  :<C-u>Telescope menu menu=AddedPlugins<CR>
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   let g:_spacevim_mappings.f.p = ['Telescope menu menu=AddedPlugins',
         \ 'fuzzy find vim packages',
         \ [
-          \ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim',
+        \ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
+
+  if g:spacevim_snippet_engine ==# 'ultisnips'
+    nnoremap <silent> <Leader>fs  :<C-u>Telescope ultisnips<CR>
+    let lnum = expand('<slnum>') + s:unite_lnum - 4
+    let g:_spacevim_mappings.f.s = ['Telescope ultisnips',
+          \ 'fuzzy find ultisnips snippets',
+          \ [
+          \ '[Leader f s] is to fuzzy find ultisnips snippets',
           \ '',
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+  endif
+
+
+  if SpaceVim#layers#isLoaded('tools')
+    nnoremap <silent> <Leader>fb  :<C-u>Telescope bookmarks<CR>
+    let lnum = expand('<slnum>') + s:unite_lnum - 4
+    let g:_spacevim_mappings.f.b = ['Telescope bookmarks',
+          \ 'fuzzy find bookmarks',
+          \ [
+          \ '[Leader f b] is to fuzzy find bookmarks',
+          \ '',
+          \ 'Definition: ' . s:file . ':' . lnum,
+          \ ]
+          \ ]
+  endif
+
 
   let lnum = expand('<slnum>') + s:unite_lnum - 4
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 's'], 'Telescope scriptnames',
         \ ['open-custom-configuration',
         \ [
-          \ '[SPC f v d] is to open the custom configuration file for SpaceVim',
-          \ '',
-          \ 'Definition: ' . s:file . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC f v d] is to open the custom configuration file for SpaceVim',
+        \ '',
+        \ 'Definition: ' . s:file . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
 
 endfunction
 
@@ -342,5 +389,18 @@ endif
 function! SpaceVim#layers#telescope#health() abort
 
   return 1
+
+endfunction
+
+function! SpaceVim#layers#telescope#set_variable(var) abort
+
+  let s:telescope_hidden = get(a:var, 'hidden', s:telescope_hidden)
+  let s:telescope_no_ignore = get(a:var, 'no_ignore', s:telescope_no_ignore)
+
+endfunction
+
+function! SpaceVim#layers#telescope#get_options() abort
+
+  return []
 
 endfunction

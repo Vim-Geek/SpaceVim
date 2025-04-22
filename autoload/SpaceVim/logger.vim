@@ -6,6 +6,15 @@
 " License: GPLv3
 "=============================================================================
 
+""
+" @section Runtime Log, runtime-log
+" @parentsection dev
+" The runtime log of SpaceVim can be obtained via the key binding `SPC h L`.
+" To get the debug information about the current SpaceVim environment,
+" Use the command `:SPDebugInfo!`. This command will open a new buffer where default information will be shown.
+" You can also use `SPC h I` to open a buffer with SpaceVim's issue template.
+
+
 if has('nvim-0.5.0')
   ""
   " write message to SpaceVim runtime log with `info` level.
@@ -15,7 +24,11 @@ if has('nvim-0.5.0')
           \ )
   endfunction
   ""
-  " write warning message to spacevim runtime log.
+  " write warning {msg} to spacevim runtime log.
+  " The `msg` must be string. the second argument is optional, It can a
+  " boolean or `0/1`. By default, the warning message will not be printed,
+  " if the second argument is given, and is `0` or false, the warning msg
+  " will be printed to screen.
   function! SpaceVim#logger#warn(msg, ...) abort
     let issilent = get(a:000, 0, 1)
     lua require("spacevim.logger").warn(
@@ -42,7 +55,16 @@ if has('nvim-0.5.0')
   ""
   " This a a function to view the spacevim runtime log. same as
   " |:SPRuntimeLog| and `SPC h L`
-  function! SpaceVim#logger#viewRuntimeLog() abort
+  "
+  " To clear runtime log, just run:
+  " >
+  "   :SPRuntimeLog --clear
+  " <
+  function! SpaceVim#logger#viewRuntimeLog(...) abort
+    if get(a:000, 0, '') ==# '--clear'
+      lua require("spacevim.logger").clearRuntimeLog()
+      return
+    endif
     lua require("spacevim.logger").viewRuntimeLog()
   endfunction
 
@@ -85,10 +107,18 @@ if has('nvim-0.5.0')
   " 6. stop_debug(): stop debug mode of derived logger.
   " 7. debug_enabled(): return true or false.
   "
-  " Example: >
+  " This function can be used in vim script and lua.
+  "
+  " Vim script Example: >
   "   let s:LOGGER = SpaceVim#logger#derive('myplug')
   "
   "   call s:LOGGER.info('hello world')
+  " <
+  "
+  " Lua Example: >
+  "   local log = require('spacevim.logger').derive('myplug')
+  "
+  "   log.info('hello world')
   " <
   "
   " The this info message will be write to SpaceVim's runtime log:
@@ -130,7 +160,11 @@ else
 
   endfunction
 
-  function! SpaceVim#logger#viewRuntimeLog() abort
+  function! SpaceVim#logger#viewRuntimeLog(...) abort
+    if get(a:000, 0, '') ==# '--clear'
+      call s:LOGGER.clear()
+      return
+    endif
     let info = "### SpaceVim runtime log :\n\n"
     let info .= s:LOGGER.view(s:LOGGER.level)
     tabnew +setl\ nobuflisted
@@ -203,8 +237,7 @@ else
 
   let s:derive = {}
   let s:derive.origin_name = s:LOGGER.get_name()
-  " let s:derive._debug_mode = v:false
-  let s:derive._debug_mode = 0
+  let s:derive._debug_mode = 1
 
   function! s:derive.info(msg) abort
     call s:LOGGER.set_name(self.derive_name)

@@ -1,5 +1,6 @@
 let s:JOB = SpaceVim#api#import('job')
 let s:BUFFER = SpaceVim#api#import('vim#buffer')
+let s:WIN = SpaceVim#api#import('vim#window')
 let s:NOTI = SpaceVim#api#import('notify')
 
 let g:git_log_pretty = 'tformat:%Cred%h%Creset - %s %Cgreen(%an %ad)%Creset'
@@ -11,7 +12,7 @@ function! git#log#run(...) abort
   else
     let cmd = ['git', 'log', '--graph', '--date=relative', '--pretty=' . g:git_log_pretty] + a:1
   endif
-  call git#logger#info('git-log cmd:' . string(cmd))
+  call git#logger#debug('git-log cmd:' . string(cmd))
   call s:JOB.start(cmd,
         \ {
           \ 'on_stderr' : function('s:on_stderr'),
@@ -35,7 +36,7 @@ function! s:on_stderr(id, data, event) abort
   endfor
 endfunction
 function! s:on_exit(id, data, event) abort
-  call git#logger#info('git-log exit data:' . string(a:data))
+  call git#logger#debug('git-log exit data:' . string(a:data))
 endfunction
 
 function! s:openLogBuffer() abort
@@ -81,18 +82,18 @@ endfunction
 
 function! s:on_show_stdout(id, data, event) abort
   for data in a:data
-    call git#logger#info('git-show stdout:' . data)
+    call git#logger#debug('git-show stdout:' . data)
   endfor
   let s:show_lines += filter(a:data, '!empty(v:val)')
 endfunction
 function! s:on_show_stderr(id, data, event) abort
   for data in a:data
-    call git#logger#info('git-show stderr:' . data)
+    call git#logger#debug('git-show stderr:' . data)
   endfor
   let s:show_lines += filter(a:data, '!empty(v:val)')
 endfunction
 function! s:on_show_exit(id, data, event) abort
-  call git#logger#info('git-show exit data:' . string(a:data))
+  call git#logger#debug('git-show exit data:' . string(a:data))
   call s:BUFFER.buf_set_lines(s:show_commit_buffer, 0 , -1, 0, s:show_lines)
 endfunction
 function! s:openShowCommitBuffer() abort
@@ -109,8 +110,26 @@ function! s:openShowCommitBuffer() abort
   return bufnr('%')
 endfunction
 
+function! s:is_last_win() abort
+  let num = winnr('$')
+  for i in range(1,num)
+    if s:WIN.is_float(win_getid(i))
+      let num = num - 1
+    endif
+  endfor
+  if num == 1
+    return 1
+  endif
+  
+endfunction
+
 function! s:close_log_win() abort
   call s:closeShowCommitWindow()
+  if tabpagenr('$') > 1 && s:is_last_win()
+    quit
+    return
+  endif
+
   try
     bp
   catch /^Vim\%((\a\+)\)\=:E85/

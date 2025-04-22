@@ -12,6 +12,7 @@ lang: zh
 - [启用模块](#启用模块)
 - [模块选项](#模块选项)
 - [快捷键](#快捷键)
+- [Commit message 补全](#commit-message-补全)
 
 <!-- vim-markdown-toc -->
 
@@ -50,9 +51,18 @@ lang: zh
 | `SPC g c`   | 打开 git commit 窗口 |
 | `SPC g p`   | 执行 git push        |
 | `SPC g m`   | git 分支管理         |
+| `SPC g r`   | git remote 管理      |
 | `SPC g d`   | 打开 git diff 窗口   |
 | `SPC g A`   | git add 所有文件     |
 | `SPC g b`   | 打开 git blame 窗口  |
 | `SPC g h a` | stage current hunk   |
 | `SPC g h r` | undo cursor hunk     |
 | `SPC g h v` | preview cursor hunk  |
+
+## Commit message 补全
+
+在编辑 git commit message 时，可以使用快捷键 `ctrl-x_ctrl-o` 进行补全，可以补全：
+
+1. 标题前缀, 如 `fix:`、`doc:` 等；
+2. GitHub issue 列表；
+3. 上一次使用分支的 author 信息，便于添加 co-author

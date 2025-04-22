@@ -1,11 +1,12 @@
 ---
 title: "Use Vim as a Go IDE"
 categories: [tutorials, blog]
-image: https://user-images.githubusercontent.com/13142418/57321608-4a484880-7134-11e9-8e43-5fa05085d7e5.png
+image: https://img.spacevim.org/57321608-4a484880-7134-11e9-8e43-5fa05085d7e5.png
 description: "A general guide for using SpaceVim as Go IDE, including layer configuration, requiems installation and usage."
 type: article
 comments: true
 commentsID: "Use Vim as a Go IDE"
+language: Golang
 ---
 
 # [Blogs](../blog/) >> Use Vim as a Go IDE
@@ -16,6 +17,9 @@ Each of the following sections will be covered:
 <!-- vim-markdown-toc GFM -->
 
 - [Enable language layer](#enable-language-layer)
+- [Language server](#language-server)
+  - [neovim(`>=0.5.0`)](#neovim050)
+  - [vim or neovim(`<0.5.0`)](#vim-or-neovim050)
 - [code completion](#code-completion)
 - [alternate file jumping](#alternate-file-jumping)
 - [code running](#code-running)
@@ -37,6 +41,33 @@ SpaceVim configuration file, and add following configuration:
 ```
 
 for more info, you can read the [lang#go](../layers/lang/go/) layer documentation.
+
+### Language server
+
+There are two ways to setup the golang language server protocol.
+
+#### neovim(`>=0.5.0`)
+
+If you are using `nvim(>=0.5.0)`. You need to use `enabled_clients` to specific the language servers.
+for example:
+
+```toml
+[[layers]]
+    name = 'lsp'
+    enabled_clients = ['gopls']
+```
+
+#### vim or neovim(`<0.5.0`)
+
+To enable language server protocol support, you may need to enable lsp layer.
+
+```toml
+[[layers]]
+  name = "lsp"
+  filetypes = [
+    "go"
+  ]
+```
 
 ### code completion
 
@@ -66,7 +97,7 @@ with this configuration, you can jump between the source code and test file via 
 The default code running key binding is `SPC l r`. It will run `go run current_file` asynchronously.
 And the stdout will be shown on a runner buffer.
 
-![gorun](https://user-images.githubusercontent.com/13142418/50751761-22300200-1286-11e9-8b4f-76836438d913.png)
+![gorun](https://img.spacevim.org/50751761-22300200-1286-11e9-8b4f-76836438d913.png)
 
 
 ### project building
@@ -92,7 +123,7 @@ vim-go: [test] SUCCESS
 
 Key binding for showing the coverage of your source code is `SPC l c`, it will call `GoCoverageToggle` command from vim-go.
 
-![cov](https://user-images.githubusercontent.com/13142418/57342383-57375d00-7171-11e9-9182-281d7a792c68.gif)
+![cov](https://img.spacevim.org/57342383-57375d00-7171-11e9-9182-281d7a792c68.gif)
 
 ### code format
 

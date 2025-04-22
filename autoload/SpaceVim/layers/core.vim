@@ -14,13 +14,16 @@ scriptencoding utf-8
 " and it provides filetree, comment key bindings etc.
 "
 " @subsection options
-" - `filetree_show_hidden`: option for showing hidden file in filetree,
+" 1. `filetree_show_hidden`: option for showing hidden file in filetree,
 "   disabled by default.
-" - `enable_smooth_scrolling`: enable/disabled smooth scrolling key bindings,
+" 2. `enable_smooth_scrolling`: enable/disabled smooth scrolling key bindings,
 "   enabled by default.
-" - `enable_filetree_gitstatus`: enable/disable git status column in filetree.
-" - `enable_filetree_filetypeicon`: enable/disable filetype icons in filetree.
-" - `enable_netrw`: enable/disable netrw, disabled by default.
+" 3. `enable_filetree_gitstatus`: enable/disable git status column in filetree.
+" 4. `enable_filetree_filetypeicon`: enable/disable filetype icons in filetree.
+" 5. `enable_netrw`: enable/disable netrw, disabled by default.
+" 6. `enable_quickfix_key_bindings`: enable/disable quickfix.nvim, mappings
+" for neovim quickfix window. This option is only for neovim.
+" 7. `enable_winbar`: enable/disable `wsdjeg/winbar.nvim`
 "
 " NOTE: the `enable_vimfiler_gitstatus` and `enable_filetree_gitstatus` option
 " has been deprecated. Use layer option instead.
@@ -34,8 +37,126 @@ if exists('s:string_hi')
   finish
 endif
 
+""
+" @section File Tree, usage-file-tree
+" @parentsection usage
+" The default filetree is `nerdtree`, and the default key binding is `<F3>`.
+" SpaceVim also provides `SPC f t` and `SPC f T` to open the file tree.
+" 
+" The option @section(options-filemanager) can be used to change file
+" manager plugin. For example:
+" >
+"   [options]
+"     # file manager plugins supported in SpaceVim:
+"     # - nerdtree (default)
+"     # - vimfiler: you need to build the vimproc.vim in bundle/vimproc.vim directory
+"     # - defx: requires +py3 feature
+"     # - neo-tree: require neovim 0.7.0
+"     filemanager = "nerdtree"
+" <
+" 
+" VCS integration is also supported, there will be a column status,
+" this feature may make filetree slow, so it is not enabled by default.
+" To enable this feature, add the layer option `enable_filetree_gitstatus = true`
+" to core layer.
+" >
+"   [[layers]]
+"     name = 'core'
+"     enable_filetree_gitstatus = true
+" <
+" 
+" There is also an option to configure whether open filetree when startup.
+" This is enabled by defaul, To disable this feature, you can set the
+" @section(options-enable_vimfiler_welcome) to false:
+" >
+"   [options]
+"     enable_vimfiler_welcome = false
+" <
+" 
+" There is also an option to configure the side of the file tree,
+" by default it is right. To move the file tree to the left,
+" you can use the option: @section(options-filetree_direction).
+" >
+"   [options]
+"     filetree_direction = "left"
+" <
+" 
+" @subsection File tree navigation
+" 
+" Navigation is centered on the `hjkl` keys with the hope of providing
+" a fast navigation experience like in vifm(https://github.com/vifm):
+" >
+"   Key Bindings          | Descriptions
+"   --------------------- | -------------------------------------------------
+"    <F3>                 | Toggle file explorer
+"    SPC f t              | Toggle file explorer
+"    SPC f T              | Show file explorer
+" <
+" Key bindings in filetree windows:
+" >
+"    <Left>  /  h         | go to parent node and collapse expanded directory
+"    <Down>  /  j         | select next file or directory
+"    <Up>  /  k           | select previous file or directory
+"    <Right>  /  l        | open selected file or expand directory
+"    <Enter>              | open file or switch to directory
+"    N                    | Create new file under cursor
+"    r                    | Rename the file under cursor
+"    d                    | Delete the file under cursor
+"    K                    | Create new directory under cursor
+"    y y                  | Copy file full path to system clipboard
+"    y Y                  | Copy file to system clipboard
+"    P                    | Paste file to the position under the cursor
+"    .                    | Toggle hidden files
+"    s v                  | Split edit
+"    s g                  | Vertical split edit
+"    p                    | Preview
+"    i                    | Switch to directory history
+"    v                    | Quick look
+"    g x                  | Execute with vimfiler associated
+"    '                    | Toggle mark current line
+"    V                    | Clear all marks
+"    >                    | increase filetree screenwidth
+"    <                    | decrease filetree screenwidth
+"    <Home>               | Jump to first line
+"    <End>                | Jump to last line
+"    Ctrl-h               | Switch to project root directory
+"    Ctrl-r               | Redraw
+" <
+" 
+" @subsection Open file with file tree.
+" 
+" If only one file buffer is opened, a file is opened in the active window,
+" otherwise we need to use vim-choosewin to select a window to open the file.
+" >
+"   Key Bindings    | Descriptions
+"   --------------- | ----------------------------------------
+"    l  /  <Enter>  | open file in one window
+"    s g            | open file in a vertically split window
+"    s v            | open file in a horizontally split window
+" <
+" @subsection Override filetree key bindings
+" 
+" If you want to override the default key bindings in filetree windows.
+" You can use User autocmd in bootstrap function. for examples:
+" >
+"   function! myspacevim#before() abort
+"       autocmd User NerdTreeInit
+"           \ nnoremap <silent><buffer> <CR> :<C-u>call
+"           \ g:NERDTreeKeyMap.Invoke('o')<CR>
+"   endfunction
+" <
+" 
+" Here is all the autocmd for filetree:
+" 
+" - nerdtree: `User NerdTreeInit`
+" - defx: `User DefxInit`
+" - vimfiler: `User VimfilerInit`
+
+
 let s:enable_smooth_scrolling = 1
 let s:enable_netrw = 0
+let s:enable_quickfix_key_bindings = 0
+let s:enable_winbar = 0
 
 let g:_spacevim_enable_filetree_gitstatus = 0
 let g:_spacevim_enable_filetree_filetypeicon = 0
@@ -58,7 +179,7 @@ function! SpaceVim#layers#core#plugins() abort
   endif
   if has('timers') && has('float')
     " vim-smoothie needs +timers and +float
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-smoothie',  {'merged': 0}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-smoothie',  {'merged': 0, 'on_event' : 'BufReadPost'}])
   endif
   if g:spacevim_filemanager ==# 'nerdtree'
     call add(plugins, [g:_spacevim_root_dir . 'bundle/nerdtree', { 'merged' : 0,
@@ -80,30 +201,58 @@ function! SpaceVim#layers#core#plugins() abort
           \ }])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/vimproc.vim', {'build' : [(executable('gmake') ? 'gmake' : 'make')]}])
   elseif g:spacevim_filemanager ==# 'defx'
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/defx.nvim',{'merged' : 0, 'loadconf' : 1 , 'loadconf_before' : 1}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/defx.nvim',{'merged' : 0, 'loadconf' : 1, 'on_cmd' : 'Defx'}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-git',{'merged' : 0, 'loadconf' : 1}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-icons',{'merged' : 0}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-sftp',{'merged' : 0}])
   elseif g:spacevim_filemanager ==# 'nvim-tree'
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-tree.lua',{'merged' : 0, 'loadconf' : 1}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-tree.lua',{'merged' : 0, 'loadconf' : 1, 'on_cmd' : ['NvimTreeOpen', 'NvimTree', 'NvimTreeToggle', 'NvimTreeFindFile']}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-web-devicons',{'merged' : 0, 'loadconf' : 1}])
+  elseif g:spacevim_filemanager ==# 'neo-tree'
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/neo-tree.nvim',{'merged' : 0, 'loadconf' : 1}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/nui.nvim',{'merged' : 0}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-web-devicons',{'merged' : 0, 'loadconf' : 1}])
   endif
 
   if !g:spacevim_vimcompatible
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/clever-f.vim', {'merged' : 0}])
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/clever-f.vim', {'merged' : 0, 'on_map': '<Plug>(clever-f-'}])
+    nmap f <Plug>(clever-f-f)
+    xmap f <Plug>(clever-f-f)
+    omap f <Plug>(clever-f-f)
+    nmap F <Plug>(clever-f-F)
+    xmap F <Plug>(clever-f-F)
+    omap F <Plug>(clever-f-F)
+    nmap t <Plug>(clever-f-t)
+    xmap t <Plug>(clever-f-t)
+    omap t <Plug>(clever-f-t)
+    nmap T <Plug>(clever-f-T)
+    xmap T <Plug>(clever-f-T)
+    omap T <Plug>(clever-f-T)
   endif
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/nerdcommenter', { 'loadconf' : 1, 'merged' : 0}])
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/nerdcommenter', { 'loadconf' : 1, 'merged' : 0, 'on_map' : ['<Plug>NERDCommenter', '<Plug>Commenter']}])
 
   if exists('*matchaddpos')
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-matchup', {'merged' : 0}])
+    let g:loaded_matchit = 1
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-matchup', {'merged' : 0, 'on_event' : 'BufReadPost'}])
   endif
   call add(plugins, [g:_spacevim_root_dir . 'bundle/gruvbox', {'loadconf' : 1, 'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-clipboard', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-if-lua-compat', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/open-browser.vim', {
-        \ 'merged' : 0, 'loadconf' : 1,
+        \ 'merged' : 0, 'loadconf' : 1, 'on_cmd' : 'OpenBrowser',
         \}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-grepper' ,              { 'on_cmd' : 'Grepper',
         \ 'loadconf' : 1} ])
+
+  if s:enable_quickfix_key_bindings
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/quickfix.nvim' ,              { 'merged' : 0} ])
+  endif
+  if s:enable_winbar
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/winbar.nvim' ,              { 'merged' : 0} ])
+  endif
+  if g:spacevim_flygrep_next_version && has('nvim-0.10.0')
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/flygrep.nvim' ,              { 'merged' : 0} ])
+  endif
   return plugins
 endfunction
 
@@ -119,9 +268,14 @@ function! SpaceVim#layers#core#config() abort
 
   if g:spacevim_filemanager ==# 'nerdtree'
     noremap <silent> <F3> :NERDTreeToggle<CR>
+  elseif g:spacevim_filemanager ==# 'defx'
+    nnoremap <silent> <F3> :Defx<Cr>
+  elseif g:spacevim_filemanager ==# 'nvim-tree'
+    nnoremap <silent> <F3> <cmd>NvimTreeToggle<CR>
+  elseif g:spacevim_filemanager ==# 'neo-tree'
+    nnoremap <silent> <F3> <cmd>NeoTreeFocusToggle<CR>
   endif
   let g:matchup_matchparen_status_offscreen = 0
-  let g:smoothie_no_default_mappings = !s:enable_smooth_scrolling
   " Unimpaired bindings
   " Quickly add empty lines
   nnoremap <silent> [<Space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>
@@ -218,44 +372,44 @@ function! SpaceVim#layers#core#config() abort
         \ . string(s:_function('s:buffer_transient_state')) . ', [])',
         \ ['buffer-transient-state',
         \ [
-          \ '[SPC b .] is to open the buffer transient state',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC b .] is to open the buffer transient state',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'g'], 'call SpaceVim#plugins#helpgrep#help()',
         \ ['asynchronous-helpgrep',
         \ [
-          \ '[SPC h g] is to run helpgrep asynchronously',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC h g] is to run helpgrep asynchronously',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'G'],
         \ 'call SpaceVim#plugins#helpgrep#help(expand("<cword>"))',
         \ ['asynchronous-helpgrep-with-cword',
         \ [
-          \ '[SPC h g] is to run helpgrep asynchronously with cword',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC h g] is to run helpgrep asynchronously with cword',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'd'],
         \ 'call SpaceVim#mapping#close_current_buffer()',
         \ ['delete-this-buffer',
         \ [
-          \ '[SPC b d] is to delete current buffer',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC b d] is to delete current buffer',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'D'],
         \ 'call SpaceVim#mapping#kill_visible_buffer_choosewin()',
         \ 'delete-the-selected-buffer', 1)
@@ -265,7 +419,6 @@ function! SpaceVim#layers#core#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'e'], 'call call('
         \ . string(s:_function('s:safe_erase_buffer')) . ', [])',
         \ 'safe-erase-buffer', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['b', 'h'], 'Startify', 'open-welcome-screen', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'm'], 'call call('
         \ . string(s:_function('s:open_message_buffer')) . ', [])',
         \ 'open-message-buffer', 1)
@@ -315,54 +468,72 @@ function! SpaceVim#layers#core#config() abort
     " TODO: fix all these command
     call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'Defx', 'toggle-file-tree', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'T'], 'Defx -no-toggle', 'show-file-tree', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['f', 'o'], "Defx  -no-toggle -search=`expand('%:p')` `stridx(expand('%:p'), getcwd()) < 0? expand('%:p:h'): getcwd()`", 'open-file-tree', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'o'], 'call call('
+          \ . string(s:_function('s:defx_find_current_file')) . ', [])',
+          \ 'open-file-tree', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 't'], 'exe "Defx -no-toggle " . fnameescape(expand("%:p:h"))', 'show-file-tree-at-buffer-dir', 1)
   elseif g:spacevim_filemanager ==# 'nvim-tree'
     call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NvimTreeToggle', 'toggle-file-tree', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'T'], 'NvimTree', 'show-file-tree', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['f', 'o'], "NvimTreeFindFile", 'open-file-tree', 1)
     call SpaceVim#mapping#space#def('nnoremap', ['b', 't'], 'exe "NvimTreeOpen " . fnameescape(expand("%:p:h"))', 'show-file-tree-at-buffer-dir', 1)
+  elseif g:spacevim_filemanager ==# 'neo-tree'
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 't'], 'NeoTreeFocusToggle', 'toggle-file-tree', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'T'], 'NeoTreeShow', 'show-file-tree', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'o'], "Neotree reveal", 'open-file-tree', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 't'], 'Neotree dir=%:p:h', 'show-file-tree-at-buffer-dir', 1)
   endif
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'y'], 'call SpaceVim#util#CopyToClipboard()', 'show-and-copy-buffer-filename', 1)
   nnoremap <silent> <Plug>YankGitRemoteURL :call SpaceVim#util#CopyToClipboard(2)<Cr>
   vnoremap <silent> <Plug>YankGitRemoteURL :<C-u>call SpaceVim#util#CopyToClipboard(3)<Cr>
   call SpaceVim#mapping#space#def('nmap', ['f', 'Y'], '<Plug>YankGitRemoteURL', 'yank-remote-url', 0, 1)
-  let g:_spacevim_mappings_space.f.v = {'name' : '+Vim/SpaceVim'}
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'v'], 'let @+=g:spacevim_version | echo g:spacevim_version', 'display-and-copy-version', 1)
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'd'], 'SPConfig',
         \ ['open-custom-configuration',
         \ [
-          \ '[SPC f v d] is to open the custom configuration file for SpaceVim',
+        \ '[SPC f v d] is to open the custom configuration file for SpaceVim',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
+  if has('nvim-0.10.0')
+    let lnum = expand('<slnum>') + s:lnum - 1
+    call SpaceVim#mapping#space#def('nnoremap', ['f', 'v', 'l'], 'lua require("spacevim.plugin.logevents").toggle()',
+          \ ['toggle-log-events',
+          \ [
+          \ '[SPC f v l] is to toggle log autocmd events. requires neovim 0.10.0+',
           \ '',
           \ 'Definition: ' . s:filename . ':' . lnum,
           \ ]
           \ ]
           \ , 1)
+  endif
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['n', '-'], 'call call('
         \ . string(s:_function('s:number_transient_state')) . ', ["-"])',
         \ ['decrease-number-under-cursor',
         \ [
-          \ '[SPC n -] is to decrease the number under the cursor, and open',
-          \ 'the number translate state buffer',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC n -] is to decrease the number under the cursor, and open',
+        \ 'the number translate state buffer',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['n', '+'], 'call call('
         \ . string(s:_function('s:number_transient_state')) . ', ["+"])',
         \ ['increase-number-under-cursor',
         \ [
-          \ '[SPC n +] is to increase the number under the cursor, and open',
-          \ 'the number translate state buffer',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC n +] is to increase the number under the cursor, and open',
+        \ 'the number translate state buffer',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   let g:vimproc#download_windows_dll = 1
   " call SpaceVim#mapping#space#def('nnoremap', ['p', 't'], 'call SpaceVim#plugins#projectmanager#current_root()', 'find-project-root', 1)
   let g:_spacevim_mappings_space.p.t = {'name' : '+Tasks'}
@@ -399,12 +570,12 @@ function! SpaceVim#layers#core#config() abort
         \ . string(s:_function('s:close_current_tab')) . ', [])',
         \ ['close-current-tab',
         \ [
-          \ '[SPC q t] is to close the current tab, if it is the last tab, do nothing.',
-          \ '',
-          \ 'Definition: ' . s:filename . ':' . lnum,
-          \ ]
-          \ ]
-          \ , 1)
+        \ '[SPC q t] is to close the current tab, if it is the last tab, do nothing.',
+        \ '',
+        \ 'Definition: ' . s:filename . ':' . lnum,
+        \ ]
+        \ ]
+        \ , 1)
   call SpaceVim#mapping#gd#add('HelpDescribe', function('s:gotodef'))
 
   let g:_spacevim_mappings_space.c = {'name' : '+Comments'}
@@ -532,23 +703,23 @@ endfunction
 
 let g:string_info = {
       \ 'vim' : {
-        \ 'connect' : '.',
-        \ 'line_prefix' : '\',
-        \ },
-        \ 'java' : {
-          \ 'connect' : '+',
-          \ 'line_prefix' : '',
-          \ },
-          \ 'perl' : {
-            \ 'connect' : '.',
-            \ 'line_prefix' : '\',
-            \ },
-            \ 'python' : {
-              \ 'connect' : '+',
-              \ 'line_prefix' : '\',
-              \ 'quotes_hi' : ['pythonQuotes']
-              \ },
-              \ }
+      \ 'connect' : '.',
+      \ 'line_prefix' : '\',
+      \ },
+      \ 'java' : {
+      \ 'connect' : '+',
+      \ 'line_prefix' : '',
+      \ },
+      \ 'perl' : {
+      \ 'connect' : '.',
+      \ 'line_prefix' : '\',
+      \ },
+      \ 'python' : {
+      \ 'connect' : '+',
+      \ 'line_prefix' : '\',
+      \ 'quotes_hi' : ['pythonQuotes']
+      \ },
+      \ }
 
 function! s:jump_last_change() abort
   let [bufnum, lnum, col, off] = getpos("'.")
@@ -703,104 +874,104 @@ function! s:buffer_transient_state() abort
   call state.set_title('Buffer Selection Transient State')
   call state.defind_keys(
         \ {
-          \ 'layout' : 'vertical split',
-          \ 'left' : [
-            \ {
-              \ 'key' : {
-                \ 'name' : 'C-1..C-9',
-                \ 'pos' : [[1,4], [6,9]],
-                \ 'handles' : [
-                  \ ["\<C-1>" , ''],
-                  \ ["\<C-2>" , ''],
-                  \ ["\<C-3>" , ''],
-                  \ ["\<C-4>" , ''],
-                  \ ["\<C-5>" , ''],
-                  \ ["\<C-6>" , ''],
-                  \ ["\<C-7>" , ''],
-                  \ ["\<C-8>" , ''],
-                  \ ["\<C-9>" , ''],
-                  \ ],
-                  \ },
-                  \ 'desc' : 'goto nth window',
-                  \ 'func' : '',
-                  \ 'cmd' : '',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                    \ 'key' : {
-                      \ 'name' : '1..9',
-                      \ 'pos' : [[1,2], [4,5]],
-                      \ 'handles' : [
-                        \ ['1' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [1])'],
-                        \ ['2' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [2])'],
-                        \ ['3' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [3])'],
-                        \ ['4' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [4])'],
-                        \ ['5' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [5])'],
-                        \ ['6' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [6])'],
-                        \ ['7' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [7])'],
-                        \ ['8' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [8])'],
-                        \ ['9' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [9])'],
-                        \ ],
-                        \ },
-                        \ 'desc' : 'move buffer to nth window',
-                        \ 'func' : '',
-                        \ 'cmd' : '',
-                        \ 'exit' : 0,
-                        \ },
-                        \ {
-                          \ 'key' : {
-                            \ 'name' : 'M-1..M-9',
-                            \ 'pos' : [[1,4], [6,9]],
-                            \ 'handles' : [
-                              \ ["\<M-1>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [1])'],
-                              \ ["\<M-2>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [2])'],
-                              \ ["\<M-3>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [3])'],
-                              \ ["\<M-4>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [4])'],
-                              \ ["\<M-5>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [5])'],
-                              \ ["\<M-6>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [6])'],
-                              \ ["\<M-7>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [7])'],
-                              \ ["\<M-8>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [8])'],
-                              \ ["\<M-9>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [9])'],
-                              \ ],
-                              \ },
-                              \ 'desc' : 'swap buffer with nth window',
-                              \ 'func' : '',
-                              \ 'cmd' : '',
-                              \ 'exit' : 0,
-                              \ },
-                              \ ],
-                              \ 'right' : [
-                                \ {
-                                  \ 'key' : 'n',
-                                  \ 'desc' : 'next buffer',
-                                  \ 'func' : '',
-                                  \ 'cmd' : 'bnext',
-                                  \ 'exit' : 0,
-                                  \ },
-                                  \ {
-                                    \ 'key' : ['N', 'p'],
-                                    \ 'desc' : 'previous buffer',
-                                    \ 'func' : '',
-                                    \ 'cmd' : 'bp',
-                                    \ 'exit' : 0,
-                                    \ },
-                                    \ {
-                                      \ 'key' : 'd',
-                                      \ 'desc' : 'kill buffer',
-                                      \ 'func' : '',
-                                      \ 'cmd' : 'call SpaceVim#mapping#close_current_buffer()',
-                                      \ 'exit' : 0,
-                                      \ },
-                                      \ {
-                                        \ 'key' : 'q',
-                                        \ 'desc' : 'quit',
-                                        \ 'func' : '',
-                                        \ 'cmd' : '',
-                                        \ 'exit' : 1,
-                                        \ },
-                                        \ ],
-                                        \ }
-                                        \ )
+        \ 'layout' : 'vertical split',
+        \ 'left' : [
+        \ {
+        \ 'key' : {
+        \ 'name' : 'C-1..C-9',
+        \ 'pos' : [[1,4], [6,9]],
+        \ 'handles' : [
+        \ ["\<C-1>" , ''],
+        \ ["\<C-2>" , ''],
+        \ ["\<C-3>" , ''],
+        \ ["\<C-4>" , ''],
+        \ ["\<C-5>" , ''],
+        \ ["\<C-6>" , ''],
+        \ ["\<C-7>" , ''],
+        \ ["\<C-8>" , ''],
+        \ ["\<C-9>" , ''],
+        \ ],
+        \ },
+        \ 'desc' : 'goto nth window',
+        \ 'func' : '',
+        \ 'cmd' : '',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : {
+        \ 'name' : '1..9',
+        \ 'pos' : [[1,2], [4,5]],
+        \ 'handles' : [
+        \ ['1' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [1])'],
+        \ ['2' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [2])'],
+        \ ['3' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [3])'],
+        \ ['4' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [4])'],
+        \ ['5' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [5])'],
+        \ ['6' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [6])'],
+        \ ['7' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [7])'],
+        \ ['8' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [8])'],
+        \ ['9' , 'call call(' . string(s:_function('s:move_buffer_to_nth_win')) . ', [9])'],
+        \ ],
+        \ },
+        \ 'desc' : 'move buffer to nth window',
+        \ 'func' : '',
+        \ 'cmd' : '',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : {
+        \ 'name' : 'M-1..M-9',
+        \ 'pos' : [[1,4], [6,9]],
+        \ 'handles' : [
+        \ ["\<M-1>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [1])'],
+        \ ["\<M-2>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [2])'],
+        \ ["\<M-3>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [3])'],
+        \ ["\<M-4>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [4])'],
+        \ ["\<M-5>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [5])'],
+        \ ["\<M-6>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [6])'],
+        \ ["\<M-7>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [7])'],
+        \ ["\<M-8>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [8])'],
+        \ ["\<M-9>" , 'call call(' . string(s:_function('s:swap_buffer_with_nth_win')) . ', [9])'],
+        \ ],
+        \ },
+        \ 'desc' : 'swap buffer with nth window',
+        \ 'func' : '',
+        \ 'cmd' : '',
+        \ 'exit' : 0,
+        \ },
+        \ ],
+        \ 'right' : [
+        \ {
+        \ 'key' : 'n',
+        \ 'desc' : 'next buffer',
+        \ 'func' : '',
+        \ 'cmd' : 'bnext',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : ['N', 'p'],
+        \ 'desc' : 'previous buffer',
+        \ 'func' : '',
+        \ 'cmd' : 'bp',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : 'd',
+        \ 'desc' : 'kill buffer',
+        \ 'func' : '',
+        \ 'cmd' : 'call SpaceVim#mapping#close_current_buffer()',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : 'q',
+        \ 'desc' : 'quit',
+        \ 'func' : '',
+        \ 'cmd' : '',
+        \ 'exit' : 1,
+        \ },
+        \ ],
+        \ }
+        \ )
   call state.open()
 endfunction
 
@@ -874,48 +1045,48 @@ function! s:jump_transient_state() abort
   call state.set_title('Jump Transient State')
   call state.defind_keys(
         \ {
-          \ 'layout' : 'vertical split',
-          \ 'left' : [
-            \ {
-              \ 'key' : 'j',
-              \ 'desc' : 'next jump',
-              \ 'func' : '',
-              \ 'cmd' : 'try | exe "norm! \<C-i>"| catch | endtry ',
-              \ 'exit' : 0,
-              \ },
-              \ {
-                \ 'key' : 'J',
-                \ 'desc' : 'previous jump',
-                \ 'func' : '',
-                \ 'cmd' : 'try | exe "norm! \<c-o>" | catch | endtry',
-                \ 'exit' : 0,
-                \ },
-                \ ],
-                \ 'right' : [
-                  \ {
-                    \ 'key' : 'c',
-                    \ 'desc' : 'next change',
-                    \ 'func' : '',
-                    \ 'cmd' : "try | exe 'norm! g,' | catch | endtry",
-                    \ 'exit' : 0,
-                    \ },
-                    \ {
-                      \ 'key' : 'C',
-                      \ 'desc' : 'previous change',
-                      \ 'func' : '',
-                      \ 'cmd' : "try | exe 'norm! g;' | catch | endtry",
-                      \ 'exit' : 0,
-                      \ },
-                      \ {
-                        \ 'key' : 'q',
-                        \ 'desc' : 'quit',
-                        \ 'func' : '',
-                        \ 'cmd' : '',
-                        \ 'exit' : 1,
-                        \ },
-                        \ ],
-                        \ }
-                        \ )
+        \ 'layout' : 'vertical split',
+        \ 'left' : [
+        \ {
+        \ 'key' : 'j',
+        \ 'desc' : 'next jump',
+        \ 'func' : '',
+        \ 'cmd' : 'try | exe "norm! \<C-i>"| catch | endtry ',
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : 'J',
+        \ 'desc' : 'previous jump',
+        \ 'func' : '',
+        \ 'cmd' : 'try | exe "norm! \<c-o>" | catch | endtry',
+        \ 'exit' : 0,
+        \ },
+        \ ],
+        \ 'right' : [
+        \ {
+        \ 'key' : 'c',
+        \ 'desc' : 'next change',
+        \ 'func' : '',
+        \ 'cmd' : "try | exe 'norm! g,' | catch | endtry",
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : 'C',
+        \ 'desc' : 'previous change',
+        \ 'func' : '',
+        \ 'cmd' : "try | exe 'norm! g;' | catch | endtry",
+        \ 'exit' : 0,
+        \ },
+        \ {
+        \ 'key' : 'q',
+        \ 'desc' : 'quit',
+        \ 'func' : '',
+        \ 'cmd' : '',
+        \ 'exit' : 1,
+        \ },
+        \ ],
+        \ }
+        \ )
   call state.open()
 endfunction
 
@@ -1047,6 +1218,7 @@ function! SpaceVim#layers#core#set_variable(var) abort
   let s:enable_smooth_scrolling = get(a:var,
         \ 'enable_smooth_scrolling',
         \ s:enable_smooth_scrolling)
+  let g:smoothie_no_default_mappings = !s:enable_smooth_scrolling
   let g:_spacevim_enable_filetree_filetypeicon = get(a:var,
         \ 'enable_filetree_filetypeicon',
         \ g:_spacevim_enable_filetree_filetypeicon)
@@ -1056,6 +1228,27 @@ function! SpaceVim#layers#core#set_variable(var) abort
   let s:enable_netrw = get(a:var,
         \ 'enable_netrw',
         \ 0)
+  let s:enable_quickfix_key_bindings = get(a:var,
+        \ 'enable_quickfix_key_bindings',
+        \ s:enable_quickfix_key_bindings)
+  let s:enable_winbar = get(a:var,
+        \ 'enable_winbar',
+        \ s:enable_winbar)
+endfunction
+
+function! s:defx_find_current_file() abort
+  let current_file = s:FILE.unify_path(expand('%'), ':p')
+  let current_dir  = s:FILE.unify_path(getcwd())
+
+  let command = "Defx  -no-toggle -search=`expand('%:p')` "
+  if stridx(current_file, current_dir) < 0
+    let command .= expand('%:p:h')
+  else
+    let command .= getcwd()
+  endif
+
+  call execute(command)
+
 endfunction
 
 function! SpaceVim#layers#core#get_options() abort
@@ -1080,6 +1273,12 @@ function! s:close_current_tab() abort
   if tabpagenr('$') > 1
     tabclose!
   endif
+endfunction
+
+function! SpaceVim#layers#core#loadable() abort
+
+  return 1
+
 endfunction
 
 " vim:set et sw=2 cc=80:

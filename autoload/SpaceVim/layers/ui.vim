@@ -79,9 +79,9 @@ let s:NVIM_VERSION = SpaceVim#api#import('neovim#version')
 
 function! SpaceVim#layers#ui#plugins() abort
   let plugins = [
-        \ [g:_spacevim_root_dir . 'bundle/vim-cursorword', {'merged' : 0}],
+        \ [g:_spacevim_root_dir . 'bundle/vim-cursorword', {'merged' : 0, 'on_event' : ['CursorMoved', 'CursorMovedI']}],
         \ [g:_spacevim_root_dir . 'bundle/tagbar',
-        \ {'loadconf' : 1, 'merged' : 0}],
+        \ {'loadconf' : 1, 'merged' : 0, 'on_cmd' : ['TagbarToggle', 'Tagbar']}],
         \ [g:_spacevim_root_dir . 'bundle/tagbar-makefile.vim',
         \ {'merged': 0}],
         \ [g:_spacevim_root_dir . 'bundle/tagbar-proto.vim', {'merged': 0}],
@@ -97,10 +97,11 @@ function! SpaceVim#layers#ui#plugins() abort
           \ 'EnableWhitespace'
           \ ]}],
           \ ]
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/neomru.vim', {'merged' : 0}])
   if (has('nvim-0.5.0') && s:NVIM_VERSION.is_release_version())
         \ || has('nvim-0.6.0')
     call add(plugins, [g:_spacevim_root_dir . 'bundle/indent-blankline.nvim',
-          \ { 'merged' : 0}])
+          \ { 'merged' : 0, 'on_event' : ['BufReadPost']}])
   else
     call add(plugins, [g:_spacevim_root_dir . 'bundle/indentLine',
           \ { 'merged' : 0}])
@@ -112,11 +113,17 @@ function! SpaceVim#layers#ui#plugins() abort
     call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-airline-themes',
           \ { 'merged' : 0}])
   endif
+  if s:enable_scrollbar
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/scrollbar.vim',
+          \ { 'merged' : 0}])
+  endif
 
   return plugins
 
 endfunction
 
+let s:file = expand('<sfile>:~')
+let s:funcbeginline =  expand('<slnum>') + 1
 function! SpaceVim#layers#ui#config() abort
   if g:spacevim_colorscheme_bg ==# 'dark'
     let g:indentLine_color_term = get(g:, 'indentLine_color_term', 239)
@@ -141,7 +148,7 @@ function! SpaceVim#layers#ui#config() abort
   " indent_blankline config
   " let g:indent_blankline_enabled = s:enable_indentline ? v:true : v:false
   " this var must be boolean, but v:true is added in vim 7.4.1154
-  let g:indent_blankline_enabled = 
+  let g:indent_blankline_enabled =
         \ s:enable_indentline ?
         \ get(v:, 'true', 1)
         \ :
@@ -153,6 +160,7 @@ function! SpaceVim#layers#ui#config() abort
   let g:indent_blankline_filetype_exclude = s:indentline_exclude_filetype
         \ + ['startify', 'gitcommit', 'defx']
 
+  " option for better-whitespace
   let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite',
         \ 'qf', 'help', 'markdown', 'leaderGuide',
         \ 'startify'
@@ -168,20 +176,8 @@ function! SpaceVim#layers#ui#config() abort
     noremap <silent> <F2> :TagbarToggle<CR>
   endif
 
-  " this options only support neovim now.
   augroup spacevim_layer_ui
     autocmd!
-    let events = join(filter( ['BufEnter','WinEnter', 'QuitPre', 'CursorMoved', 'VimResized', 'FocusGained', 'WinScrolled' ], 'exists("##" . v:val)'), ',')
-    if s:enable_scrollbar && SpaceVim#plugins#scrollbar#usable()
-      exe printf('autocmd %s * call SpaceVim#plugins#scrollbar#show()',
-            \ events)
-      autocmd WinLeave,BufLeave,BufWinLeave,FocusLost
-            \ * call SpaceVim#plugins#scrollbar#clear()
-      " why this autocmd is needed?
-      "
-      " because the startify use noautocmd enew
-      autocmd User Startified call s:clear_previous_scrollbar()
-    endif
     if !empty(s:cursorword_exclude_filetypes)
       exe printf('autocmd FileType %s let b:cursorword = 0',
             \ join(s:cursorword_exclude_filetypes, ','))
@@ -196,8 +192,8 @@ function! SpaceVim#layers#ui#config() abort
           \ 'call SpaceVim#mapping#SmartClose()')
   endif
   " Ui toggles
-  call SpaceVim#mapping#space#def('nnoremap', ['t', '8'], 'call call('
-        \ . string(s:_function('s:toggle_fill_column')) . ', [])',
+  call SpaceVim#mapping#space#def('nnoremap', ['t', '8'],
+        \ 'call SpaceVim#layers#core#statusline#toggle_mode("hi-characters-for-long-lines")',
         \ 'highlight-long-lines', 1)
   if g:spacevim_autocomplete_method ==# 'deoplete'
     call SpaceVim#mapping#space#def('nnoremap', ['t', 'a'], 'call SpaceVim#layers#autocomplete#toggle_deoplete()',
@@ -214,8 +210,7 @@ function! SpaceVim#layers#ui#config() abort
         \ 'toggle conceallevel', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['t', 't'], 'call SpaceVim#plugins#tabmanager#open()',
         \ 'open-tabs-manager', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['t', 'f'], 'call call('
-        \ . string(s:_function('s:toggle_colorcolumn')) . ', [])',
+  call SpaceVim#mapping#space#def('nnoremap', ['t', 'f'], 'call SpaceVim#layers#core#statusline#toggle_mode("fill-column-indicator")',
         \ 'fill-column-indicator', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['t', 'h', 'h'], 'call call('
         \ . string(s:_function('s:toggle_cursorline')) . ', [])',
@@ -258,6 +253,35 @@ function! SpaceVim#layers#ui#config() abort
           \ 'func' : s:_function('s:toggle_spell_check'),
           \ }
           \ )
+  call SpaceVim#layers#core#statusline#register_mode(
+        \ {
+          \ 'key' : 'hi-characters-for-long-lines',
+          \ 'func' : s:_function('s:toggle_fill_column'),
+          \ }
+          \ )
+  call SpaceVim#layers#core#statusline#register_mode(
+        \ {
+          \ 'key' : 'fill-column-indicator',
+          \ 'func' : s:_function('s:toggle_colorcolumn'),
+          \ }
+          \ )
+  call SpaceVim#layers#core#statusline#register_mode(
+        \ {
+          \ 'key' : 'whitespace',
+          \ 'func' : s:_function('s:toggle_whitespace'),
+          \ }
+          \ )
+  let s:lnum = expand('<slnum>') + s:funcbeginline
+  call SpaceVim#mapping#space#def('nnoremap', ['t', 'w'],
+        \ 'call SpaceVim#layers#core#statusline#toggle_mode("whitespace")',
+        \ ['toggle-highlight-tail-spaces',
+        \ [
+          \ '[SPC t w] will toggle white space highlighting',
+          \ '',
+          \ 'Definition: ' . s:file . ':' . s:lnum,
+          \ ]
+          \ ]
+          \ , 1)
   call SpaceVim#mapping#space#def('nnoremap', ['t', 'S'],
         \ 'call SpaceVim#layers#core#statusline#toggle_mode("spell-checking")',
         \ 'toggle-spell-checker', 1)
@@ -276,12 +300,15 @@ function! SpaceVim#layers#ui#config() abort
 
   call SpaceVim#mapping#space#def('nnoremap', ['t', 'l'], 'setlocal list!',
         \ 'toggle-hidden-listchars', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['t', 'W'], 'call call('
-        \ . string(s:_function('s:toggle_wrap_line')) . ', [])',
+  call SpaceVim#layers#core#statusline#register_mode(
+        \ {
+          \ 'key' : 'wrapline',
+          \ 'func' : s:_function('s:toggle_wrap_line'),
+          \ }
+          \ )
+  call SpaceVim#mapping#space#def('nnoremap', ['t', 'W'],
+        \ 'call SpaceVim#layers#core#statusline#toggle_mode("wrapline")',
         \ 'toggle-wrap-line', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['t', 'w'], 'call call('
-        \ . string(s:_function('s:toggle_whitespace')) . ', [])',
-        \ 'toggle-highlight-tail-spaces', 1)
 
   nnoremap <silent> <F11> :call <SID>toggle_full_screen()<Cr>
   let g:_spacevim_mappings_space.z = get(g:_spacevim_mappings_space, 'z',  {'name' : '+Fonts'})
@@ -356,7 +383,7 @@ function! s:toggle_colorcolumn() abort
     set cc=
     let s:ccflag = 0
   endif
-  call SpaceVim#layers#core#statusline#toggle_mode('fill-column-indicator')
+  return 1
 endfunction
 
 let s:fcflag = 0
@@ -373,7 +400,7 @@ function! s:toggle_fill_column() abort
     set cc=
     let s:fcflag = 0
   endif
-  call SpaceVim#layers#core#statusline#toggle_mode('hi-characters-for-long-lines')
+  return 1
 endfunction
 
 function! s:toggle_indentline() abort
@@ -479,12 +506,12 @@ function! s:toggle_whitespace() abort
     let s:whitespace_enable = 1
   endif
   call SpaceVim#layers#core#statusline#toggle_section('whitespace')
-  call SpaceVim#layers#core#statusline#toggle_mode('whitespace')
+  return 1
 endfunction
 
 function! s:toggle_wrap_line() abort
-  setlocal wrap!
-  call SpaceVim#layers#core#statusline#toggle_mode('wrapline')
+  set wrap!
+  return 1
 endfunction
 
 function! s:toggle_conceallevel() abort
@@ -608,11 +635,6 @@ function! SpaceVim#layers#ui#set_variable(var) abort
         \ ))
 endfunction
 
-function! s:clear_previous_scrollbar() abort
-  let bufnr = bufnr('#')
-  call SpaceVim#plugins#scrollbar#clear(bufnr)
-endfunction
-
 function! SpaceVim#layers#ui#health() abort
   call SpaceVim#layers#ui#plugins()
   call SpaceVim#layers#ui#config()
@@ -686,4 +708,10 @@ function! s:reduce_font() abort
   let font_size -= 1
   let &guifont = substitute(&guifont, ':h\d\+', ':h' . font_size, '')
   sleep 100m
+endfunction
+
+function! SpaceVim#layers#ui#loadable() abort
+
+  return 1
+
 endfunction
