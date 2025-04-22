@@ -50,12 +50,13 @@ let s:JSON = SpaceVim#api#import('data#json')
 function! SpaceVim#layers#colorscheme#plugins() abort
 
 
+        " \ ['icymind/NeoSolarized', { 'merged' : 0 }],
   let plugins = [
         \ ['Gabirel/molokai', { 'merged' : 0 }],
         \ ['joshdick/onedark.vim', { 'merged' : 0 }],
         \ ['nanotech/jellybeans.vim', { 'merged' : 0 }],
         \ ['arcticicestudio/nord-vim', { 'merged' : 0 }],
-        \ ['icymind/NeoSolarized', { 'merged' : 0 }],
+        \ ['Tsuzat/NeoSolarized.nvim', { 'merged' : 0 }],
         \ ['SpaceVim/vim-material', { 'merged' : 0}],
         \ ['srcery-colors/srcery-vim', { 'merged' : 0}],
         \ [ 'drewtempelmeyer/palenight.vim', {'merged': 0 }],
