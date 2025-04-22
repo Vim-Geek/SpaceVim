@@ -1,6 +1,6 @@
 --=============================================================================
 -- prompt.lua --- prompt api for spacevim
--- Copyright (c) 2016-2019 Wang Shidong & Contributors
+-- Copyright (c) 2016-2023 Wang Shidong & Contributors
 -- Author: Wang Shidong < wsdjeg@outlook.com >
 -- URL: https://spacevim.org
 -- License: GPLv3
@@ -67,7 +67,8 @@ function M._handle_input(...)
     while not M._quit do
         local char = M.__vim.getchar()
         if M._function_key[char] ~= nil then
-            pcall(M._function_key[char])
+            local ok, rst = pcall(M._function_key[char])
+            if not ok then print(rst) end
             goto continue
         end
         if M._c_r_mode then

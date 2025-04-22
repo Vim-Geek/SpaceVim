@@ -84,11 +84,14 @@ On_IWhite='\033[0;107m'   # White
 # }}}
 
 # version
-Version='2.1.0-dev'
+Version='2.2.0-dev'
 #System name
 System="$(uname -s)"
-
 # }}}
+
+XDGSpaceDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}SpaceVim"
+XDGvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}vim"
+XDGnvimDir="${XDG_CONFIG_HOME:-${HOME}/.}${XDG_CONFIG_HOME:+/}config/nvim"
 
 # need_cmd {{{
 need_cmd () {
@@ -130,15 +133,17 @@ echo_with_color () {
 
 # fetch_repo {{{
 fetch_repo () {
-    if [[ -d "$HOME/.SpaceVim" ]]; then
+    need_cmd 'git'
+    if [[ -d "${XDGSpaceDir:-}" ]]; then
         info "Trying to update SpaceVim"
-        cd "$HOME/.SpaceVim"
-        git pull
-        cd - > /dev/null 2>&1
+        (
+            cd "${XDGSpaceDir:?}"
+            git pull
+        )
         success "Successfully update SpaceVim"
     else
         info "Trying to clone SpaceVim"
-        git clone https://github.com/SpaceVim/SpaceVim.git "$HOME/.SpaceVim"
+        git clone https://github.com/SpaceVim/SpaceVim.git "${XDGSpaceDir:-}"
         if [ $? -eq 0 ]; then
             success "Successfully clone SpaceVim"
         else
@@ -156,51 +161,47 @@ install_vim () {
         success "Backup $HOME/.vimrc to $HOME/.vimrc_back"
     fi
 
-    if [[ -d "$HOME/.vim" ]]; then
-        if [[ "$(readlink $HOME/.vim)" =~ \.SpaceVim$ ]]; then
-            success "Installed SpaceVim for vim"
-        else
-            mv "$HOME/.vim" "$HOME/.vim_back"
-            success "BackUp $HOME/.vim to $HOME/.vim_back"
-            ln -s "$HOME/.SpaceVim" "$HOME/.vim"
-            success "Installed SpaceVim for vim"
+    if [[ -d "${XDGvimDir:-}" ]]; then
+        if [[ "$(readlink "${XDGvimDir:-}")" =~ \.?SpaceVim$ ]]; then
+            success "SpaceVim already installed in '${XDGvimDir:-}'"
+            return
         fi
-    else
-        ln -s "$HOME/.SpaceVim" "$HOME/.vim"
-        success "Installed SpaceVim for vim"
+
+        mv "${XDGvimDir:?}" "${XDGvimDir:-}_back"
+        success "BackUp '${XDGvimDir}' to '${XDGvimDir}_back'"
     fi
+
+    ln -s "${XDGSpaceDir:?}" "${XDGvimDir:?}"
+    success "Installed SpaceVim for vim in '${XDGvimDir}'"
 }
 # }}}
 
 # install_neovim {{{
 install_neovim () {
-    if [[ -d "$HOME/.config/nvim" ]]; then
-        if [[ "$(readlink $HOME/.config/nvim)" =~ \.SpaceVim$ ]]; then
-            success "Installed SpaceVim for neovim"
-        else
-            mv "$HOME/.config/nvim" "$HOME/.config/nvim_back"
-            success "BackUp $HOME/.config/nvim to $HOME/.config/nvim_back"
-            ln -s "$HOME/.SpaceVim" "$HOME/.config/nvim"
-            success "Installed SpaceVim for neovim"
+    if [[ -d "${XDGnvimDir:-}" ]]; then
+        if [[ "$(readlink "${XDGnvimDir:-}")" =~ \.?SpaceVim$ ]]; then
+            success "SpaceVim already installed in '${XDGnvimDir:-}'"
+            return
         fi
-    else
-        mkdir -p "$HOME/.config"
-        ln -s "$HOME/.SpaceVim" "$HOME/.config/nvim"
-        success "Installed SpaceVim for neovim"
+
+        mv "${XDGnvimDir:?}" "${XDGnvimDir:-}_back"
+        success "BackUp '${XDGnvimDir}' to '${XDGnvimDir}_back'"
     fi
+
+    ln -s "${XDGSpaceDir:?}" "${XDGnvimDir:?}"
+    success "Installed SpaceVim for nvim in '${XDGnvimDir}'"
 }
 # }}}
 
 # uninstall_vim {{{
 uninstall_vim () {
-    if [[ -d "$HOME/.vim" ]]; then
-        if [[ "$(readlink $HOME/.vim)" =~ \.SpaceVim$ ]]; then
-            rm "$HOME/.vim"
-            success "Uninstall SpaceVim for vim"
-            if [[ -d "$HOME/.vim_back" ]]; then
-                mv "$HOME/.vim_back" "$HOME/.vim"
-                success "Recover from $HOME/.vim_back"
-            fi
+    if [[ -d "${XDGvimDir:-}" ]] &&
+       [[ "$(readlink "${XDGvimDir:?}")" =~ \.?SpaceVim$ ]]; then
+        rm "${XDGvimDir:?}"
+        success "Uninstall SpaceVim for vim"
+        if [[ -d "${XDGvimDir}_back" ]]; then
+            mv "${XDGvimDir}_back" "${XDGvimDir}"
+            success "Recover from ${XDGvimDir}_back"
         fi
     fi
     if [[ -f "$HOME/.vimrc_back" ]]; then
@@ -212,14 +213,13 @@ uninstall_vim () {
 
 # uninstall_neovim {{{
 uninstall_neovim () {
-    if [[ -d "$HOME/.config/nvim" ]]; then
-        if [[ "$(readlink $HOME/.config/nvim)" =~ \.SpaceVim$ ]]; then
-            rm "$HOME/.config/nvim"
-            success "Uninstall SpaceVim for neovim"
-            if [[ -d "$HOME/.config/nvim_back" ]]; then
-                mv "$HOME/.config/nvim_back" "$HOME/.config/nvim"
-                success "Recover from $HOME/.config/nvim_back"
-            fi
+    if [[ -d "${XDGnvimDir:-}" ]] &&
+       [[ "$(readlink "${XDGnvimDir:?}")" =~ \.?SpaceVim$ ]]; then
+        rm "${XDGnvimDir:?}"
+        success "Uninstall SpaceVim for neovim"
+        if [[ -d "${XDGnvimDir}_back" ]]; then
+            mv "${XDGnvimDir}_back" "${XDGnvimDir}"
+            success "Recover from ${XDGnvimDir}_back"
         fi
     fi
 }
@@ -233,6 +233,12 @@ check_requirements () {
         success "Check Requirements: ${git_version}"
     else
         warn "Check Requirements : git"
+    fi
+    if hash "mkfontscale" &>/dev/null; then
+        mkfontscale_version=$(mkfontscale -v)
+        success "Check Requirements: ${mkfontscale_version}"
+    else
+        warn "Check Requirements : mkfontscale"
     fi
     if hash "vim" &>/dev/null; then
         is_vim8=$(vim --version | grep "Vi IMproved 8")
@@ -297,7 +303,6 @@ usage () {
 # }}}
 
 # install_done {{{
-
 install_done () {
     echo_with_color ${Yellow} ""
     echo_with_color ${Yellow} "Almost done!"
@@ -308,32 +313,28 @@ install_done () {
     echo_with_color ${Yellow} "That's it. Thanks for installing SpaceVim. Enjoy!"
     echo_with_color ${Yellow} ""
 }
-
 # }}}
 
 # welcome {{{
-
-
 welcome () {
     echo_with_color ${Yellow} "        /######                                     /##    /##/##             "
     echo_with_color ${Yellow} "       /##__  ##                                   | ##   | #|__/             "
-        echo_with_color ${Yellow} "      | ##  \__/ /######  /######  /####### /######| ##   | ##/##/######/#### "
-        echo_with_color ${Yellow} "      |  ###### /##__  ##|____  ##/##_____//##__  #|  ## / ##| #| ##_  ##_  ##"
-        echo_with_color ${Yellow} "       \____  #| ##  \ ## /######| ##     | ########\  ## ##/| #| ## \ ## \ ##"
-        echo_with_color ${Yellow} "       /##  \ #| ##  | ##/##__  #| ##     | ##_____/ \  ###/ | #| ## | ## | ##"
-        echo_with_color ${Yellow} "      |  ######| #######|  ######|  ######|  #######  \  #/  | #| ## | ## | ##"
-        echo_with_color ${Yellow} "       \______/| ##____/ \_______/\_______/\_______/   \_/   |__|__/ |__/ |__/"
-        echo_with_color ${Yellow} "               | ##                                                           "
-        echo_with_color ${Yellow} "               | ##                                                           "
-        echo_with_color ${Yellow} "               |__/                                                           "
-            echo_with_color ${Yellow} "                      version : ${Version}      by : spacevim.org             "
-        }
-
+    echo_with_color ${Yellow} "      | ##  \__/ /######  /######  /####### /######| ##   | ##/##/######/#### "
+    echo_with_color ${Yellow} "      |  ###### /##__  ##|____  ##/##_____//##__  #|  ## / ##| #| ##_  ##_  ##"
+    echo_with_color ${Yellow} "       \____  #| ##  \ ## /######| ##     | ########\  ## ##/| #| ## \ ## \ ##"
+    echo_with_color ${Yellow} "       /##  \ #| ##  | ##/##__  #| ##     | ##_____/ \  ###/ | #| ## | ## | ##"
+    echo_with_color ${Yellow} "      |  ######| #######|  ######|  ######|  #######  \  #/  | #| ## | ## | ##"
+    echo_with_color ${Yellow} "       \______/| ##____/ \_______/\_______/\_______/   \_/   |__|__/ |__/ |__/"
+    echo_with_color ${Yellow} "               | ##                                                           "
+    echo_with_color ${Yellow} "               | ##                                                           "
+    echo_with_color ${Yellow} "               |__/                                                           "
+    echo_with_color ${Yellow} "                      version : ${Version}      by : spacevim.org             "
+}
 # }}}
 
 # download_font {{{
 download_font () {
-    url="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/${1// /%20}"
+    url="https://raw.githubusercontent.com/ryanoasis/nerd-fonts/master/patched-fonts/SourceCodePro/Regular/complete/${1// /%20}"
     path="$HOME/.local/share/fonts/$1"
     if [[ -f "$path" && ! -s "$path" ]]
     then
@@ -348,7 +349,6 @@ download_font () {
         success "Downloaded $1"
     fi
 }
-
 # }}}
 
 # install_fonts {{{
@@ -364,13 +364,14 @@ install_fonts () {
         fi
         cp $HOME/.local/share/fonts/* $HOME/Library/Fonts/
     else
+        # need_cmd 'mkfontdir'
+        # need_cmd 'mkfontscale'
         fc-cache -fv > /dev/null
         mkfontdir "$HOME/.local/share/fonts" > /dev/null
         mkfontscale "$HOME/.local/share/fonts" > /dev/null
     fi
     success "font cache done!"
 }
-
 # }}}
 
 ### main {{{
@@ -391,7 +392,6 @@ main () {
                 ;;
             --install|-i)
                 welcome
-                need_cmd 'git'
                 fetch_repo
                 if [ $# -eq 2 ]
                 then
@@ -421,7 +421,6 @@ main () {
                 ;;
             --no-fonts)
                 welcome
-                need_cmd 'git'
                 fetch_repo
                 install_vim
                 install_neovim
@@ -434,7 +433,6 @@ main () {
         esac
     else
         welcome
-        need_cmd 'git'
         fetch_repo
         install_vim
         install_neovim
@@ -442,7 +440,6 @@ main () {
         install_done
     fi
 }
-
 # }}}
 
 main $@

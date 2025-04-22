@@ -1,6 +1,6 @@
 "=============================================================================
 " python.vim --- SpaceVim lang#python layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -22,7 +22,7 @@
 "
 " 1. python_file_head: the default file head for python source code.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#python"
 "     python_file_head = [      
 "       '#!/usr/bin/python3',
@@ -51,6 +51,16 @@
 "   --------------------------------
 "   SPC l r         run current file
 "   g d             jump to definition
+"   SPC l i s       format imports
+"   SPC l i r       run autoflake on current buffer
+"   SPC l i i       run :ImportName command
+"   SPC l c r       coverage report
+"   SPC l c s       coverage show
+"   SPC l c e       coverage session
+"   SPC l c f       coverage refresh
+"   SPC l g d       generate docstring
+"   SPC l v l       list all virtualenvs
+"   SPC l v d       deactivate current virtualenv
 " <
 "
 " This layer also provides REPL support for python, the key bindings are:
@@ -101,12 +111,12 @@ function! SpaceVim#layers#lang#python#plugins() abort
         \ && !SpaceVim#layers#lsp#check_server('pyright')
         \ && !SpaceVim#layers#lsp#check_server('pylsp')
     if has('nvim')
-      call add(plugins, ['zchee/deoplete-jedi', { 'on_ft' : 'python'}])
+      call add(plugins, [g:_spacevim_root_dir . 'bundle/deoplete-jedi', { 'on_ft' : 'python'}])
       " in neovim, we can use deoplete-jedi together with jedi-vim,
       " but we need to disable the completions of jedi-vim.
       let g:jedi#completions_enabled = 0
     endif
-    call add(plugins, ['davidhalter/jedi-vim', { 'on_ft' : 'python',
+    call add(plugins, [g:_spacevim_root_dir . 'bundle/jedi-vim', { 'on_ft' : 'python',
           \ 'if' : has('python') || has('python3')}])
   endif
   call add(plugins, ['heavenshell/vim-pydocstring',
@@ -116,6 +126,8 @@ function! SpaceVim#layers#lang#python#plugins() abort
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-pythonsense', 
         \ { 'on_ft' : 'python'}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/coveragepy.vim', 
+        \ { 'merged' : 0}])
+  call add(plugins, [g:_spacevim_root_dir . 'bundle/python-imports.vim', 
         \ { 'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-virtualenv', 
         \ { 'merged' : 0}])
@@ -183,6 +195,9 @@ function! s:language_specified_mappings() abort
   call SpaceVim#mapping#space#langSPC('nmap', ['l','i', 'r'],
         \ 'Neoformat autoflake',
         \ 'remove unused imports', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','i', 'i'],
+        \ 'ImportName',
+        \ 'import name under cursor', 1)
   let g:_spacevim_mappings_space.l.s = {'name' : '+Send'}
   call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'i'],
         \ 'call SpaceVim#plugins#repl#start("python")',

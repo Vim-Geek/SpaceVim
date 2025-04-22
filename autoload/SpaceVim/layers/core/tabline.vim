@@ -1,6 +1,6 @@
 "=============================================================================
 " tabline.vim --- SpaceVim tabline
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -64,6 +64,10 @@ let s:i_separators = {
       \ 'bar' : ['|', '|'],
       \ 'nil' : ['', ''],
       \ }
+
+let [s:lsep , s:rsep] = ['', '']
+
+let [s:ilsep , s:irsep] = ['', '']
 
 let s:enable_default_mappings = 1
 

@@ -1,6 +1,6 @@
 "=============================================================================
 " html.vim --- SpaceVim lang#html layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -12,7 +12,7 @@
 " This layer is for html development, disabled by default, to enable this
 " layer, add following snippet to your SpaceVim configuration file.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#html"
 " <
 " 
@@ -21,7 +21,7 @@
 " - `emmet_leader_key`: change the default leader key for emmet
 " - `emmet_filetyps`: Set the filetypes for enabling emmet
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#html"
 "     emmet_leader_key = "<C-e>"
 "     emmet_filetyps = ['html']

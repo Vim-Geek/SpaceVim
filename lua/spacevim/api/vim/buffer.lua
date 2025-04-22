@@ -1,6 +1,6 @@
 --=============================================================================
 -- buffer.lua --- public buffer apis
--- Copyright (c) 2016-2019 Wang Shidong & Contributors
+-- Copyright (c) 2016-2023 Wang Shidong & Contributors
 -- Author: Wang Shidong < wsdjeg@outlook.com >
 -- URL: https://spacevim.org
 -- License: GPLv3
@@ -47,6 +47,11 @@ function M.resize(size, ...)
     local arg = {...}
     local cmd = arg[1] or 'vertical'
     vim.cmd(cmd .. ' resize ' .. size)
+end
+
+function M.open_pos(cmd, filename, line, col)
+    vim.cmd('silent ' .. cmd .. ' ' .. filename)
+    vim.fn.cursor(line, col)
 end
 
 return M

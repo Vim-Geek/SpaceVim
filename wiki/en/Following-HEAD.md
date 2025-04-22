@@ -1,30 +1,11 @@
-This page documents changes in master branch since last release v2.0.0
+This page documents changes in master branch since last release v2.1.0
 
-## PreRelease
+## New features
 
-The next release is v2.1.0:
-
-### Pull Requests
-
-<!-- call SpaceVim#dev#followHEAD#update('en') -->
-<!-- SpaceVim follow HEAD en start -->
-
-#### New Features
-
-
-#### Changes
-
-#### Bug Fixs
-
-
-#### Docs && Wiki
-
-
-#### Others
-
+#### New features
 
 ## Latest Release
 
-SpaceVim releases v2.0.0 at 2022-07-02, please check the release page:
+SpaceVim releases v2.1.0 at 2023-03-30, please check the release page:
 
-- [SpaceVim releases v2.0.0](https://spacevim.org/SpaceVim-release-v2.0.0/) for all the details
+- [SpaceVim releases v2.1.0](https://spacevim.org/SpaceVim-release-v2.1.0/) for all the details

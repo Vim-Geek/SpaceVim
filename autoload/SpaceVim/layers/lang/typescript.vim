@@ -1,6 +1,6 @@
 "GetUserUserContext=============================================================================
 " typescript.vim --- lang#typescript layer for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -10,17 +10,17 @@
 " @section lang#typescript, layers-lang-typescript
 " @parentsection layers
 " This layer provides typescript development support for SpaceVim.
-" To enable this layer, add following sinippet into SpaceVim configuration
+" To enable this layer, add following snippet into SpaceVim configuration
 " file.
 " >
-"   [layers]
+"   [[layers]]
 "       name = 'lang#typescript'
 " <
 " @subsection key bindings
 "
 " The following key bindings works well in both vim and neovim.
 " >
-"   Ket binding          Description
+"   Key binding          Description
 "   ----------------------------------------
 "   g D                  jump to type definition
 "   SPC l d              show document
@@ -29,7 +29,7 @@
 " <
 " The following key bindings only work in neovim.
 " >
-"   Ket binding          Description
+"   Key binding          Description
 "   ----------------------------------------
 "   SPC l f              run code fix
 "   SPC l p              preview definition
@@ -41,7 +41,7 @@
 " <
 " The following key bindings only work in vim.
 " >
-"   Ket binding          Description
+"   Key binding          Description
 "   ----------------------------------------
 "   SPC l m              interface implementations
 " <

@@ -1,6 +1,6 @@
 "=============================================================================
 " e.vim --- E language layer
-" Copyright (c) 2016-2019 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -14,7 +14,7 @@
 " This layer includes utilities and language-specific mappings for e development.
 " By default it is disabled, to enable this layer:
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#e"
 " <
 

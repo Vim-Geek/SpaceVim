@@ -1,6 +1,6 @@
 "=============================================================================
 " ps1.vim --- SpaceVim lang#ps1 layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -15,7 +15,7 @@ endfunction
 
 
 function! SpaceVim#layers#lang#powershell#config() abort
-  call SpaceVim#plugins#repl#reg('powershell', 'powershell')
+  call SpaceVim#plugins#repl#reg('powershell', 'powershell  -NoLogo -NoProfile -NonInteractive')
   call SpaceVim#plugins#runner#reg_runner('powershell', 'powershell %s')
   call SpaceVim#mapping#space#regesit_lang_mappings('powershell', function('s:language_specified_mappings'))
 endfunction

@@ -1,6 +1,6 @@
 "=============================================================================
 " javascript.vim --- SpaceVim lang#javascript layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -12,7 +12,7 @@
 " This layer is for JavaScript development, includes syntax lint, code
 " completion etc. To enable this layer:
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#javascript"
 " <
 " The code linter is eslint, install eslint via:
@@ -24,7 +24,7 @@
 " 1. auto_fix: If this option is true, --fix will be added to neomake eslint
 " maker.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#javascript"
 "     auto_fix = true
 " <

@@ -1,6 +1,6 @@
 "=============================================================================
 " SpaceVim.vim --- Initialization and core files for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -51,7 +51,7 @@ let s:SYSTEM = SpaceVim#api#import('system')
 
 ""
 " Version of SpaceVim , this value can not be changed.
-let g:spacevim_version = '2.1.0-dev'
+let g:spacevim_version = '2.2.0-dev'
 lockvar g:spacevim_version
 
 ""
@@ -76,6 +76,15 @@ let g:spacevim_default_indent          = 2
 ""
 " In Insert mode: Use the appropriate number of spaces to insert a <Tab>
 let g:spacevim_expand_tab              = 1
+
+""
+" @section enable_list_mode, options-enable_list_mode
+" @parentsection options
+" Enable/Disable list mode, by default it is disabled.
+
+""
+" Enable/Disable list mode, by default it is disabled.
+let g:spacevim_enable_list_mode        = 0
 
 ""
 " @section relativenumber, options-relativenumber
@@ -1056,6 +1065,13 @@ let g:spacevim_github_username         = ''
 " Set the default key for smart close windows, default is `q`.
 let g:spacevim_windows_smartclose      = 'q'
 ""
+" @section disabled_plugins, options-disabled_plugins
+" @parentsection options
+" >
+"   disabled_plugins = ['vim-foo', 'vim-bar']
+" <
+
+""
 " Disable plugins by name.
 " >
 "   let g:spacevim_disabled_plugins = ['vim-foo', 'vim-bar']
@@ -1322,6 +1338,14 @@ let g:spacevim_smartcloseignoreft      = [
       \ ]
 let g:_spacevim_altmoveignoreft         = ['Tagbar' , 'vimfiler']
 let g:spacevim_enable_javacomplete2_py = 0
+""
+" @section src_root, options-src_root
+" @parentsection options
+" set default sources root of all your projects. default is `E:\sources\`.
+" >
+"   src_root = 'E:\sources\'
+" <
+
 let g:spacevim_src_root                = 'E:\sources\'
 ""
 " The host file url. This option is for Chinese users who can not use
@@ -1346,6 +1370,8 @@ let g:spacevim_wildignore
 let g:_spacevim_mappings = {}
 let g:_spacevim_mappings_space_custom = []
 let g:_spacevim_mappings_space_custom_group_name = []
+let g:_spacevim_mappings_leader_custom = []
+let g:_spacevim_mappings_leader_custom_group_name = []
 let g:_spacevim_mappings_language_specified_space_custom = {}
 let g:_spacevim_mappings_lang_group_name = {}
 let g:_spacevim_neobundle_installed     = 0
@@ -1488,6 +1514,7 @@ function! SpaceVim#end() abort
   set smarttab
   let &expandtab = g:spacevim_expand_tab
   let &wrap = g:spacevim_wrap_line
+  let &list = g:spacevim_enable_list_mode
 
   if g:spacevim_default_indent > 0
     let &tabstop = g:spacevim_default_indent
@@ -1594,12 +1621,28 @@ function! s:parser_argv() abort
     " if use embed nvim
     " for exmaple: neovim-qt
     " or only run vim/neovim without argvs
-    if index(v:argv, '--embed') !=# -1
-          \ || len(v:argv) == 1
+    if len(v:argv) == 1
       return [0]
+    elseif index(v:argv, '--embed') !=# -1 
+      if  v:argv[-1] =~# '/$'
+        let f = fnamemodify(expand(v:argv[-1]), ':p')
+        if isdirectory(f)
+          return [1, f]
+        else
+          return [1, getcwd()]
+        endif
+      elseif v:argv[-1] ==# '.'
+        return [1, getcwd()]
+      elseif isdirectory(expand(v:argv[-1]))
+        return [1, fnamemodify(expand(v:argv[-1]), ':p')]
+      elseif filereadable(v:argv[-1])
+        return [2, get(v:, 'argv', ['failed to get v:argv'])]
+      else
+        return [0]
+      endif
     elseif index(v:argv, '-d') !=# -1
       " this is  diff mode
-      return [2]
+      return [2, 'diff mode, use default arguments:' . string(v:argv)]
     elseif v:argv[-1] =~# '/$'
       let f = fnamemodify(expand(v:argv[-1]), ':p')
       if isdirectory(f)
@@ -1610,7 +1653,7 @@ function! s:parser_argv() abort
     elseif v:argv[-1] ==# '.'
       return [1, getcwd()]
     elseif isdirectory(expand(v:argv[-1]))
-      return [1, fnamemodify(expand(v:argv[1]), ':p')]
+      return [1, fnamemodify(expand(v:argv[-1]), ':p')]
     else
       return [2, get(v:, 'argv', ['failed to get v:argv'])]
     endif
@@ -1709,7 +1752,7 @@ function! SpaceVim#begin() abort
       autocmd VimEnter * call SpaceVim#welcome()
     augroup END
   else
-    call SpaceVim#logger#info('Startup with argv: ' . string(s:status[1]) )
+    call SpaceVim#logger#info('Startup with argv: ' . string(s:status[0]) )
   endif
   if has('nvim-0.7')
     lua require('spacevim.default').options()
@@ -1732,7 +1775,9 @@ function! SpaceVim#welcome() abort
   endif
   if exists(':Startify') == 2
     Startify
-    if isdirectory(bufname(1))
+    if isdirectory(bufname(1)) && bufnr() !=# 1
+      " startify will not change the buffer name
+      " if you run `nvim test/`, the buffer name is `test/`.
       bwipeout! 1
     endif
   endif
@@ -2054,9 +2099,13 @@ endfunction
 
 ""
 " @section Changelog, changelog
-" Following HEAD: changes in master branch since last release v1.9.0
+" Following HEAD: changes in master branch since last release v2.0.0
 "
 " https://github.com/SpaceVim/SpaceVim/wiki/Following-HEAD
+"
+" 2022-07-02: v2.0.0
+"
+" https://spacevim.org/SpaceVim-release-v2.0.0/
 "
 " 2021-06-16: v1.9.0
 "

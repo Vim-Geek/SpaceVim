@@ -1,6 +1,6 @@
 "=============================================================================
 " ring.vim --- ring language support in SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -20,7 +20,7 @@
 "
 " 1. ring_repl: Set the path of ring repl.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#ring"
 "     ring_repl = "/path/to/repl.ring"
 " <

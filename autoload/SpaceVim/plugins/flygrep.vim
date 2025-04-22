@@ -1,6 +1,6 @@
 "=============================================================================
 " flygrep.vim --- Grep on the fly in SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -745,7 +745,8 @@ endif
 if has('timers')
   function! s:preview() abort
     call timer_stop(s:preview_timer_id)
-    let s:preview_timer_id = timer_start(200, function('s:preview_timer'), {'repeat' : 1})
+    let s:preview_timer_id = timer_start(200,
+          \ function('s:preview_timer'), {'repeat' : 1})
   endfunction
 else
   function! s:preview() abort

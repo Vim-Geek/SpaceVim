@@ -1,6 +1,6 @@
 "=============================================================================
 " telescope.vim --- telescope support for spacevim
-" Copyright (c) 2016-2019 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -165,6 +165,8 @@ function! SpaceVim#layers#telescope#config() abort
           \ ],
           \ 1)
 
+  call SpaceVim#mapping#space#def('nnoremap', ['p', 't', 'f'],
+        \ 'Telescope task', 'fuzzy-find-tasks', 1)
   let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
   call s:defind_fuzzy_finder()
 

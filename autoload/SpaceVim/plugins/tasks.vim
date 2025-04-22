@@ -1,6 +1,6 @@
 "=============================================================================
 " tasks.vim --- tasks support
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -364,6 +364,15 @@ function! s:update_tasks_win_context() abort
     call add(lines, line)
   endfor
   call s:BUF.buf_set_lines(s:task_viewer_bufnr, 0, -1, 0, sort(lines))
+endfunction
+
+function! SpaceVim#plugins#tasks#get_tasks() abort
+  call s:load()
+  for Provider in s:providers
+    call extend(s:task_config, call(Provider, []))
+  endfor
+  call s:init_variables()
+  return s:task_config
 endfunction
 
 function! SpaceVim#plugins#tasks#edit(...) abort

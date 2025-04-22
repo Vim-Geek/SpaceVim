@@ -1,12 +1,15 @@
 "=============================================================================
 " clipboard.vim --- clipboard for neovim and vim8
-" Copyright (c) 2016-2019 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
+let s:LOGGER =SpaceVim#logger#derive('clipboard')
+
 " This script is based on kamilkrz (Kamil Krześ)'s idea about using clipboard.
+
 function! s:set_command() abort
   let yank = ''
   let paste = ''
@@ -22,10 +25,10 @@ function! s:set_command() abort
     let yank = 'wl-copy --foreground --type text/plain'
     let paste = 'wl-paste --no-newline'
   elseif !empty($DISPLAY) && executable('xclip')
-    let yank = 'xclip -quiet -i -selection clipboard'
+    let yank = 'xclip -i -selection clipboard'
     let paste = 'xclip -o -selection clipboard'
   elseif !empty($DISPLAY) && executable('xsel')
-    let yank = 'xsel --nodetach -i -b'
+    let yank = 'xsel -i -b'
     let paste = 'xsel -o -b'
   elseif executable('lemonade')
     let yank = 'lemonade copy'
@@ -91,5 +94,14 @@ function! s:get_selection_text()
   endif
   return join(lines, "\n") . lastchar . (visualmode() ==# 'V' ? "\n" : '')
 endfunction
-
 let [s:yank_cmd, s:paste_cmd] = s:set_command()
+call s:LOGGER.info('yank_cmd is:' . string(s:yank_cmd))
+call s:LOGGER.info('paste_cmd is:' . string(s:paste_cmd))
+
+
+function! clipboard#set(yank, past) abort
+  let s:yank_cmd = a:yank
+  let s:paste_cmd = a:past
+  call s:LOGGER.info('yank_cmd is:' . string(s:yank_cmd))
+  call s:LOGGER.info('paste_cmd is:' . string(s:paste_cmd))
+endfunction

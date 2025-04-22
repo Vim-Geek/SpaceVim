@@ -8,7 +8,7 @@
 [入门指南](https://spacevim.org/cn/quick-start-guide/) \|
 [推特](https://twitter.com/SpaceVim)
 
-[![build](https://img.shields.io/github/workflow/status/SpaceVim/SpaceVim/test)](https://github.com/SpaceVim/SpaceVim/actions/workflows/check.yml?query=branch%3Amaster)
+[![build](https://img.shields.io/github/actions/workflow/status/SpaceVim/SpaceVim/check.yml?branch=master)](https://github.com/SpaceVim/SpaceVim/actions/workflows/check.yml?query=branch%3Amaster)
 [![Codecov coverage](https://img.shields.io/codecov/c/github/SpaceVim/SpaceVim.svg)](https://codecov.io/gh/SpaceVim/SpaceVim)
 [![Release](https://img.shields.io/badge/Release-2.0.0-8700FF.svg)](https://spacevim.org/SpaceVim-release-v2.0.0/)
 [![GPLv3 License](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://github.com/SpaceVim/SpaceVim/blob/master/LICENSE)
@@ -30,9 +30,6 @@ master 分支最新的更新以及变动。
 我们感谢社区的任何贡献。
 
 <a href="https://github.com/SpaceVim/SpaceVim/graphs/contributors"><img src="https://opencollective.com/spacevim/contributors.svg?width=890&button=false" /></a>
-
-支持 SpaceVim 最好的方法是通过报告 bug 来完善SpaceVim，或者在[Gitter 聊天室](https://gitter.im/SpaceVim/cn)上帮助社区其他用户
-或者直接提交拉取请求。
 
 想要了解更多信息，请查看我们的[开发者手册](https://spacevim.org/cn/development/)。
 

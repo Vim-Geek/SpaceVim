@@ -1,6 +1,6 @@
 "=============================================================================
 " autocmd.vim --- main autocmd group for spacevim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Shidong Wang < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -59,7 +59,7 @@ function! SpaceVim#autocmds#init() abort
     endif
     autocmd BufWritePre * call SpaceVim#plugins#mkdir#CreateCurrent()
     autocmd ColorScheme * call SpaceVim#api#import('vim#highlight').hide_in_normal('EndOfBuffer')
-    autocmd ColorScheme gruvbox,jellybeans,nord,srcery,NeoSolarized,one call s:fix_colorschem_in_SpaceVim()
+    autocmd ColorScheme gruvbox,jellybeans,nord,srcery,NeoSolarized,one,SpaceVim call s:fix_colorschem_in_SpaceVim()
     autocmd VimEnter * call SpaceVim#autocmds#VimEnter()
     autocmd BufEnter * let b:_spacevim_project_name = get(g:, '_spacevim_project_name', '')
     autocmd SessionLoadPost * let g:_spacevim_session_loaded = 1
@@ -123,6 +123,8 @@ function! s:fix_colorschem_in_SpaceVim() abort
       hi VertSplit guibg=#151515 guifg=#080808
     elseif g:colors_name ==# 'nord'
       hi VertSplit guibg=#2E3440 guifg=#262626
+    elseif g:colors_name ==# 'SpaceVim'
+      hi VertSplit guibg=#262626 guifg=#181A1F
     elseif g:colors_name ==# 'srcery'
       hi VertSplit guibg=#1C1B19 guifg=#262626
       hi clear Visual
@@ -140,8 +142,7 @@ function! s:fix_colorschem_in_SpaceVim() abort
   hi SpaceVimLeaderGuiderGroupName cterm=bold ctermfg=175 gui=bold guifg=#d3869b
 endfunction
 
-function! SpaceVim#autocmds#VimEnter() abort
-  call SpaceVim#api#import('vim#highlight').hide_in_normal('EndOfBuffer')
+function! s:apply_custom_space_keybindings() abort
   for argv in g:_spacevim_mappings_space_custom_group_name
     if len(argv[0]) == 1
       if !has_key(g:_spacevim_mappings_space, argv[0][0])
@@ -162,6 +163,36 @@ function! SpaceVim#autocmds#VimEnter() abort
   for argv in g:_spacevim_mappings_space_custom
     call call('SpaceVim#mapping#space#def', argv)
   endfor
+endfunction
+
+
+function! s:apply_custom_leader_keybindings() abort
+  for argv in g:_spacevim_mappings_leader_custom_group_name
+    if len(argv[0]) == 1
+      if !has_key(g:_spacevim_mappings, argv[0][0])
+        let g:_spacevim_mappings[argv[0][0]] = {'name' : argv[1]}
+      endif
+    elseif len(argv[0]) == 2
+      if !has_key(g:_spacevim_mappings, argv[0][0])
+        let g:_spacevim_mappings[argv[0][0]] = {'name' : '+Unnamed',
+              \ argv[0][1] : { 'name' : argv[1]},
+              \ }
+      else
+        if !has_key(g:_spacevim_mappings[argv[0][0]], argv[0][1])
+          let g:_spacevim_mappings[argv[0][0]][argv[0][1]] = {'name' : argv[1]}
+        endif
+      endif
+    endif
+  endfor
+  for argv in g:_spacevim_mappings_leader_custom
+    call call('SpaceVim#mapping#def', argv)
+  endfor
+endfunction
+
+function! SpaceVim#autocmds#VimEnter() abort
+  call SpaceVim#api#import('vim#highlight').hide_in_normal('EndOfBuffer')
+  call s:apply_custom_space_keybindings()
+  call s:apply_custom_leader_keybindings()
   if SpaceVim#layers#isLoaded('core#statusline')
     set laststatus=2
     call SpaceVim#layers#core#statusline#def_colors()
@@ -171,6 +202,7 @@ function! SpaceVim#autocmds#VimEnter() abort
     call SpaceVim#layers#core#tabline#def_colors()
     set showtabline=2
   endif
+  call SpaceVim#logger#info('run root changed callback on VimEnter!')
   call SpaceVim#plugins#projectmanager#RootchandgeCallback()
   if !empty(get(g:, '_spacevim_bootstrap_after', ''))
     try

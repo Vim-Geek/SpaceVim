@@ -1,6 +1,6 @@
 "=============================================================================
 " crystal.vim --- SpaceVim lang#crystal layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -14,7 +14,7 @@
 " The lang#crystal layer provides crystal filetype detection and syntax highlight,
 " crystal tool and crystal spec integration. To enable this layer:
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#crystal"
 " <
 "

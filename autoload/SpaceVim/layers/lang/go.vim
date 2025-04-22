@@ -1,6 +1,6 @@
 "=============================================================================
 " go.vim --- SpaceVim lang#go layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -21,7 +21,7 @@
 " `gometalinter`
 " 2. go_file_head: the default file head for golang source code.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#go"
 "     go_file_head = [      
 "       '#!/usr/bin/python3',

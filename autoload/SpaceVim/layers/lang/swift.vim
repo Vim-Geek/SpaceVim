@@ -1,18 +1,18 @@
 "=============================================================================
 " swift.vim --- swift layer for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
 ""
-" @section lang#swig, layers-lang-swift
+" @section lang#swift, layers-lang-swift
 " @parentsection layers
 " This layer is for swift development, including syntax highlighting and
 " indent. To enable it:
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#swift"
 " <
 " @subsection Mappings

@@ -1,6 +1,6 @@
 "=============================================================================
 " scrollbar.vim --- scrollbar support for SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -24,18 +24,18 @@ let s:default = {
       \    'min_size' : 3,
       \    'width' : 1,
       \    'right_offset' : 1,
-      \    'excluded_filetypes' : ['startify', 'leaderf', 'NvimTree'],
+      \    'excluded_filetypes' : ['startify', 'git-commit','leaderf', 'NvimTree', 'tagbar', 'defx'],
       \    'shape' : {
-        \        'head' : '▲',
-        \        'body' : '█',
-        \        'tail' : '▼',
-        \    },
-        \    'highlight' : {
-          \        'head' : 'Normal',
-          \        'body' : 'Normal',
-          \        'tail' : 'Normal',
-          \    }
-          \ }
+      \        'head' : '▲',
+      \        'body' : '█',
+      \        'tail' : '▼',
+      \    },
+      \    'highlight' : {
+      \        'head' : 'Normal',
+      \        'body' : 'Normal',
+      \        'tail' : 'Normal',
+      \    }
+      \ }
 
 augroup spacevim_scrollbar
   autocmd!

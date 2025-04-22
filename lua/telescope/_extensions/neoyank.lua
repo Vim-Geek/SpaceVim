@@ -50,10 +50,15 @@ local function show_yank_history(opts)
             actions.select_default:replace(function()
                 local entry = action_state.get_selected_entry()
                 actions.close(prompt_bufnr)
-                local reg = vim.fn.getreg('*')
-                vim.fn.setreg('*', entry.value[2])
-                vim.cmd("put *")
-                vim.fn.setreg('*', reg)
+                local reg = vim.fn.getreg('"')
+                vim.fn.setreg('"', entry.value[1])
+                local ok, rst = pcall(vim.cmd, 'normal! p')
+                if not ok then
+                  vim.g._spacevim_temp_err = rst
+                  -- @todo implement lua notify api
+                  local notify = vim.api.nvim_eval('SpaceVim#api#notify#get().notify(g:_spacevim_temp_err, "WarningMsg")')
+                end
+                vim.fn.setreg('"', reg)
             end)
             return true
         end,

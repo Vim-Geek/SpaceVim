@@ -1,6 +1,6 @@
 "=============================================================================
 " mapping.vim --- mapping functions in SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -91,6 +91,9 @@ endfunction
 
 if get(g:, 'spacevim_snippet_engine', 'neosnippet') ==# 'neosnippet'
   function! SpaceVim#mapping#shift_tab() abort
+    if g:spacevim_autocomplete_method ==# 'coc' && coc#pum#visible()
+      return coc#pum#prev(1)
+    endif
     return pumvisible() ? "\<C-p>" : "\<Plug>delimitMateS-Tab"
   endfunction
 elseif get(g:, 'spacevim_snippet_engine', 'neosnippet') ==# 'ultisnips'

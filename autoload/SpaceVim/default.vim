@@ -1,6 +1,6 @@
 "=============================================================================
 " default.vim --- default options in SpaceVim
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -222,6 +222,8 @@ function! SpaceVim#default#keyBindings() abort
   if maparg('<c-g>', 'n') == ''
     nnoremap <silent> <c-g> :<c-u>call SpaceVim#plugins#ctrlg#display()<cr>
   endif
+
+  nnoremap <silent> <C-`> :<c-u>call SpaceVim#plugins#runner#close()<Cr>
 
 
   " Improve scroll, credits: https://github.com/Shougo

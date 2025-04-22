@@ -88,7 +88,8 @@ description: "General documentation about how to use SpaceVim, including the qui
   - [Replace text with iedit](#replace-text-with-iedit)
     - [iedit states key bindings](#iedit-states-key-bindings)
   - [Code runner](#code-runner)
-  - [Read Eval Print Loop](#read-eval-print-loop)
+    - [Custom runner](#custom-runner)
+  - [REPL(read eval print loop)](#replread-eval-print-loop)
   - [Highlight current symbol](#highlight-current-symbol)
   - [Error handling](#error-handling)
   - [EditorConfig](#editorconfig)
@@ -100,7 +101,7 @@ description: "General documentation about how to use SpaceVim, including the qui
 
 Four core pillars: Mnemonic, Discoverable, Consistent and “Crowd-Configured”.
 
-If any of these core pillars are violated open an issue and we’ll try our best to fix it.
+If any of these core pillars are violated open an issue, and we’ll try our best to fix it.
 
 **Mnemonic**
 
@@ -128,13 +129,15 @@ packages tuned by power users and bugs are fixed quickly.
 
 ## Highlighted features
 
-- **Great documentation:** access documentation in SpaceVim with `:h SpaceVim`.
-- **nice UI:** you'll love the awesome UI and its useful features.
+- **Modularization:** plugins and functions are organized in [layers](https://spacevim.org/layers/).
+- **Compatible api:** a series of [compatible APIs](https://spacevim.org/api/) for Vim/Neovim.
+- **Great documentation:** online [documentation](https://spacevim.org/documentation/) and `:h SpaceVim`.
+- **Better experience:** rewrite core plugins using lua
+- **Beautiful UI:** you'll love the awesome UI and its useful features.
 - **Mnemonic key bindings:** key binding guide will be displayed automatically
 - **Fast boot time:** Lazy-load 90% of plugins with [dein.vim](https://github.com/Shougo/dein.vim)
 - **Lower the risk of RSI:** by heavily using the space bar instead of modifiers.
-- **Batteries included:** discover hundreds of ready-to-use packages nicely organised in configuration layers following a set of [conventions](http://spacevim.org/conventions/).
-- **Consistent experience:** consistent experience between Vim and NeoVim
+- **Consistent experience:** consistent experience between terminal and gui
 
 ## Screenshots
 
@@ -242,14 +245,14 @@ The very first time SpaceVim starts up, it will ask you to
 choose a mode,
 [`basic mode`](https://github.com/SpaceVim/SpaceVim/blob/master/mode/basic.toml)
 or [`dark powered mode`](https://github.com/SpaceVim/SpaceVim/blob/master/mode/dark_powered.toml).
-then it will create a `SpaceVim.d/init.toml` in your
+Then it will create a `SpaceVim.d/init.toml` in your
 `HOME` directory. All the configuration files can be stored in the
 `~/.SpaceVim.d/` directory.
 
 `~/.SpaceVim.d/` will be added to `&runtimepath`.
 
 It is also possible to override the location of `~/.SpaceVim.d/`
-using the environment variable `SPACEVIMDIR`. Of course you can
+using the environment variable `SPACEVIMDIR`. Of course, you can
 also use symlinks to change the location of this directory.
 
 SpaceVim also supports project specific configuration files.
@@ -268,7 +271,7 @@ layer to be loaded.
 
 **Add custom plugins**
 
-If you want to add plugins from github, just add the repo name
+If you want to add plugins from GitHub, just add the repo name
 to the `custom_plugins` section:
 
 ```toml
@@ -315,7 +318,6 @@ For adding multiple custom plugins:
 
 If you want to disable plugins which are added by SpaceVim,
 you can use SpaceVim `disabled_plugins` in the `[options]` section of your configuration file.
-options:
 
 ```toml
 [options]
@@ -384,7 +386,7 @@ endfunction
 ```
 
 Similarly, if you want to add custom key bindings prefixed by language leader key,
-which is typically `,`, you can add them to the boostrap function. **Make sure** that the
+which is typically `,`, you can add them to the bootstrap function. **Make sure** that the
 key bindings are not used by SpaceVim.
 
 ```vim
@@ -408,8 +410,8 @@ The different key bindings between SpaceVim and vim are shown as below.
       windows_leader = ''
   ```
 
-- In vim the `,` key repeats the last last `f`, `F`, `t` and `T`, but in SpaceVim it is the language specific Leader key.
-  To disable this feature, set the option `enable_language_specific_leader` to `false` in in the `[options]` section of your configuration file.
+- In vim the `,` key repeats the last `f`, `F`, `t` and `T`, but in SpaceVim it is the language specific Leader key.
+  To disable this feature, set the option `enable_language_specific_leader` to `false` in the `[options]` section of your configuration file.
 
   ```toml
   [options]
@@ -461,11 +463,15 @@ introduction to writing configuration layers can be found in
 
 **Purpose**
 
-Layers help collect related packages together to provide features. For example, the `lang#python` layer provides auto-completion, syntax checking, and REPL support for python files. This approach helps keep configurations organized and reduces overhead for users by keeping them from having to think about what packages to install. To install all the `python` features users only need to add the `lang#python` layer to their custom configuration file.
+Layers help collect related packages together to provide features. For example, the `lang#python` layer provides auto-completion,
+syntax checking, and REPL support for python files.
+This approach helps keep configurations organized and reduces overhead for users by keeping them from having to think about what packages to install.
+To install all the `python` features users only need to add the `lang#python` layer to their custom configuration file.
 
 **Structure**
 
-In SpaceVim, a layer is a single file. In a layer, for example, `autocomplete` layer, the file is `autoload/SpaceVim/layers/autocomplete.vim`, and there are three public functions:
+In SpaceVim, a layer is a single file. In a layer, for example, `autocomplete` layer, the file is `autoload/SpaceVim/layers/autocomplete.vim`,
+and there are three public functions:
 
 - `SpaceVim#layers#autocomplete#plugins()`: returns a list of the plugins used by this plugin
 - `SpaceVim#layers#autocomplete#config()`: The layer's configuration, such as key bindings and autocmds
@@ -571,7 +577,6 @@ In font transient state:
 | `-`           | decrease the font size    |
 | Any other key | leave the transient state |
 
-
 ### Mouse
 
 Mouse support is enabled in Normal mode and Visual mode by default.
@@ -589,8 +594,8 @@ Read `:h 'mouse'` for more info.
 
 ### Scrollbar
 
-The scrollbar is disabled by default. To enable the scrollbar,
-you need to change `enable_scrollbar` option in [ui layer](../layers/ui/).
+The scrollbar requires floating window of neovim or popup of vim8. It is disabled by default.
+To enable the scrollbar, you need to change `enable_scrollbar` option in [ui layer](../layers/ui/).
 
 ```
 [[layers]]
@@ -954,7 +959,6 @@ If only one file buffer is opened, a file is opened in the active window, otherw
 | `s g`           | open file in a vertically split window   |
 | `s v`           | open file in a horizontally split window |
 
-
 #### Override filetree key bindings
 
 If you want to override the default key bindings in filetree windows. You can use User autocmd in bootstrap function. for examples:
@@ -1254,6 +1258,22 @@ Read `:h registers` for more info about other registers.
 | `<Leader> p` | Paste text from system clipboard after here  |
 | `<Leader> P` | Paste text from system clipboard before here |
 | `<Leader> Y` | Copy selected text to pastebin               |
+
+To change the command of clipboard, you need to use bootstrap after function:
+
+```viml
+" for example, to use tmux clipboard:
+function! myspacevim#after() abort
+    call clipboard#set('tmux load-buffer -', 'tmux save-buffer -')
+endfunction
+```
+
+within the runtime log (`SPC h L`), the clipboard command will be displayed:
+
+```
+[ clipboard ] [11:00:35] [670.246] [ Info  ] yank_cmd is:'tmux load-buffer -'
+[ clipboard ] [11:00:35] [670.246] [ Info  ] paste_cmd is:'tmux save-buffer -'
+```
 
 The `<Leader> Y` key binding will copy selected text to a pastebin server. It requires `curl` in your `$PATH`.
 The default command is:
@@ -1997,6 +2017,26 @@ For example, to ignore the `node_packages/` directory:
     project_rooter_outermost = false
 ```
 
+There are three options for non-project files/directories:
+
+- Don't change directory (default).
+
+```
+project_non_root = ''
+```
+
+- Change to file's directory (similar to 'autochdir').
+
+```
+project_non_root = 'current'
+```
+
+- Change to home directory.
+
+```
+project_non_root = 'home'
+```
+
 You can also disable project root detection completely (i.e. vim will set the
 root directory to the present working directory):
 
@@ -2117,13 +2157,20 @@ which is similar to VSCode's tasks-manager. There are two kinds of task configur
 The tasks defined in the global tasks configuration can be overrided by project local
 tasks configuration.
 
-| Key Bindings | Descriptions                  |
-| ------------ | ----------------------------- |
-| `SPC p t e`  | edit tasks configuration file |
-| `SPC p t r`  | select task to run            |
-| `SPC p t l`  | list all available tasks      |
+| Key Bindings | Descriptions                              |
+| ------------ | ----------------------------------------- |
+| `SPC p t e`  | edit tasks configuration file             |
+| `SPC p t r`  | select task to run                        |
+| `SPC p t l`  | list all available tasks                  |
+| `SPC p t f`  | fuzzy find tasks(require telescope layer) |
+
+The `SPC p t l` will open the tasks manager windows, in the tasks manager windows, you can use `Enter` to run task under the cursor.
 
 ![task_manager](https://user-images.githubusercontent.com/13142418/94822603-69d0c700-0435-11eb-95a7-b0b4fef91be5.png)
+
+If the `telescope` layer is loaded, you can also use `SPC p t f` to fuzzy find specific task, and run the select task.
+
+![fuzzy-task](https://user-images.githubusercontent.com/13142418/199057483-d5cce17c-2f06-436d-bf7d-24a78d0eeb11.png)
 
 #### Custom tasks
 
@@ -2370,6 +2417,7 @@ The default color for iedit is `red`/`green` which is based on the current color
 
 SpaceVim provides an asynchronous code runner plugin. In most language layers,
 the key binding `SPC l r` is defined for running the current buffer.
+To close the code runner windows, you can use `` Ctrl-`  `` key binding.
 If you need to add new commands, you can use the bootstrap function. For example:
 Use `F5` to build the project asynchronously.
 
@@ -2384,11 +2432,31 @@ Key bindings within code runner buffer:
 | `ctrl-c`    | stop code runner            |
 | `i`         | open promote to insert text |
 
-### Read Eval Print Loop
+#### Custom runner
+
+If you want to set custom code runner for specific language. You need to use `SpaceVim#plugins#runner#reg_runner(ft, runner)` api in bootstrap function.
+
+example:
+
+```vim
+call SpaceVim#plugins#runner#reg_runner('lua', {
+      \ 'exe' : 'lua',
+      \ 'opt' : ['-'],
+      \ 'usestdin' : 1,
+      \ })
+```
+
+### REPL(read eval print loop)
 
 The REPL(Read Eval Print Loop) plugin provides a framework to run REPL command asynchronously.
 
 For different language, you need to checkout the doc of language layer. The repl key bindings are defined in language layer.
+
+Key bindings within repl buffer:
+
+| key binding | description                 |
+| ----------- | --------------------------- |
+| `i`         | open promote to insert text |
 
 ### Highlight current symbol
 

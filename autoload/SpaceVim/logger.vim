@@ -1,18 +1,21 @@
 "=============================================================================
 " logger.vim --- SpaceVim logger
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
 "=============================================================================
 
 if has('nvim-0.5.0')
+  ""
+  " write message to SpaceVim runtime log with `info` level.
   function! SpaceVim#logger#info(msg) abort
     lua require("spacevim.logger").info(
           \ require("spacevim").eval("a:msg")
           \ )
   endfunction
-
+  ""
+  " write warning message to spacevim runtime log.
   function! SpaceVim#logger#warn(msg, ...) abort
     let issilent = get(a:000, 0, 1)
     lua require("spacevim.logger").warn(
@@ -21,24 +24,30 @@ if has('nvim-0.5.0')
           \ )
   endfunction
 
-
+  ""
+  " write error message to spacevim runtime log.
   function! SpaceVim#logger#error(msg) abort
     lua require("spacevim.logger").error(
           \ require("spacevim").eval("a:msg")
           \ )
   endfunction
 
+  ""
+  " write debug message to spacevim runtime log.
   function! SpaceVim#logger#debug(msg) abort
     lua require("spacevim.logger").debug(
           \ require("spacevim").eval("a:msg")
           \ )
   endfunction
-
+  ""
+  " This a a function to view the spacevim runtime log. same as
+  " |:SPRuntimeLog| and `SPC h L`
   function! SpaceVim#logger#viewRuntimeLog() abort
     lua require("spacevim.logger").viewRuntimeLog()
   endfunction
 
-
+  ""
+  " Print the debug information of spacevim, same as |:SPDebugInfo|
   function! SpaceVim#logger#viewLog(...) abort
     if a:0 >= 1
       let bang = get(a:000, 0, 0)
@@ -47,15 +56,45 @@ if has('nvim-0.5.0')
       return luaeval('require("spacevim.logger").viewLog()')
     endif
   endfunction
-
+  ""
+  " @public
+  " Set debug level of SpaceVim. Default is 1.
+  "
+  "     1 : log all messages
+  "
+  "     2 : log warning and error messages
+  "
+  "     3 : log error messages only
   function! SpaceVim#logger#setLevel(level) abort
     lua require("spacevim.logger").setLevel(require("spacevim").eval("a:level"))
   endfunction
-
+  ""
+  " change the output file of spacevim runtime logger. default is empty
+  " string.
   function! SpaceVim#logger#setOutput(file) abort
     lua require("spacevim.logger").setOutput(require("spacevim").eval("a:file"))
   endfunction
-
+  ""
+  " Derive a new logger based on SpaceVim's runtime logger. The new logger
+  " provides following functions:
+  " 1. info(msg): like |SpaceVim#logger#info|, but include the derive name.
+  " 2. warn(msg): like |SpaceVim#logger#warn|
+  " 3. error(msg): like |SpaceVim#logger#error|
+  " 4. debug(msg): write debug message run SpaceVim runtime log
+  " 5. start_debug(): enable debug mode of derived logger.
+  " 6. stop_debug(): stop debug mode of derived logger.
+  " 7. debug_enabled(): return true or false.
+  "
+  " Example: >
+  "   let s:LOGGER = SpaceVim#logger#derive('myplug')
+  "
+  "   call s:LOGGER.info('hello world')
+  " <
+  "
+  " The this info message will be write to SpaceVim's runtime log:
+  " >
+  "   [  myplug ] [00:02:54:051] [ Info  ] hello world
+  " <
   function! SpaceVim#logger#derive(name) abort
     return luaeval('require("spacevim.logger").derive(require("spacevim").eval("a:name"))')
   endfunction
@@ -150,22 +189,10 @@ else
     call matchadd('WarningMsg','.*[\sWarn\s\].*')
   endfunction
 
-  ""
-  " @public
-  " Set debug level of SpaceVim. Default is 1.
-  "
-  "     1 : log all messages
-  "
-  "     2 : log warning and error messages
-  "
-  "     3 : log error messages only
   function! SpaceVim#logger#setLevel(level) abort
     call s:LOGGER.set_level(a:level)
   endfunction
 
-  ""
-  " @public
-  " Set the log output file of SpaceVim. Default is empty.
   function! SpaceVim#logger#setOutput(file) abort
     call s:LOGGER.set_file(a:file)
   endfunction
@@ -176,6 +203,8 @@ else
 
   let s:derive = {}
   let s:derive.origin_name = s:LOGGER.get_name()
+  " let s:derive._debug_mode = v:false
+  let s:derive._debug_mode = 0
 
   function! s:derive.info(msg) abort
     call s:LOGGER.set_name(self.derive_name)
@@ -196,9 +225,23 @@ else
   endfunction
 
   function! s:derive.debug(msg) abort
-    call s:LOGGER.set_name(self.derive_name)
-    call s:LOGGER.debug(a:msg)
-    call s:LOGGER.set_name(self.origin_name)
+    if self._debug_mode
+      call s:LOGGER.set_name(self.derive_name)
+      call s:LOGGER.debug(a:msg)
+      call s:LOGGER.set_name(self.origin_name)
+    endif
+  endfunction
+
+  function! s:derive.start_debug() abort
+    let self._debug_mode = 1
+  endfunction
+
+  function! s:derive.stop_debug() abort
+    let self._debug_mode = 0
+  endfunction
+
+  function! s:derive.debug_enabled() abort
+    return self._debug_mode
   endfunction
 
   function! SpaceVim#logger#derive(name) abort

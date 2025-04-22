@@ -1,6 +1,6 @@
 "=============================================================================
 " lua.vim --- SpaceVim lang#lua layer
-" Copyright (c) 2016-2022 Wang Shidong & Contributors
+" Copyright (c) 2016-2023 Wang Shidong & Contributors
 " Author: Wang Shidong < wsdjeg@outlook.com >
 " URL: https://spacevim.org
 " License: GPLv3
@@ -19,7 +19,7 @@
 "
 " 1. lua_file_head: the default file head for lua source code.
 " >
-"   [layers]
+"   [[layers]]
 "     name = "lang#lua"
 "     ruby_file_head = [      
 "       '--!/usr/bin/lua',
