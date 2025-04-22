@@ -65,7 +65,7 @@ if exists('s:enable_sidebar')
 else
   let s:enable_sidebar = 0
   let s:enable_scrollbar = 0
-  let s:enable_indentline = 1
+  let s:enable_indentline = v:true
   let s:indentline_char = '|'
   let s:indentline_exclude_filetype = []
   let s:enable_cursorword = 0
@@ -141,9 +141,10 @@ function! SpaceVim#layers#ui#config() abort
   let g:indentLine_concealcursor = s:concealcursor
   let g:indentLine_conceallevel = s:conceallevel
 
-
   " enable/disable indentline
   let g:indentLine_enabled = s:enable_indentline
+  " indent_blankline config
+  " let g:indent_blankline_enabled = s:enable_indentline ? v:true : v:false
   " this var must be boolean, but v:true is added in vim 7.4.1154
   let g:indent_blankline_enabled =
         \ s:enable_indentline ?
