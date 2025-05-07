@@ -43,6 +43,8 @@ function M.open_float(sl, ...)
   vim.fn.setbufvar(M.__bufnr, '&bufhidden', 'wipe')
   vim.fn.setbufvar(M.__bufnr, '&cursorline', 0)
   vim.fn.setbufvar(M.__bufnr, '&modifiable', 1)
+  vim.fn.setbufvar(M.__bufnr, '&foldcolumn', 0)
+  vim.fn.setbufvar(M.__bufnr, '&statuscolumn', '')
   vim.fn.setwinvar(vim.fn.win_id2win(M.__winid), '&cursorline', 0)
   vim.api.nvim_buf_set_virtual_text(M.__bufnr, -1, 0, sl, {})
   vim.fn.setbufvar(M.__bufnr, '&modifiable', 0)
@@ -57,7 +59,6 @@ end
 
 function M.check_width(len, sec, winwidth)
   return len + M.len(sec) < winwidth
-  
 end
 
 function M.len(sec)
@@ -103,7 +104,7 @@ function M.build(left_sections, right_sections, lsep, rsep, fname, tag, hi_a, hi
     end
   end
   if M.check_width(len, fname, winwidth) then
-    len = len +  M.len(fname)
+    len = len + M.len(fname)
     if flag then
       l = l .. '%#' .. hi_c .. '_' .. hi_z .. '#' .. lsep .. '%#' .. hi_z .. '#' .. fname .. '%='
     else
