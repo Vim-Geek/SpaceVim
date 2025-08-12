@@ -233,7 +233,8 @@ function! SpaceVim#layers#core#plugins() abort
 
   if exists('*matchaddpos')
     let g:loaded_matchit = 1
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-matchup', {'merged' : 0, 'on_event' : 'BufReadPost'}])
+    " call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-matchup', {'merged' : 0, 'on_event' : 'BufReadPost'}])
+    call add(plugins, ['andymass/vim-matchup', {'merged' : 0, 'on_event' : 'BufReadPost'}])
   endif
   call add(plugins, [g:_spacevim_root_dir . 'bundle/gruvbox', {'loadconf' : 1, 'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-clipboard', {'merged' : 0}])

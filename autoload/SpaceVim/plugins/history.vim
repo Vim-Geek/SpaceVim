@@ -50,6 +50,7 @@ endfunction
 
 
 function! s:read_cache() abort
+  return
   if filereadable(s:history_cache_path)
     let his = s:JSON.json_decode(join(readfile(s:history_cache_path, ''), ''))
     if type(his) ==# type({})
