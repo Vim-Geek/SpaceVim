@@ -95,13 +95,13 @@ local function build_item(bufnr, n)
 
   return {
     str = item_hilight
-      .. tablineat
-      .. messletters.bubble_num(n, 1)
-      .. ' '
-      .. name
-      .. ' '
-      .. icon
-      .. ' ',
+        .. tablineat
+        .. messletters.bubble_num(n, 1)
+        .. ' '
+        .. name
+        .. ' '
+        .. icon
+        .. ' ',
     bufnr = bufnr,
     len = #name + 4,
     pin = false,
@@ -137,13 +137,13 @@ local function build_tab_item(tabid)
 
   return {
     str = item_hilight
-      .. tablineat
-      .. messletters.bubble_num(nr, 1)
-      .. ' '
-      .. name
-      .. ' '
-      .. icon
-      .. ' ',
+        .. tablineat
+        .. messletters.bubble_num(nr, 1)
+        .. ' '
+        .. name
+        .. ' '
+        .. icon
+        .. ' ',
     bufnr = bufnr,
     len = #name + 4,
     pin = false,
@@ -356,10 +356,10 @@ function M.enable()
   vim.api.nvim_create_autocmd({ 'BufAdd' }, {
     callback = vim.schedule_wrap(function(event)
       if
-        vim.api.nvim_buf_is_valid(event.buf)
-        and index(right_hide_bufs, event.buf) == -1
-        and index(visiable_bufs, event.buf) == -1
-        and index(left_hide_bufs, event.buf) == -1
+          vim.api.nvim_buf_is_valid(event.buf)
+          and index(right_hide_bufs, event.buf) == -1
+          and index(visiable_bufs, event.buf) == -1
+          and index(left_hide_bufs, event.buf) == -1
       then
         if event.buf == vim.api.nvim_get_current_buf() then
           table.insert(visiable_bufs, event.buf)
@@ -376,7 +376,7 @@ function M.enable()
   }, {
     callback = vim.schedule_wrap(function(event)
       if
-        vim.api.nvim_buf_is_valid(event.buf) and vim.api.nvim_buf_get_option(event.buf, 'buflisted')
+          vim.api.nvim_buf_is_valid(event.buf) and vim.api.nvim_buf_get_option(event.buf, 'buflisted')
       then
         if index(visiable_bufs, event.buf) == -1 then
           if index(left_hide_bufs, event.buf) > -1 then
@@ -485,9 +485,9 @@ function M.get()
   local preview_item
   if #left_hide_bufs > 0 and vim.fn.tabpagenr('$') == 1 then
     tablinestr = '%#SpaceVim_tabline_b# << '
-      .. #left_hide_bufs
-      .. ' '
-      .. tabline_sep(preview_item, shown_items[1])
+        .. #left_hide_bufs
+        .. ' '
+        .. tabline_sep(preview_item, shown_items[1])
   end
   for _, item in ipairs(shown_items) do
     if preview_item then
@@ -506,8 +506,8 @@ function M.get()
       tablinestr = tablinestr .. '%#SpaceVim_tabline_b# ' .. #right_hide_bufs .. ' >> '
     end
     tablinestr = tablinestr
-      .. '%#SpaceVim_tabline_b#%=%#SpaceVim_tabline_a_SpaceVim_tabline_b# '
-      .. left_sep
+        .. '%#SpaceVim_tabline_b#%=%#SpaceVim_tabline_a_SpaceVim_tabline_b# '
+        .. left_sep
     if vim.fn.tabpagenr('$') > 1 then
       tablinestr = tablinestr .. '%#SpaceVim_tabline_a# Tabs '
     else
