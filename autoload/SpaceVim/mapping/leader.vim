@@ -177,13 +177,13 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ ]
           \ ]
 
-   nnoremap <silent> [Window]o
+   nnoremap <silent> [Window]Q
           \ :<C-u>only<Space><Bar><Space>doautocmd WinEnter<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
-    let g:_spacevim_mappings_windows.o = ['only | doautocmd WinEnter',
+    let g:_spacevim_mappings_windows.Q = ['only | doautocmd WinEnter',
           \ ' close other windows',
           \ [
-          \ '[WIN o] is to close all other windows',
+          \ '[WIN Q] is to close all other windows',
           \ '',
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
@@ -210,13 +210,24 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
-    nnoremap <silent> [Window]Q
+    nnoremap <silent> [Window]q
           \ :<C-u>close<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
     let g:_spacevim_mappings_windows.q = ['close',
-          \ ' close current windows',
+          \ ' close current window',
           \ [
           \ '[WIN q] is to close current windows',
+          \ '',
+          \ 'Definition: ' . s:file . ':' . lnum,
+          \ ]
+          \ ]
+    nnoremap <silent> [Window]d
+          \ :<C-u>Bdelete<CR>
+    let lnum = expand('<slnum>') + s:lnum - 4
+    let g:_spacevim_mappings_windows.d = ['Bdelete',
+          \ ' delete current window',
+          \ [
+          \ '[WIN d] is to delete current windows',
           \ '',
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]

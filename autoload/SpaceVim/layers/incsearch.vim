@@ -33,14 +33,13 @@ let s:filename = expand('<sfile>:~')
 
 function! SpaceVim#layers#incsearch#plugins() abort
   let plugins = []
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/incsearch.vim', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/incsearch-fuzzy.vim', {'merged' : 0}])
+  call add(plugins, ['haya14busa/incsearch.vim', {'merged' : 0}])
+  call add(plugins, ['haya14busa/incsearch-fuzzy.vim', {'merged' : 0}])
+  call add(plugins, ['haya14busa/incsearch-easymotion.vim', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-asterisk', {'merged' : 0}])
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-over', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/incsearch-easymotion.vim', {'merged' : 0}])
   return plugins
 endfunction
-
 
 function! SpaceVim#layers#incsearch#health() abort
   call SpaceVim#layers#incsearch#plugins()

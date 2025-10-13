@@ -27,7 +27,7 @@ function! SpaceVim#layers#test#plugins() abort
   call add(plugins, ['janko/vim-test', {'merged' : 0}])
   call add(plugins, ['nvim-lua/plenary.nvim', {'merged' : 0}])
   call add(plugins, ['antoinemadec/FixCursorHold.nvim', {'merged' : 0}])
-  call add(plugins, ['nvim-treesitter/nvim-treesitter', {'merged' : 0}])
+  call add(plugins, ['nvim-treesitter/nvim-treesitter', {'merged' : 0, 'do': 'TSUpdate'}])
   call add(plugins, ['nvim-neotest/nvim-nio', {'merged' : 0}])
   call add(plugins, ['nvim-neotest/neotest', {'merged' : 0}])
   call add(plugins, ['nvim-neotest/neotest-jest', {'merged' : 0}])
