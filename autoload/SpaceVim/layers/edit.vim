@@ -103,11 +103,12 @@ function! SpaceVim#layers#edit#plugins() abort
         \ [g:_spacevim_root_dir . 'bundle/vim-emoji', {'on_event' : 'BufReadPost'}],
         \ [g:_spacevim_root_dir . 'bundle/vim-grammarous', {'merged' : 0, 'on_cmd' : ['GrammarousCheck', 'GrammarousReset']}],
         \ [g:_spacevim_root_dir . 'bundle/vim-expand-region', { 'loadconf' : 1}],
-        \ [g:_spacevim_root_dir . 'bundle/vim-textobj-user'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-textobj-indent'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-textobj-line'],
+        \ ['kana/vim-textobj-entire',    { 'merged' : 0}],
+        \ ['kana/vim-textobj-indent',    { 'merged' : 0}],
+        \ ['kana/vim-textobj-line',      { 'merged' : 0}],
+        \ ['kana/vim-textobj-user',      { 'merged' : 0}],
+        \ ['kana/vim-textobj-function',  { 'merged' : 0}],
         \ [g:_spacevim_root_dir . 'bundle/vim-table-mode'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-textobj-entire'],
         \ [g:_spacevim_root_dir . 'bundle/wildfire.vim',{'on_map' : '<Plug>(wildfire-'}],
         \ [g:_spacevim_root_dir . 'bundle/editorconfig-vim', { 'merged' : 0, 'if' : has('python') || has('python3')}],
         \ [g:_spacevim_root_dir . 'bundle/vim-jplus', { 'on_map' : '<Plug>(jplus', 'loadconf_before' : 1 }],
@@ -132,8 +133,9 @@ function! SpaceVim#layers#edit#plugins() abort
   if g:spacevim_enable_bepo_layout
     call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-bepo',        { 'merged' : 0}])
   endif
+
   if s:CMP.has('python3') || s:CMP.has('python')
-    " call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-mundo',        { 'on_cmd' : 'MundoToggle'}])
+    call add(plugins,['simnalamburt/vim-mundo',        { 'on_cmd' : 'MundoToggle', 'merged' : 0}])
   else
     call add(plugins,[g:_spacevim_root_dir . 'bundle/undotree',        { 'on_cmd' : 'UndotreeToggle'}])
   endif
