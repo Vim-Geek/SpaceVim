@@ -16,26 +16,5 @@ endfunction
 function! s:nvim_tree_init() abort
   nnoremap <silent><buffer> . :<C-u>lua require'nvim-tree.actions'.on_keypress('toggle_dotfiles')<Cr>
 endfunction
-lua <<EOF
--- init.lua
 
--- empty setup using defaults: add your own options
-require'nvim-tree'.setup {
-  view = {
-    width = vim.api.nvim_eval('g:spacevim_sidebar_width'),
-    height = 30,
-    hide_root_folder = false,
-    side = vim.api.nvim_eval('g:spacevim_filetree_direction'),
-    preserve_window_proportions = false,
-    number = false,
-    relativenumber = false,
-    signcolumn = "yes",
-    mappings = {
-      custom_only = true,
-      list = {
-        -- user mappings go here
-      },
-    },
-  },
-}
-EOF
+lua require('config.nvim-tree')

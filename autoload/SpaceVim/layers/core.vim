@@ -206,16 +206,21 @@ function! SpaceVim#layers#core#plugins() abort
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-icons',{'merged' : 0}])
     call add(plugins, [g:_spacevim_root_dir . 'bundle/defx-sftp',{'merged' : 0}])
   elseif g:spacevim_filemanager ==# 'nvim-tree'
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-tree.lua',{'merged' : 0, 'loadconf' : 1, 'on_cmd' : ['NvimTreeOpen', 'NvimTree', 'NvimTreeToggle', 'NvimTreeFindFile']}])
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-web-devicons',{'merged' : 0, 'loadconf' : 1}])
-  elseif g:spacevim_filemanager ==# 'neo-tree'
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/neo-tree.nvim',{'merged' : 0, 'loadconf' : 1}])
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/nui.nvim',{'merged' : 0}])
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/nvim-web-devicons',{'merged' : 0, 'loadconf' : 1}])
+    call add(plugins, ['nvim-tree/nvim-tree.lua',      {'merged' : 0, 'loadconf' : 1, 'on_cmd' : ['NvimTreeOpen', 'NvimTree', 'NvimTreeToggle', 'NvimTreeFindFile']}])
+  " elseif g:spacevim_filemanager ==# 'neo-tree'
+    call add(plugins, ['nvim-neo-tree/neo-tree.nvim',  {'merged' : 0, 'loadconf' : 1}])
   endif
 
+  call add(plugins, ['nvim-tree/nvim-web-devicons',  { 'merged' : 0, 'loadconf' : 1}])
+  call add(plugins, ['ryanoasis/vim-devicons',       { 'merged' : 0, 'loadconf' : 1}])
+  call add(plugins, ['nvim-lua/plenary.nvim',        { 'merged' : 0}])
+  call add(plugins, ['preservim/nerdcommenter',      { 'merged' : 0, 'loadconf' : 1, 'on_map' : ['<Plug>NERDCommenter', '<Plug>Commenter']}])
+  call add(plugins, ['MunifTanjim/nui.nvim',         { 'merged' : 0}])
+  call add(plugins, ['folke/snacks.nvim',            { 'merged' : 0, 'loadconf' : 1 }])
+
+
   if !g:spacevim_vimcompatible
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/clever-f.vim', {'merged' : 0, 'on_map': '<Plug>(clever-f-'}])
+    call add(plugins, ['rhysd/clever-f.vim', {'merged' : 0, 'on_map': '<Plug>(clever-f-'}])
     nmap f <Plug>(clever-f-f)
     xmap f <Plug>(clever-f-f)
     omap f <Plug>(clever-f-f)
@@ -229,7 +234,6 @@ function! SpaceVim#layers#core#plugins() abort
     xmap T <Plug>(clever-f-T)
     omap T <Plug>(clever-f-T)
   endif
-  " call add(plugins, [g:_spacevim_root_dir . 'bundle/nerdcommenter', { 'loadconf' : 1, 'merged' : 0, 'on_map' : ['<Plug>NERDCommenter', '<Plug>Commenter']}])
 
   if exists('*matchaddpos')
     let g:loaded_matchit = 1
@@ -334,10 +338,10 @@ function! SpaceVim#layers#core#config() abort
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'l'], 'SPLayer -l', 'list-all-layers', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'L'], 'SPRuntimeLog', 'view-runtime-log', 1)
   call SpaceVim#mapping#space#def('nnoremap', ['h', 'k'], 'LeaderGuide "[KEYs]"', 'show-top-level-bindings', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['j', '0'], 'm`^', 'jump-to-beginning-of-line', 0)
-  call SpaceVim#mapping#space#def('nnoremap', ['j', '$'], 'm`g_', 'jump-to-end-of-line', 0)
-  call SpaceVim#mapping#space#def('nnoremap', ['j', 'b'], '<C-o>', 'jump-backward', 0)
-  call SpaceVim#mapping#space#def('nnoremap', ['j', 'f'], '<C-i>', 'jump-forward', 0)
+  " call SpaceVim#mapping#space#def('nnoremap', ['j', '0'], 'm`^', 'jump-to-beginning-of-line', 0)
+  " call SpaceVim#mapping#space#def('nnoremap', ['j', '$'], 'm`g_', 'jump-to-end-of-line', 0)
+  call SpaceVim#mapping#space#def('nnoremap', ['j', 'b'], '<C-o>', ' jump-backward', 0)
+  call SpaceVim#mapping#space#def('nnoremap', ['j', 'f'], '<C-i>', ' jump-forward', 0)
 
   " file tree key bindings
   call SpaceVim#mapping#space#def('nnoremap', ['j', 'd'], 'call call('

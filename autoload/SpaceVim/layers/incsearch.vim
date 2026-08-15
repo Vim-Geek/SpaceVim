@@ -31,13 +31,19 @@
 
 let s:filename = expand('<sfile>:~')
 
+let s:enable_easymotion = v:true
+
 function! SpaceVim#layers#incsearch#plugins() abort
   let plugins = []
-  call add(plugins, ['haya14busa/incsearch.vim', {'merged' : 0}])
-  call add(plugins, ['haya14busa/incsearch-fuzzy.vim', {'merged' : 0}])
-  call add(plugins, ['haya14busa/incsearch-easymotion.vim', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-asterisk', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-over', {'merged' : 0}])
+  call add(plugins, ['haya14busa/incsearch.vim',              { 'merged' : 0 }])
+  call add(plugins, ['haya14busa/incsearch-fuzzy.vim',        { 'merged' : 0, 'loadconf' : 1 }])
+  call add(plugins, ['haya14busa/vim-asterisk',               { 'merged' : 0 }])
+  call add(plugins, ['osyo-manga/vim-over',                   { 'merged' : 0 }])
+
+  if s:enable_easymotion
+    call add(plugins, ['haya14busa/incsearch-easymotion.vim', { 'merged' : 0, 'loadconf' : 1 }])
+  endif
+
   return plugins
 endfunction
 
@@ -45,6 +51,10 @@ function! SpaceVim#layers#incsearch#health() abort
   call SpaceVim#layers#incsearch#plugins()
   call SpaceVim#layers#incsearch#config()
   return 1
+endfunction
+
+function! SpaceVim#layers#incsearch#set_variable(var) abort
+  let s:enable_easymotion = get(a:var, 'enable_easymotion', s:enable_easymotion)
 endfunction
 
 let s:lnum = expand('<slnum>') + 3
@@ -59,10 +69,10 @@ function! SpaceVim#layers#incsearch#config() abort
   nnoremap <silent> n  :call <SID>update_search_index('d')<cr>
   nnoremap <silent> N  :call <SID>update_search_index('r')<cr>
   nnoremap <silent> <Plug>(incsearch-update-statusline) :call <SID>update_statusline()<CR>
-  map *  <Plug>(incsearch-nohl-*)
-  map #  <Plug>(incsearch-nohl-#)
-  map g* <Plug>(incsearch-nohl-g*)
-  map g# <Plug>(incsearch-nohl-g#)
+  map *  <Plug>(incsearch-nohl0)<Plug>(asterisk-z*)
+  map g* <Plug>(incsearch-nohl0)<Plug>(asterisk-gz*)
+  map #  <Plug>(incsearch-nohl0)<Plug>(asterisk-z#)
+  map g# <Plug>(incsearch-nohl0)<Plug>(asterisk-gz#)
   xnoremap <silent> * :<C-u>call <SID>visual_star_search('/')<CR>/<C-R>=@/<CR><CR>
   xnoremap <silent> # :<C-u>call <SID>visual_star_search('?')<CR>?<C-R>=@/<CR><CR>
   function! s:config_fuzzyall(...) abort

@@ -22,8 +22,8 @@ function! SpaceVim#plugins#load() abort
     call s:disable_plugins(g:spacevim_disabled_plugins)
     call SpaceVim#plugins#end()
   endif
-
 endfunction
+
 function! s:load_plugins() abort
   for layer in SpaceVim#layers#get()
     call SpaceVim#logger#debug('init ' . layer . ' layer plugins list.')
@@ -104,8 +104,25 @@ function! s:disable_plugins(plugin_list) abort
   endif
 endfunction
 
-function! SpaceVim#plugins#get(...) abort
+function! SpaceVim#plugins#existed(plugin_name) abort
+  return indexof(g:_spacevim_plugins, 'v:val ==# a:plugin_name') >= 0
+endfunction
 
+function! SpaceVim#plugins#get(plugin_name) abort
+  let normalized_name = stridx(a:plugin_name, '/') >= 0
+
+  for plugin in s:plugins
+    if normalized_name
+      if plugin ==# a:plugin_name
+        return plugin
+      endif
+    else
+      if plugin =~# '/' . a:plugin_name . '$'
+        return plugin
+      endif
+    endif
+  endfor
+  return v:null
 endfunction
 
 function! s:install_manager() abort
@@ -204,7 +221,7 @@ function! SpaceVim#plugins#defind_hooks(bundle) abort
       call SpaceVim#util#loadConfig('plugins/' . split(a:bundle['name'],'\.')[0] . '.vim')
     endf
   elseif g:spacevim_plugin_manager ==# 'dein'
-     " call SpaceVim#logger#debug('plugin name is ' .  g:dein#name)
+    call SpaceVim#logger#debug('plugin name is ' .  g:dein#name)
     call dein#config(g:dein#name, {
           \ 'hook_source' : "call SpaceVim#util#loadConfig('plugins/" . s:get_config_name(g:dein#name) . "')"
           \ })
@@ -243,27 +260,30 @@ fu! s:parser(repo, args) abort
   endif
   return p
 endf
+
 let g:_spacevim_plugins = []
+
 function! SpaceVim#plugins#add(repo,...) abort
-  let g:spacevim_plugin_name = ''
+  " let g:spacevim_plugin_name = ''
   if g:spacevim_plugin_manager ==# 'neobundle'
     exec 'NeoBundle "'.a:repo.'"'.','.join(a:000,',')
-    let g:spacevim_plugin_name = split(a:repo, '/')[-1]
+    " let g:spacevim_plugin_name = split(a:repo, '/')[-1]
   elseif g:spacevim_plugin_manager ==# 'dein'
     if len(a:000) > 0
       call dein#add(a:repo,s:parser(a:repo, a:000[0]))
     else
       call dein#add(a:repo)
     endif
-    let g:spacevim_plugin_name = g:dein#name
-    call add(g:_spacevim_plugins, g:dein#name)
+    " let g:spacevim_plugin_name = g:dein#name
+    let plugin_name = split(a:repo, '/')[-1]
+    call add(g:_spacevim_plugins, plugin_name)
   elseif g:spacevim_plugin_manager ==# 'vim-plug'
     if len(a:000) > 0
       exec "Plug '".a:repo."', ".join(a:000,',')
     else
       exec "Plug '".a:repo."'"
     endif
-    let g:spacevim_plugin_name = split(a:repo, '/')[-1]
+    " let g:spacevim_plugin_name = split(a:repo, '/')[-1]
   endif
   let str = get(g:,'_spacevim_plugin_layer', 'custom plugin')
   let str = '[' . str . ']'

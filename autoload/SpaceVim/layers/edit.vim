@@ -99,31 +99,39 @@ endfunction
 
 function! SpaceVim#layers#edit#plugins() abort
   let plugins = [
-        \ [g:_spacevim_root_dir . 'bundle/vim-repeat'],
-        \ [g:_spacevim_root_dir . 'bundle/vim-emoji', {'on_event' : 'BufReadPost'}],
-        \ [g:_spacevim_root_dir . 'bundle/vim-grammarous', {'merged' : 0, 'on_cmd' : ['GrammarousCheck', 'GrammarousReset']}],
-        \ [g:_spacevim_root_dir . 'bundle/vim-expand-region', { 'loadconf' : 1}],
-        \ ['kana/vim-textobj-entire',    { 'merged' : 0}],
-        \ ['kana/vim-textobj-indent',    { 'merged' : 0}],
-        \ ['kana/vim-textobj-line',      { 'merged' : 0}],
-        \ ['kana/vim-textobj-user',      { 'merged' : 0}],
-        \ ['kana/vim-textobj-function',  { 'merged' : 0}],
+        \ ['tpope/vim-repeat',           { 'merged' : 0 }],
+        \ ['junegunn/vim-emoji',         { 'merged' : 0, 'on_event' : 'BufReadPost'}],
+        \ ['dpelle/vim-LanguageTool',    { 'merged' : 0, 'on_cmd' : ['GrammarousCheck', 'GrammarousReset']}],
+        \ ['terryma/vim-expand-region',  { 'merged' : 0, 'loadconf' : 1}],
+        \ ['kana/vim-textobj-entire',    { 'merged' : 0 }],
+        \ ['kana/vim-textobj-indent',    { 'merged' : 0 }],
+        \ ['kana/vim-textobj-line',      { 'merged' : 0 }],
+        \ ['kana/vim-textobj-user',      { 'merged' : 0 }],
+        \ ['kana/vim-textobj-function',  { 'merged' : 0 }],
+        \ ['smjonas/live-command.nvim',  { 'merged' : 0 }],
         \ [g:_spacevim_root_dir . 'bundle/vim-table-mode'],
         \ [g:_spacevim_root_dir . 'bundle/wildfire.vim',{'on_map' : '<Plug>(wildfire-'}],
-        \ [g:_spacevim_root_dir . 'bundle/editorconfig-vim', { 'merged' : 0, 'if' : has('python') || has('python3')}],
         \ [g:_spacevim_root_dir . 'bundle/vim-jplus', { 'on_map' : '<Plug>(jplus', 'loadconf_before' : 1 }],
         \ [g:_spacevim_root_dir . 'bundle/tabular',           { 'merged' : 0, 'on_cmd' : ['Tabularize']}],
         \ [g:_spacevim_root_dir . 'bundle/splitjoin.vim',{ 'on_cmd':['SplitjoinJoin', 'SplitjoinSplit'],'merged' : 0, 'loadconf' : 1}],
         \ ]
+
   if has('nvim-0.8.0')
-    call add(plugins,['kylechui/nvim-surround', { 'merged' : 0, 'on_event' : ['BufReadPost'], 'loadconf' : 1}])
+    " call add(plugins,['kylechui/nvim-surround', { 'merged' : 0, 'on_event' : ['BufReadPost'], 'loadconf' : 1}])
+    call add(plugins,['kylechui/nvim-surround', { 'merged' : 0, 'loadconf' : 1}])
   else
     call add(plugins,[g:_spacevim_root_dir . 'bundle/vim-surround',    { 'merged' : 0, 'loadconf' : 1}])
   endif
+
+  if ! (has('nvim-0.9') || has('vim-9.0.1799'))
+    call add(plugins, ['editorconfig/editorconfig-vim', { 'merged' : 0, 'if' : has('python') || has('python3'), 'loadconf' : 1}])
+  endif
+
+  call add(plugins,['easymotion/vim-easymotion',        { 'merged' : 0, 'loadconf' : 1 }])
+
   if has('nvim-0.6.0') && s:enable_hop
-    call add(plugins,['smoka7/hop.nvim',        { 'merged' : 0, 'loadconf' : 1, 'on_cmd' : ['HopChar1', 'HopChar2', 'HopWord', 'HopLine']}])
+    call add(plugins,['smoka7/hop.nvim',        { 'merged' : 0, 'loadconf' : 1 }])
   else
-    call add(plugins,['easymotion/vim-easymotion',        { 'merged' : 0}])
     call add(plugins,['haya14busa/vim-easyoperator-line',        { 'merged' : 0}])
     call add(plugins,['haya14busa/vim-easyoperator-phrase',        { 'merged' : 0}])
   endif
@@ -390,6 +398,8 @@ function! SpaceVim#layers#edit#config() abort
     call SpaceVim#mapping#space#def('nmap', ['j', 'J'], 'HopChar2', 'jump-to-suite-of-two-characters', 1, 1)
     call SpaceVim#mapping#space#def('nmap', ['j', 'l'], 'HopLine', 'jump-or-select-to-a-line', 1, 1)
     call SpaceVim#mapping#space#def('nmap', ['j', 'w'], 'HopWord', 'jump-to-a-word', 1, 1)
+    call SpaceVim#mapping#space#def('nmap', ['j', '0'], 'm`^', 'jump-to-beginning-of-line', 1)
+    call SpaceVim#mapping#space#def('nmap', ['j', '$'], 'm`g_', 'jump-to-end-of-line', 1)
   else
     " call SpaceVim#mapping#space#def('nmap', ['j', 'j'], '<Plug>(easymotion-overwin-f)', 'jump to a character', 0)
     call SpaceVim#mapping#space#def('nmap', ['j', 'j'], '<Plug>(better-easymotion-overwin-f)', 'jump-or-select-to-a-character', 0, 1)

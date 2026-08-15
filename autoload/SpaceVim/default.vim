@@ -47,7 +47,7 @@ function! SpaceVim#default#options() abort
   set listchars=tab:→\ ,eol:↵,trail:·,extends:↷,precedes:↶
   set fillchars=vert:│,fold:·
 
-  set laststatus=2
+  set laststatus=3
 
   " hide cmd
   set noshowcmd

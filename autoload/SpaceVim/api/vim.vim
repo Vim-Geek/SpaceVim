@@ -132,7 +132,7 @@ function! s:self.setbufvar(buf, dict) abort
 endfunction
 
 " https://vi.stackexchange.com/questions/16585/how-to-differentiate-quickfix-window-buffers-and-location-list-buffers
-if has('patch-7.4-2215') " && exists('*getwininfo')
+if has('patch-7.4-2215') || has('nvim-0.12') " && exists('*getwininfo')
   function! s:self.get_qf_winnr() abort
     let wins = filter(getwininfo(), 'v:val.quickfix && !v:val.loclist')
     " assert(len(wins) <= 1)

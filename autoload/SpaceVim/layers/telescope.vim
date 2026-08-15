@@ -49,18 +49,12 @@ endfunction
 
 function! SpaceVim#layers#telescope#plugins() abort
   let plugins = []
-  if  has('nvim-0.10.0')
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.8', {'merged' : 0, 'loadconf' : 1}])
-  elseif  has('nvim-0.7.2')
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.5', {'merged' : 0, 'loadconf' : 1}])
-  elseif has('nvim-0.7.0')
-    call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope.nvim-0.1.2', {'merged' : 0, 'loadconf' : 1}])
-  endif
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/plenary.nvim', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-menu', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-ctags-outline.nvim', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/neoyank.vim',        { 'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-fzf-native.nvim',        { 'merged' : 0}])
+  call add(plugins, ['nvim-telescope/telescope.nvim', {'merged' : 0, 'loadconf' : 1}])
+  call add(plugins, ['Shougo/neoyank.vim', {'merged' : 0}])
+  call add(plugins, ['fannheyward/telescope-coc.nvim', {'merged' : 0}])
+  " call add(plugins, ['octarect/telescope-menu.nvim', {'merged' : 0 }])
+  " call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-ctags-outline.nvim', {'merged' : 0}])
+  " call add(plugins, [g:_spacevim_root_dir . 'bundle/telescope-fzf-native.nvim',        { 'merged' : 0}])
   if g:spacevim_snippet_engine ==# 'ultisnips'
     call add(plugins, ['fhill2/telescope-ultisnips.nvim', { 'merged' : 0}])
   endif
@@ -72,40 +66,72 @@ let s:filename = expand('<sfile>:~')
 let s:lnum = expand('<slnum>') + 2
 function! SpaceVim#layers#telescope#config() abort
 
-  let lnum = expand('<slnum>') + s:lnum - 1
-  call SpaceVim#mapping#space#def('nnoremap', ['?'], 'Telescope menu menu=CustomKeyMaps default_text=[SPC]',
-        \ ['show-mappings',
-        \ [
-        \ 'SPC ? is to show mappings',
-        \ '',
-        \ 'Definition: ' . s:filename . ':' . lnum,
-        \ ]
-        \ ],
-        \ 1)
+  let g:_spacevim_mappings_space.L = {'name' : '+Telescope'}
 
   let lnum = expand('<slnum>') + s:lnum - 1
-  call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'call call('
-        \ . string(s:_function('s:get_help')) . ', ["SpaceVim"])',
-        \ ['find-SpaceVim-help',
-        \ [
-        \ 'SPC h SPC is to find SpaceVim help',
-        \ '',
-        \ 'Definition: ' . s:filename . ':' . lnum,
-        \ ]
-        \ ],
-        \ 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['?'], 'Telescope menu menu=CustomKeyMaps default_text=[SPC]',
+        \ ['show mappings', [ 'SPC ? is to show mappings', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'a'], 'Telescope autocommands', 
+        \ [' autocommands', [ 'SPC L a is to show autocommands', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'c'], 'Telescope commands', 
+        \ [' commands', [ 'SPC L c is to show commands', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'k'], 'Telescope keymaps', 
+        \ [' keymaps', [ 'SPC L k is to show keymaps', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'n'], 'Telescope notify', 
+        \ [' notify', [ 'SPC L n is to show notifications', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'h'], 'Telescope highlights', 
+        \ ['󰸱 highlights', [ 'SPC L h is to show highlights', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'o'], 'Telescope vim_options', 
+        \ [' vim options', [ 'SPC L o is to show vim options', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'O'], 'Telescope coc', 
+        \ [' coc', [ 'SPC L O is to show coc results', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+  
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 't'], 'Telescope todo-comments', 
+        \ [' todo comments', [ 'SPC L t is to show todo comments', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+  
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['L', 'T'], 'Telescope keyword=', 
+        \ [' todo comments filter', [ 'SPC L T is to show todo comments with filter', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 0)
+
+  if SpaceVim#layers#isLoaded('debug')
+    let g:_spacevim_mappings_space.L.d = {'name' : '+Dap'}
+    call SpaceVim#mapping#space#def('nnoremap', ['L', 'd', 'b'], 'Telescope dap list_breakpoints', ' breakpoints', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['L', 'd', 'c'], 'Telescope dap commands', ' commands', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['L', 'd', 'C'], 'Telescope dap configurations', '漣configurations', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['L', 'd', 'f'], 'Telescope dap frames', ' frames', 1)
+    call SpaceVim#mapping#space#def('nnoremap', ['L', 'd', 'v'], 'Telescope dap variables', ' variables', 1)
+  endif
+
+  let lnum = expand('<slnum>') + s:lnum - 1
+  call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'call call(' . string(s:_function('s:get_help')) . ', ["SpaceVim"])', 
+        \ ['󰋖 find SpaceVim help', [ 'SPC h SPC is to find SpaceVim help', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
   " @fixme SPC h SPC make vim flick
   exe printf('nmap %sh%s [SPC]h[SPC]', g:spacevim_default_custom_leader, g:spacevim_default_custom_leader)
 
+  if !SpaceVim#layers#isLoaded('fzf')
+    let lnum = expand('<slnum>') + s:lnum - 1
+    call SpaceVim#mapping#space#def('nnoremap', ['b', 'b'], 'Telescope buffers',
+          \ ['list buffer', [ 'SPC b b is to open buffer list', '', 'Definition: ' . s:filename . ':' . lnum, ] ], 1)
+  endif
+
   let lnum = expand('<slnum>') + s:lnum - 1
   call SpaceVim#mapping#space#def('nnoremap', ['b', 'b'], 'Telescope buffers',
-        \ ['list-buffer',
-        \ [
-        \ 'SPC b b is to open buffer list',
-        \ '',
-        \ 'Definition: ' . s:filename . ':' . lnum,
-        \ ]
-        \ ],
+        \ ['list-buffer', [ 'SPC b b is to open buffer list', '', 'Definition: ' . s:filename . ':' . lnum, ] ],
         \ 1)
 
   let lnum = expand('<slnum>') + s:lnum - 1
@@ -181,8 +207,11 @@ function! SpaceVim#layers#telescope#config() abort
 
   call SpaceVim#mapping#space#def('nnoremap', ['p', 't', 'f'],
         \ 'Telescope task', 'fuzzy-find-tasks', 1)
-  let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
-  call s:defind_fuzzy_finder()
+
+  if !SpaceVim#layers#isLoaded('fzf')
+    let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
+    call s:define_fuzzy_finder()
+  endif
 
   " this autocmd should only be called when using deoplete
   augroup spacevim_telescope_layer
@@ -213,7 +242,7 @@ endfunction
 
 let s:file = expand('<sfile>:~')
 let s:unite_lnum = expand('<slnum>') + 3
-function! s:defind_fuzzy_finder() abort
+function! s:define_fuzzy_finder() abort
 
   nnoremap <silent> <Leader>fe
         \ :<C-u>Telescope registers<CR>
@@ -307,27 +336,27 @@ function! s:defind_fuzzy_finder() abort
         \ ]
         \ ]
 
-  nnoremap <silent> <Leader>f<Space> :Telescope menu menu=CustomKeyMaps<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f['[SPC]'] = ['Telescope menu menu=CustomKeyMaps',
-        \ 'fuzzy find custom key bindings',
-        \ [
-        \ '[Leader f SPC] is to fuzzy find custom key bindings',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  " nnoremap <silent> <Leader>f<Space> :Telescope menu menu=CustomKeyMaps<CR>
+  " let lnum = expand('<slnum>') + s:unite_lnum - 4
+  " let g:_spacevim_mappings.f['[SPC]'] = ['Telescope menu menu=CustomKeyMaps',
+        " \ 'fuzzy find custom key bindings',
+        " \ [
+        " \ '[Leader f SPC] is to fuzzy find custom key bindings',
+        " \ '',
+        " \ 'Definition: ' . s:file . ':' . lnum,
+        " \ ]
+        " \ ]
 
-  nnoremap <silent> <Leader>fp  :<C-u>Telescope menu menu=AddedPlugins<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.p = ['Telescope menu menu=AddedPlugins',
-        \ 'fuzzy find vim packages',
-        \ [
-        \ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  " nnoremap <silent> <Leader>fp  :<C-u>Telescope menu menu=AddedPlugins<CR>
+  " let lnum = expand('<slnum>') + s:unite_lnum - 4
+  " let g:_spacevim_mappings.f.p = ['Telescope menu menu=AddedPlugins',
+        " \ 'fuzzy find vim packages',
+        " \ [
+        " \ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim',
+        " \ '',
+        " \ 'Definition: ' . s:file . ':' . lnum,
+        " \ ]
+        " \ ]
 
   if g:spacevim_snippet_engine ==# 'ultisnips'
     nnoremap <silent> <Leader>fs  :<C-u>Telescope ultisnips<CR>

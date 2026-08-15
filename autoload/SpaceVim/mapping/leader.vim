@@ -101,8 +101,6 @@
 "    SPC w x              | exchange current window with next one
 " <
 
-
-
 let s:file = expand('<sfile>:~')
 let s:lnum = expand('<slnum>') + 3
 function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
@@ -110,7 +108,43 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
     exe 'nnoremap <silent><nowait> [Window] :<c-u>LeaderGuide "' .
           \ a:key . '"<CR>'
     exe 'nmap ' .a:key . ' [Window]'
-    nnoremap <silent> [Window]v
+
+    for i in range(1, 9)
+      exe 'nnoremap <silent> [Window]' . i . ' ' . i .'gt'
+      let lnum = expand('<slnum>') + s:lnum - 4
+      let g:_spacevim_mappings_windows[i] = ['normal! ' . i .'gt',
+            \ '󰓩 tab ' . i,
+            \ [
+            \ '[WIN '. i .'] is to switch to tab '. i,
+            \ '',
+            \ 'Definition: ' . s:file . ':' . lnum,
+            \ ]
+            \ ]
+    endfor
+
+    nnoremap <silent> [Window]- :<C-u>tabnext<CR>
+    let lnum = expand('<slnum>') + s:lnum - 4
+    let g:_spacevim_mappings_windows['-'] = ['tabnext',
+          \ '󰓩 next tab',
+          \ [
+          \ '[WIN -] is to switch to the next tab',
+          \ '',
+          \ 'Definition: ' . s:file . ':' . lnum,
+          \ ]
+          \ ]
+
+    nnoremap <silent> [Window]+ :<C-u>tabprevious<CR>
+    let lnum = expand('<slnum>') + s:lnum - 4
+    let g:_spacevim_mappings_windows['+'] = ['tabprevious',
+          \ '󰓩 previous tab',
+          \ [
+          \ '[WIN +] is to switch to the previous tab',
+          \ '',
+          \ 'Definition: ' . s:file . ':' . lnum,
+          \ ]
+          \ ]
+
+    nnoremap <silent> [Window]s
           \ :<C-u>split<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
     let g:_spacevim_mappings_windows.s = ['split',
@@ -121,7 +155,8 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
-    nnoremap <silent> [Window]V
+
+    nnoremap <silent> [Window]S
           \ :<C-u>split +bp<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
     let g:_spacevim_mappings_windows.S = ['split +bp',
@@ -132,7 +167,8 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
-    nnoremap <silent> [Window]g
+
+    nnoremap <silent> [Window]v
           \ :<C-u>vsplit<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
     let g:_spacevim_mappings_windows.v = ['vsplit',
@@ -143,7 +179,8 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
-    nnoremap <silent> [Window]G
+
+    nnoremap <silent> [Window]V
           \ :<C-u>vsplit +bp<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
     let g:_spacevim_mappings_windows.V = ['vsplit +bp',
@@ -154,6 +191,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     nnoremap <silent> [Window]t
           \ :<C-u>tabnew<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -165,6 +203,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+    
     nnoremap <silent> [Window]c
           \ :<C-u>tabclose<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -188,6 +227,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     nnoremap <silent> [Window]x
           \ :<C-u>call SpaceVim#mapping#BufferEmpty()<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -199,6 +239,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     nnoremap <silent> [Window]\
           \ :<C-u>b#<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -210,6 +251,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     nnoremap <silent> [Window]q
           \ :<C-u>close<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -221,6 +263,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     nnoremap <silent> [Window]d
           \ :<C-u>Bdelete<CR>
     let lnum = expand('<slnum>') + s:lnum - 4
@@ -232,6 +275,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           \ 'Definition: ' . s:file . ':' . lnum,
           \ ]
           \ ]
+
     " nnoremap <silent> [Window]q
           " \ :<C-u>call SpaceVim#mapping#close_current_buffer()<CR>
     " let lnum = expand('<slnum>') + s:lnum - 4
@@ -243,6 +287,7 @@ function! SpaceVim#mapping#leader#defindWindowsLeader(key) abort
           " \ 'Definition: ' . s:file . ':' . lnum,
           " \ ]
           " \ ]
+
     nnoremap <silent> [Window]c
           \ :<C-u>call SpaceVim#mapping#clear_buffers()<CR>
     let lnum = expand('<slnum>') + s:lnum - 4

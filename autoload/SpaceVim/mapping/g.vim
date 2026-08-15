@@ -107,23 +107,88 @@ function! SpaceVim#mapping#g#init() abort
   nnoremap gv gv
   let g:_spacevim_mappings_g['<C-]>'] = ['call feedkeys("g<c-]>", "n")', 'jump-to-tag-under-cursor']
   nnoremap g<c-]> g<c-]>
-  let g:_spacevim_mappings_g['D'] = ['call SpaceVim#mapping#g_capital_d()', 'goto-declaration']
-  call SpaceVim#mapping#def('nnoremap <silent>', 'gD', ':call SpaceVim#mapping#g_capital_d()<CR>', 'Goto declaration', '')
-  let g:_spacevim_mappings_g['d'] = ['call SpaceVim#mapping#gd()', 'goto-definition']
-  call SpaceVim#mapping#def('nnoremap <silent>', 'gd', ':call SpaceVim#mapping#gd()<CR>', 'Goto definition', '')
+
+  if SpaceVim#plugins#existed('vim-easymotion')
+    let g:_spacevim_mappings_g.L = ['call feedkeys("<Plug>(easymotion-bd-jk)", "m")', ' jump to line']
+    nmap gL <Plug>(easymotion-bd-jk)
+
+    let g:_spacevim_mappings_g.w = ['call feedkeys("<Plug>(easymotion-bd-w)", "m")', ' jump to word']
+    nmap gw <Plug>(easymotion-bd-w)
+
+    let g:_spacevim_mappings_g.j = ['call feedkeys("<Plug>(easymotion-j)", "m")', ' move cursor down']
+    nmap gj <Plug>(easymotion-j)
+
+    let g:_spacevim_mappings_g.k = ['call feedkeys("<Plug>(easymotion-k)", "m")', ' move cursor up']
+    nmap gk <Plug>(easymotion-k)
+
+    let g:_spacevim_mappings_g.h = ['call feedkeys("<Plug>(easymotion-linebackward)", "m")', ' move cursor line backward']
+    nmap gh <Plug>(easymotion-linebackward)
+
+    let g:_spacevim_mappings_g.l = ['call feedkeys("<Plug>(easymotion-lineforward)", "m")', ' move cursor line forward']
+    nmap gl <Plug>(easymotion-lineforward)
+  endif
+
+  if SpaceVim#plugins#existed('hop.nvim')
+    let g:_spacevim_mappings_g.h = { 'name': '+Hop' }
+
+    let g:_spacevim_mappings_g.h.l = ['HopLine', ' jump to line']
+    nmap ghl :HopLine<cr>
+
+    let g:_spacevim_mappings_g.h.L = ['HopLineMW', ' jump to all line']
+    nmap ghL :HopLineMW<cr>
+
+    let g:_spacevim_mappings_g.h['^'] = ['HopLineStart', ' jump to line start']
+    nmap gh^ :HopLineStart<cr>
+
+    let g:_spacevim_mappings_g.h.w = ['HopWord', ' jump to word']
+    nmap ghw :HopWord<cr>
+
+    let g:_spacevim_mappings_g.h.W = ['HopWordMW', ' jump to all words']
+    nmap ghW :HopWordMW<cr>
+
+    let g:_spacevim_mappings_g.h['1'] = ['HopChar1', ' jump to 1 char']
+    nmap gh1 :HopChar1<cr>
+
+    let g:_spacevim_mappings_g.h['2'] = ['HopChar2', ' jump to 2 char']
+    nmap gh2 :HopChar2<cr>
+
+    let g:_spacevim_mappings_g.h.n = ['HopNodes', ' jump to treesitter node']
+    nmap gh2 :HopNodes<cr>
+
+    let g:_spacevim_mappings_g.h['/'] = ['HopPattern', '󱎸 jump to pattern search']
+    nmap gh/ :HopPattern<cr>
+    " nmap \/ :HopPattern<cr>
+
+    let g:_spacevim_mappings_g.h.v = ['HopVertical', '󰣟 jump to line in same column']
+    nmap ghv :HopVertical<cr>
+    
+    let g:_spacevim_mappings_g.h.p = ['HopPasteChar1', ' paste to char']
+    nmap ghp :HopPasteChar1<cr>
+
+    let g:_spacevim_mappings_g.h.y = ['HopYankChar1', ' copy from char to char']
+    nmap ghy :HopYankChar1<cr>
+
+  endif
+
+  " Language Syntax
+  let g:_spacevim_mappings_g['D'] = ['call SpaceVim#mapping#g_capital_d()', ' goto declaration']
+  call SpaceVim#mapping#def('nnoremap <silent>', 'gD', ':call SpaceVim#mapping#g_capital_d()<CR>', ' goto declaration', '')
+  let g:_spacevim_mappings_g['d'] = ['call SpaceVim#mapping#gd()', ' goto defintion']
+  call SpaceVim#mapping#def('nnoremap <silent>', 'gd', ':call SpaceVim#mapping#gd()<CR>', ' goto defintion', '')
+  let g:_spacevim_mappings_g.y = ['call feedkeys("gy", "m")', ' goto type definition']
 
   let g:_spacevim_mappings_g['='] = ['call SpaceVim#mapping#format()', 'format-current-buffer']
   call SpaceVim#mapping#def('nnoremap <silent>','g=',':call SpaceVim#mapping#format()<cr>','format current buffer','call SpaceVim#mapping#format()')
 
   " Tabs
-  nnoremap <silent>g0 :<C-u>tabfirst<CR>
-  let g:_spacevim_mappings_g['0'] = ['tabfirst', 'jump-to-first-tab']
+  " nnoremap <silent>g0 :<C-u>tabfirst<CR>
+  " let g:_spacevim_mappings_g['0'] = ['tabfirst', 'jump-to-first-tab']
+  " nnoremap <silent>g$ :<C-u>tablast<CR>
+" let g:_spacevim_mappings_g['$'] = ['tablast', 'jump-to-last-tab']
 
   " Select last paste
   nnoremap <silent><expr> gp '`['.strpart(getregtype(), 0, 1).'`]'
   let g:_spacevim_mappings_g['p'] = ["exe 'normal! ' . '`['.strpart(getregtype(), 0, 1).'`]'", 'select-last-paste']
-  nnoremap <silent>g$ :<C-u>tablast<CR>
-  let g:_spacevim_mappings_g['$'] = ['tablast', 'jump-to-last-tab']
   nnoremap <silent><expr> gr tabpagenr('#') > 0 ? ':exe "tabnext " . tabpagenr("#")<cr>' : ''
   let g:_spacevim_mappings_g['r'] = ['call call('
         \ . string(s:_function('s:preview_tab')) . ', [])', 'jump-to-preview-tab']

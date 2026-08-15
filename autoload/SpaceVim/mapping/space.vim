@@ -29,7 +29,7 @@ function! SpaceVim#mapping#space#init() abort
   for i in range(1, 9)
     exe "call SpaceVim#mapping#space#def('nnoremap', ["
           \ . i . "], 'call SpaceVim#layers#core#statusline#jump("
-          \ . i . ")', 'window-" . i . "', 1)"
+          \ . i . ")', ' window-" . i . "', 1)"
   endfor
   let g:_spacevim_mappings_space.w['<Tab>'] = ['wincmd w', 'alternate-window']
   nnoremap <silent> [SPC]w<tab> :wincmd w<cr>

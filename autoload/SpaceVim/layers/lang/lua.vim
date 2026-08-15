@@ -12,7 +12,7 @@
 " This layer includes utilities and language-specific mappings for lua development.
 " >
 "   [[layers]]
-"     name = 'lang#lua'
+"     name = 'lua'
 " <
 "
 " @subsection Layer options
@@ -20,8 +20,8 @@
 " 1. lua_file_head: the default file head for lua source code.
 " >
 "   [[layers]]
-"     name = "lang#lua"
-"     ruby_file_head = [      
+"     name = "lua"
+"     lua_file_head = [
 "       '--!/usr/bin/lua',
 "       ''
 "     ]
@@ -29,21 +29,40 @@
 " 2. repl_command: the REPL command for lua
 " >
 "   [[layers]]
-"     name = 'lang#lua'
+"     name = 'lua'
 "     repl_command = '~/download/bin/lua'
 " <
 " 3. format_on_save: enable/disable code formation when save lua file. This
 " options is disabled by default, to enable it:
 " >
 "   [[layers]]
-"     name = 'lang#lua'
+"     name = 'lua'
 "     format_on_save = true
 " <
 " @subsection Key bindings
 " >
 "   Mode            Key             Function
 "   ---------------------------------------------
-"   normal          SPC l r         run current script
+"   normal          g d             jump to type definition
+"   normal          SPC l a         code actions
+"   normal          SPC l d         go to definition
+"   normal          SPC l D         go to declaration
+"   normal          SPC l f         find references
+"   normal          SPC l F         format code
+"   normal          SPC l i         go to implementation
+"   normal          SPC l t         go to type definition
+"
+"   normal          SPC l k         show documentation
+"   normal          SPC l R         rename symbol
+"
+"   normal          SPC l C         open Cargo.toml
+"   normal          SPC l e         explain error message
+"   normal          SPC l j         join lines
+"   normal          SPC l K         open documentation
+"   normal          SPC l m         expand macro
+"   normal          SPC l T         test current
+"
+"   normal          SPC l e         run current script
 "   normal          SPC l b         compile current file
 " <
 "
@@ -57,7 +76,6 @@
 "   SPC l s s       send selection text
 " <
 "
-
 
 if exists('s:lua_repl_command')
   finish
@@ -75,7 +93,7 @@ function! SpaceVim#layers#lang#lua#plugins() abort
   let plugins = []
   " Improved Lua 5.3 syntax and indentation support for Vim
   call add(plugins, [g:_spacevim_root_dir . 'bundle/vim-lua', {'on_ft' : 'lua'}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/neodev.nvim', {'merged' : 0}])
+  call add(plugins, ['folke/lazydev.nvim', {'merged' : 0 }])
   return plugins
 endfunction
 
@@ -123,50 +141,61 @@ function! SpaceVim#layers#lang#lua#config() abort
 endfunction
 
 function! SpaceVim#layers#lang#lua#set_variable(opt) abort
-  let s:lua_repl_command = get(a:opt, 'repl_command', '') 
+  let s:lua_repl_command = get(a:opt, 'repl_command', '')
   let s:lua_foldmethod = get(a:opt, 'foldmethod', 'manual')
   let s:format_on_save = get(a:opt, 'format_on_save', s:format_on_save)
 endfunction
 
 " Add language specific mappings
 function! s:language_specified_mappings() abort
-  call SpaceVim#mapping#space#langSPC('nmap', ['l','b'], 'LuaCompile', 'lua compile', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','c'], 'LuaCompile', 'lua compile', 1)
   call SpaceVim#mapping#space#langSPC('nmap', ['l','r'], 'call SpaceVim#plugins#runner#open()', 'execute current file', 1)
+
   let g:_spacevim_mappings_space.l.s = {'name' : '+Send'}
-  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'i'],
-        \ 'call SpaceVim#plugins#repl#start("lua")',
-        \ 'start REPL process', 1)
-  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'l'],
-        \ 'call SpaceVim#plugins#repl#send("line")',
-        \ 'send line and keep code buffer focused', 1)
-  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'b'],
-        \ 'call SpaceVim#plugins#repl#send("buffer")',
-        \ 'send buffer and keep code buffer focused', 1)
-  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 's'],
-        \ 'call SpaceVim#plugins#repl#send("selection")',
-        \ 'send selection and keep code buffer focused', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'i'], 'call SpaceVim#plugins#repl#start("lua")', ' start REPL process', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'l'], 'call SpaceVim#plugins#repl#send("line")', ' send line and keep code buffer focused', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 'b'], 'call SpaceVim#plugins#repl#send("buffer")', ' send buffer and keep code buffer focused', 1)
+  call SpaceVim#mapping#space#langSPC('nmap', ['l','s', 's'], 'call SpaceVim#plugins#repl#send("selection")', ' send selection and keep code buffer focused', 1)
+
   if SpaceVim#layers#lsp#check_filetype('lua')
         \ || SpaceVim#layers#lsp#check_server('lua_ls')
         \ || SpaceVim#layers#lsp#check_server('sumneko_lua')
-    nnoremap <silent><buffer> K :call SpaceVim#lsp#show_doc()<CR>
-    nnoremap <silent><buffer> gD :<C-u>call SpaceVim#lsp#go_to_typedef()<Cr>
 
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'd'],
-          \ 'call SpaceVim#lsp#show_doc()', 'show-document', 1)
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'x'],
-          \ 'call SpaceVim#lsp#references()', 'show-references', 1)
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'e'],
-          \ 'call SpaceVim#lsp#rename()', 'rename-symbol', 1)
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'h'],
-          \ 'call SpaceVim#lsp#show_line_diagnostics()', 'show-line-diagnostics', 1)
+    nnoremap <silent><buffer> K :call SpaceVim#lsp#show_doc()<CR>
+    call SpaceVim#mapping#gd#add('lua', function('SpaceVim#lsp#go_to_def'))
+
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'd'], 'call SpaceVim#lsp#show_doc()', 'show-document', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'x'], 'call SpaceVim#lsp#references()', 'show-references', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'e'], 'call SpaceVim#lsp#rename()', 'rename-symbol', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'h'], 'call SpaceVim#lsp#show_line_diagnostics()', 'show-line-diagnostics', 1)
     let g:_spacevim_mappings_space.l.w = {'name' : '+Workspace'}
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'l'],
-          \ 'call SpaceVim#lsp#list_workspace_folder()', 'list-workspace-folder', 1)
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'a'],
-          \ 'call SpaceVim#lsp#add_workspace_folder()', 'add-workspace-folder', 1)
-    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'r'],
-          \ 'call SpaceVim#lsp#remove_workspace_folder()', 'remove-workspace-folder', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'l'], 'call SpaceVim#lsp#list_workspace_folder()', 'list-workspace-folder', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'a'], 'call SpaceVim#lsp#add_workspace_folder()', 'add-workspace-folder', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'w', 'r'], 'call SpaceVim#lsp#remove_workspace_folder()', 'remove-workspace-folder', 1)
+  else
+    nnoremap <silent><buffer> K :call CocActionAsync("doHover")<CR>
+    call SpaceVim#mapping#gd#add('lua', function('s:gotodef'))
+
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'a'], '<Plug>(coc-codeaction)', ' code actions', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'd'], '<Plug>(coc-definition)', ' go to definition', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'D'], '<Plug>(coc-declaration)', ' go to declaration', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'f'], '<Plug>(coc-references)', ' find references', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'F'], '<Plug>(coc-format)', '󱉯 format code', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'i'], '<Plug>(coc-implementation)', ' go to implementation', 0)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 't'], '<Plug>(coc-type-definition)', ' go to type definition', 0)
+
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'k'], 'call CocActionAsync("doHover")', ' show documentation', 1)
+    call SpaceVim#mapping#space#langSPC('nnoremap', ['l', 'R'], 'call CocAction("refactor")', '凜rename symbol', 1)
+
   endif
+endfunction
+
+function! s:gotodef() abort
+  try
+    call CocActionAsync('jumpDefinition')
+  catch
+    exec 'normal! gd'
+  endtry
 endfunction
 
 function! SpaceVim#layers#lang#lua#health() abort
@@ -175,8 +204,3 @@ function! SpaceVim#layers#lang#lua#health() abort
   return 1
 endfunction
 
-function! SpaceVim#layers#lang#lua#loadable() abort
-
-  return 1
-
-endfunction

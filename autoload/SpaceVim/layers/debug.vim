@@ -1,9 +1,7 @@
 "=============================================================================
 " debug.vim --- SpaceVim debug layer
-" Copyright (c) 2016-2023 Wang Shidong & Contributors
-" Author: Wang Shidong < wsdjeg@outlook.com >
-" URL: https://spacevim.org
-" License: GPLv3
+" Copyright (c) 2016-2026 Phoenix Tsui & Contributors
+" License: MIT
 "=============================================================================
 scriptencoding utf-8
 
@@ -11,51 +9,64 @@ scriptencoding utf-8
 " @section debug, layers-debug
 " @parentsection layers
 " `debug` layer debug workflow for SpaceVim. All of the functionality is based
-" on vebugger or vimspector.
+" on dap
 "
 " @subsection layer options
 "
-" 1. `debugger_plugin`: set the debug engine. It can be `vimspector` or
-" `vebugger`.
+" 1. `debugger_plugin`: set the debug engine. It can be `dap`
+" 2. `debugger_ui`: set the debug ui. if `debugger_plugin = 'dap'`, It can be `dap-view`(default) or `dap-ui`
 "
 " @subsection key bindings
 " >
 "   Key binding     Description
-"   SPC d c	      	launch-or-continue-debugger
-"   SPC d r	      	restart-debugger-with-the-same-config
-"   SPC d x	      	run-to-cursor
-"   SPC d p	      	pause-debugger
-"   SPC d b	      	toggle-line-breakpoint
-"   SPC d B	      	clear-all-breakpoints
-"   SPC d o	      	step-over
-"   SPC d i	      	step-into-functions
-"   SPC d O	      	step-out-of-current-function
-"   SPC d u	      	move-up-a-frame
-"   SPC d d	      	move-down-a-frame
-"   SPC d k	        terminate-the-debugger
-"   SPC d e	        evaluate-cursor-symbol-or-selection
+"   SPC d b	        toggle breakpoints
+"   SPC d c	      	continue session
+"   SPC d C	        clear all breakpoints
+"   SPC d d	      	disconnect session
+"   SPC d e	      	evaluate expression
+"   SPC d i	      	step in
+"   SPC d l	      	show log
+"   SPC d n	      	new session
+"   SPC d o	      	step over
+"   SPC d O	      	step out
+"   SPC d r	      	restart frame
+"   SPC d R	        toggle REPL
+"   SPC d t	        terminate session
 " <
 
-let s:debugger_plugin = 'vebugger'
+" values: 'dap'
+let s:debugger_plugin = 'dap'
+" values: 'dap-view' | 'dap-ui'
+let s:debugger_ui = 'dap-view' 
 
 function! SpaceVim#layers#debug#set_variable(var) abort
-  let s:debugger_plugin = get(a:var, 'debugger_plugin', '')
+  let s:debugger_plugin = get(a:var, 'debugger_plugin', 'dap')
+  let s:debugger_ui = get(a:var, 'debugger_ui', 'dap-view')
 endfunction
 
 function! SpaceVim#layers#debug#plugins() abort
   let plugins = []
 
-  " @todo fork verbugger
-
-  if s:debugger_plugin ==# 'vimspector'
-    call add(plugins,['puremourning/vimspector', {'merged' : 0}])
+  if s:debugger_plugin ==# 'dap'
+    call add(plugins,['mason-org/mason.nvim', {'merged' : 0, 'loadconf': 1}])
+    call add(plugins,['jay-babu/mason-nvim-dap.nvim', {'merged' : 0, 'loadconf': 1, 'depends': ['mason-org/mason.nvim']}])
+    call add(plugins,['mfussenegger/nvim-dap', {'merged' : 0, 'loadconf': 1, 'depends': ['mason-nvim-dap.nvim'] }])
+    call add(plugins,['nvim-neotest/nvim-nio', {'merged' : 0}])
+    call add(plugins,['theHamsta/nvim-dap-virtual-text', {'merged' : 0, 'loadconf': 1, 'depends': ['mfussenegger/nvim-dap']}])
+    call add(plugins,['Weissle/persistent-breakpoints.nvim', {'merged' : 0}])
+    call add(plugins,['Jorenar/nvim-dap-disasm', {'merged': 0}])
+    if s:debugger_ui ==# 'dap-ui'
+      call add(plugins,['rcarriga/nvim-dap-ui', {'merged' : 0, 'loadconf': 1, 'depends': ['mfussenegger/nvim-dap']}])
+    else
+      call add(plugins,['igorlfs/nvim-dap-view', {'merged' : 0, 'loadconf': 1, 'depends': ['mfussenegger/nvim-dap']}])
+    endif
   else
-    call add(plugins,['wsdjeg/vim-debug', {'merged' : 0}])
+    throw 'Only support `dap` debug engine'
   endif
 
-  if g:spacevim_filemanager !=# 'vimfiler'
-    call add(plugins, ['Shougo/vimproc.vim', {'build' : [(executable('gmake') ? 'gmake' : 'make')]}])
-  endif
+  " if g:spacevim_filemanager !=# 'vimfiler'
+    " call add(plugins, ['Shougo/vimproc.vim', {'build' : [(executable('gmake') ? 'gmake' : 'make')]}])
+  " endif
   return plugins
 endfunction
 
@@ -65,175 +76,87 @@ function! SpaceVim#layers#debug#health() abort
   return 1
 endfunction
 
-function! SpaceVim#layers#debug#config() abort
+function! s:defineCommonKeymap() abort
+  " call SpaceVim#mapping#space#def('nnoremap', ['d', 'b'], 'DapToggleBreakpoint', ' Toggle Breakpoint', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'b'], 'PBToggleBreakpoint', ' Toggle Breakpoint', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'B'], 'PBSetConditionalBreakpoint', ' Toggle Conditional Breakpoint', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'c'], 'DapContinue', ' Continue Session', 1)
+  " call SpaceVim#mapping#space#def('nnoremap', ['d', 'C'], 'DapClearBreakpoints', ' Clear all Breakpoints', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'C'], 'PBClearAllBreakpoints', ' Clear all Breakpoints', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'd'], 'DapDisconnnet', ' Disconnect Session', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'e'], 'DapEval', '󰫧 Evalute Expression', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'i'], 'DapStepInto', ' Step In', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'l'], 'PBSetLogPoint', ' Toggle Log Point', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'L'], 'DapShowLog', ' Show Log', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'n'], 'DapNew', ' New Session', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'o'], 'DapStepOver', ' Step Over', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'O'], 'DapStepOut', ' Step Out', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'p'], 'lua require("dap.ui.widgets").preview()', ' Preview', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'r'], 'DapRestartFrame', ' Restart Frame', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'R'], 'DapToggleRepl', ' Toggle REPL', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 't'], 'call call('. string(s:_function('s:terminate')) . ', [])', ' Terminate Session', 1)
 
-  if s:debugger_plugin ==# 'vimspector'
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'c'], 'call vimspector#Continue()', 'launch-or-continue-debugger', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'r'], 'call vimspector#Restart()', 'restart-debugger-with-the-same-config', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'x'], 'call vimspector#RunToCursor()', 'run-to-cursor', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'p'], 'call vimspector#Pause()', 'pause-debugger', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'b'], 'call vimspector#ToggleBreakpoint()', 'toggle-line-breakpoint', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'B'], 'call vimspector#ClearBreakpoints()', 'clear-all-breakpoints', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'o'], 'call vimspector#StepOver()', 'step-over', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'i'], 'call vimspector#StepInto()', 'step-into-functions', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'O'], 'call vimspector#StepOut()', 'step-out-of-current-function', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'u'], 'call vimspector#UpFrame()', 'move-up-a-frame', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'd'], 'call vimspector#DownFrame()', 'move-down-a-frame', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'k'], 'call vimspector#Stop() | VimspectorReset', 'terminate-the-debugger', 1)
-    call SpaceVim#mapping#space#def('nmap', ['d', 'e'], '<Plug>VimspectorBalloonEval', 'evaluate-cursor-symbol-or-selection', 0)
-    call SpaceVim#mapping#space#def('xmap', ['d', 'e'], '<Plug>VimspectorBalloonEval', 'evaluate-cursor-symbol-or-selection', 0)
-  else
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'l'], 'call SpaceVim#layers#debug#launching(&ft)', 'launching-debugger', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'b'], 'VBGtoggleBreakpointThisLine', 'toggle-line-breakpoint', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'B'], 'VBGclearBreakpoints', 'clear-all-breakpoints', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'c'], 'VBGcontinue', 'continue-the-execution', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'o'], 'VBGstepOver', 'step-over', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'i'], 'VBGstepIn', 'step-into-functions', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'O'], 'VBGstepOut', 'step-out-of-current-function', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'k'], 'VBGkill', 'terminates-the-debugger', 1)
-    let g:_spacevim_mappings_space.d.e = {'name' : '+Evaluate/Execute'}
-    call SpaceVim#mapping#space#def('vnoremap', ['d', 'e', 's'], 'VBGevalSelectedText', 'evaluate-selected-text', 1)
-    call SpaceVim#mapping#space#def('nnoremap', ['d', 'e', 'e'], 'VBGevalWordUnderCursor', 'evaluate-cursor-symbol', 1)
-    call SpaceVim#mapping#space#def('vnoremap', ['d', 'e', 'S'], 'VBGexecuteSelectedText', 'execute-selected-text', 1)
-    let g:vebugger_breakpoint_text = '->'
-    let g:vebugger_currentline_text = '++'
+endfunction
+
+function! s:defineDapUIKeymap() abort
+  let g:_spacevim_mappings_space.d.u = {'name' : '+UI'}
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'u', 'b'], 'lua require("dapui").float_element("breakpoints", { width = 120, height = 80, enter = true, position = "center" })', ' Breakpoints', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'u', 'k'], 'lua require("dapui").float_element("stacks", { width = 120, height = 80, enter = true, position = "center" })', ' Stacks', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'u', 'r'], 'lua require("dapui").float_element("repl", { width = 120, height = 80, enter = true, position = "center" })', ' REPL', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'u', 's'], 'lua require("dapui").float_element("scopes", { width = 120, height = 80, enter = true, position = "center" })', '󰫙 Scopes', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'u', 'w'], 'lua require("dapui").float_element("watches", { width = 120, height = 80, enter = true, position = "center" })', ' Watches', 1)
+endfunction
+
+function! s:defineDapViewKeymap() abort
+  let g:_spacevim_mappings_space.d.u = {'name' : '+View'}
+endfunction
+
+
+function! SpaceVim#layers#debug#config() abort
+  call s:defineCommonKeymap()
+  if s:debugger_ui ==# 'dap-view'
+    call s:defineDapViewKeymap()
+  elseif s:debugger_ui ==# 'dap-ui'
+    call s:defineDapUIKeymap()
   endif
 
-  call SpaceVim#mapping#space#def('nnoremap', ['d', '.'], 'call call('
-        \ . string(s:_function('s:debug_transient_state')) . ', [])',
-        \ 'debug-transient-state', 1)
+  let g:_spacevim_mappings_space.d.r = {'name' : '+Run'}
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'r', 'c'], 'lua require("dap").run_to_cursor()', ' Run to cursor', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'r', 'l'], 'lua require("dap").run_last()', ' Run Last', 1)
+  " call SpaceVim#mapping#space#def('nnoremap', ['d', 'r', 'r'], 'lua require("dap").restart()', '󰑙 Restart', 1)
+
+  let g:_spacevim_mappings_space.d.v = {'name' : '+Telescope'}
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'v', 'b'], 'Telescope dap list_breakpoints', ' breakpoints', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'v', 'c'], 'Telescope dap commands', ' commands', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'v', 'C'], 'Telescope dap configurations', '漣configurations', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'v', 'f'], 'Telescope dap frames', ' frames', 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['d', 'v', 'v'], 'Telescope dap variables', ' variables', 1)
+endfunction
+
+function! s:terminate() abort
+  lua require("dap").terminate()
+  if s:debugger_ui ==# 'dap-view'
+  elseif s:debugger_ui ==# 'dap-ui'
+    lua require("dapui").close()
+  endif
+  lua require("nvim-dap-virtual-text").toggle()
 endfunction
 
 function! SpaceVim#layers#debug#launching(ft) abort
-  if a:ft ==# 'python'
-    exe 'VBGstartPDB ' . bufname('%')
-  elseif a:ft ==# 'ruby'
-    exe 'VBGstartRDebug ' . bufname('%')
-  elseif a:ft ==# 'powershell'
-    exe 'VBGstartPowerShell ' . bufname('%')
-  else
-    echohl WarningMsg
-    echo 'read :h vebugger-launching'
-    echohl None
-  endif
-endfunction
-
-function! s:debug_transient_state() abort
-    let state = SpaceVim#api#import('transient_state') 
-    call state.set_title('Debug Transient State')
-
-    if s:debugger_plugin ==# 'vimspector'
-      call state.defind_keys(
-                  \ {
-                  \ 'layout' : 'vertical split',
-                  \ 'left' : [
-                  \ {
-                  \ 'key' : 'c',
-                  \ 'desc' : 'Continue execution',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#Continue()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'u',
-                  \ 'desc' : 'Move up a frame',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#UpFrame()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'd',
-                  \ 'desc' : 'Move down a frame',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#DownFrame()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ ],
-                  \ 'right' : [
-                  \ {
-                  \ 'key' : 'o',
-                  \ 'desc' : 'step over',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#StepOver()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'i',
-                  \ 'desc' : 'step into functions',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#StepInto()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'O',
-                  \ 'desc' : 'step out of current function',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#StepOut()',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'k',
-                  \ 'desc' : 'Terminates the debugger',
-                  \ 'func' : '',
-                  \ 'cmd' : 'call vimspector#Stop() | VimspectorReset',
-                  \ 'exit' : 1,
-                  \ },
-                  \ ],
-                  \ }
-            \ )
-    else
-      call state.defind_keys(
-                  \ {
-                  \ 'layout' : 'vertical split',
-                  \ 'left' : [
-                  \ {
-                  \ 'key' : 'o',
-                  \ 'desc' : 'step over',
-                  \ 'func' : '',
-                  \ 'cmd' : 'VBGstepOver',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'i',
-                  \ 'desc' : 'step into functions',
-                  \ 'func' : '',
-                  \ 'cmd' : 'VBGstepIn',
-                  \ 'exit' : 0,
-                  \ },
-                  \ ],
-                  \ 'right' : [
-                  \ {
-                  \ 'key' : 'O',
-                  \ 'desc' : 'step out of current function',
-                  \ 'func' : '',
-                  \ 'cmd' : 'VBGstepOut',
-                  \ 'exit' : 0,
-                  \ },
-                  \ {
-                  \ 'key' : 'k',
-                  \ 'desc' : 'Terminates the debugger',
-                  \ 'func' : '',
-                  \ 'cmd' : 'VBGkill',
-                  \ 'exit' : 1,
-                  \ },
-                  \ ],
-                  \ }
-            \ )
-    endif
-    call state.open()
+  echom 'debug#launching'
 endfunction
 
 " function() wrapper
 if v:version > 703 || v:version == 703 && has('patch1170')
-    function! s:_function(fstr) abort
-        return function(a:fstr)
-    endfunction
+  function! s:_function(fstr) abort
+    return function(a:fstr)
+  endfunction
 else
-    function! s:_SID() abort
-        return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
-    endfunction
-    let s:_s = '<SNR>' . s:_SID() . '_'
-    function! s:_function(fstr) abort
-        return function(substitute(a:fstr, 's:', s:_s, 'g'))
-    endfunction
+  function! s:_SID() abort
+    return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
+  endfunction
+  let s:_s = '<SNR>' . s:_SID() . '_'
+  function! s:_function(fstr) abort
+    return function(substitute(a:fstr, 's:', s:_s, 'g'))
+  endfunction
 endif

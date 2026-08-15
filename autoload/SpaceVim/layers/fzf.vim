@@ -37,6 +37,7 @@
 let s:CMP = SpaceVim#api#import('vim#compatible')
 let s:LIST = SpaceVim#api#import('data#list')
 let s:SYS = SpaceVim#api#import('system')
+let s:fuzzy_finder = v:false
 
 function! SpaceVim#layers#fzf#health() abort
   call SpaceVim#layers#fzf#plugins()
@@ -44,168 +45,142 @@ function! SpaceVim#layers#fzf#health() abort
   return 1
 endfunction
 
+function! SpaceVim#layers#fzf#set_variable(var) abort
+  let s:fuzzy_finder = get(a:var, 'fuzzy_finder', v:false)
+endfunction
+
 function! SpaceVim#layers#fzf#plugins() abort
   let plugins = []
-  call add(plugins, ['junegunn/fzf',                { 'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/neoyank.vim', {'merged' : 0}])
-  call add(plugins, [g:_spacevim_root_dir . 'bundle/neomru.vim', {'merged' : 0}])
-  call add(plugins, ['SpaceVim/fzf-neoyank',                { 'merged' : 0}])
+  call add(plugins, ['junegunn/fzf',                    { 'merged' : 0 }])
+  call add(plugins, ['junegunn/fzf.vim',                { 'merged' : 0 }])
+  call add(plugins, ['Shougo/neoyank.vim',              { 'merged' : 0 }])
+  call add(plugins, ['yuki-ycino/fzf-preview.vim',      { 'merged' : 0, 'rev' : 'release/rpc', 'if' : "has('macunix')" }])
+
+  " call add(plugins, [g:_spacevim_root_dir . 'bundle/neomru.vim', {'merged' : 0}])
+  call add(plugins, ['SpaceVim/fzf-neoyank',            { 'merged' : 0 }])
   return plugins
 endfunction
 
-
 let s:filename = expand('<sfile>:~')
-let s:lnum = expand('<slnum>') + 2
 function! SpaceVim#layers#fzf#config() abort
   augroup fzf_layer
     autocmd!
     autocmd FileType fzf setlocal nonumber norelativenumber
   augroup END
-  let lnum = expand('<slnum>') + s:lnum - 1
-  call SpaceVim#mapping#space#def('nnoremap', ['h', '[SPC]'], 'FzfHelpTags SpaceVim', 'find-SpaceVim-help', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['h', 'i'], 'exe "FzfHelpTags " . expand("<cword>")', 'get help with the symbol at point', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['b', 'b'], 'FzfBuffers', 'List all buffers', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['p', 'f'],
-        \ 'FzfFiles',
-        \ ['find files in current project',
-        \ [
-        \ '[SPC p f] is to find files in the root of the current project',
-        \ '',
-        \ 'Definition: ' . s:filename . ':' . lnum,
-        \ ]
-        \ ]
-        \ , 1)
+
   call SpaceVim#mapping#space#def('nnoremap', ['j', 'i'], 'FzfOutline', 'jump to a definition in buffer', 1)
-  nnoremap <silent> <C-p> :FzfFiles<cr>
-  call SpaceVim#mapping#space#def('nnoremap', ['T', 's'], 'FzfColors', 'fuzzy find colorschemes', 1)
-  call SpaceVim#mapping#space#def('nnoremap', ['f', 'r'], 'FzfMru', 'open-recent-file', 1)
-  let lnum = expand('<slnum>') + s:lnum - 1
-  call SpaceVim#mapping#space#def('nnoremap', ['f', 'f'],
-        \ "exe 'FZF ' . fnamemodify(bufname('%'), ':h')",
-        \ ['Find files in the directory of the current buffer',
-        \ [
-        \ '[SPC f f] is to find files in the directory of the current buffer',
-        \ '',
-        \ 'Definition: ' . s:filename . ':' . lnum,
-        \ ]
-        \ ]
-        \ , 1)
-  let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
-  call s:defind_fuzzy_finder()
+  call SpaceVim#mapping#space#def('nnoremap', ['T', 'c'], ' Colors', 'fuzzy find colorschemes', 1)
+
+  call s:define_fuzzy_finder()
+  call s:define_space_keymaps()
+endfunction
+
+function! s:define_space_keymaps()
+  let g:_spacevim_mappings_space.z.name = '+Fzf'
+
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'b'], 'Buffers',
+        \ ['󰘙 buffers', [ '[SPC z b] is to list all buffers', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'c'], 'Changes',
+        \ [' changes', [ '[SPC z c] is to list all changes in all buffers', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'C'], 'Commands',
+        \ [' commands', [ '[SPC z C] is to list all vim commands', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'f'], 'FzfPreviewProjectFilesRpc',
+        \ [' project files', [ '[SPC z f] is to list all files in project directory', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'F'], 'FzfPreviewDirectoryFilesRpc',
+        \ [' directory files', [ '[SPC z F] is to list all files in project directory', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'u'], 'FzfPreviewProjectMruFilesRpc',
+        \ [' mru files', [ '[SPC z u] is to list mru files in project', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'W'], 'FzfPreviewProjectMrwFilesRpc',
+        \ [' mrw files', [ '[SPC z w] is to list mrw files in project', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'h'], 'Helptags',
+        \ [' help tags', [ '[SPC z h] is to list help tags', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'H'], ':FzfPreviewGrepHelpRpc ',
+        \ ['󰋗 help search', [ '[SPC z H] is to search helps', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 0)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'j'], 'Jumps',
+        \ [' jumps', [ '[SPC z j] is to list jumps', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'k'], 'Marks',
+        \ [' marks', [ '[SPC z k] is to list marks', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'l'], 'FzfPreviewLinesRpc',
+        \ ['󱎸 buffer lines', [ '[SPC z l] is to list lines of current buffer', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'L'], 'Lines',
+        \ ['󱎸 lines', [ '[SPC z L] is to list lines of all buffers', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'm'], 'FzfMessages',
+        \ [' messages', [ '[SPC z m] is to list vim messages', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'p'], 'FzfMenu Projects',
+        \ [' projects', [ '[SPC z p] is to list projects', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'r'], 'FzfMenu MyStarredrepos',
+        \ ['留stared repos', [ '[SPC z r] is to list starred repos', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 0)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 's'], ':FzfPreviewProjectGrepRpc ',
+        \ [' grep', [ '[SPC z s] is to grep string', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 't'], 'Filetypes',
+        \ [' file types', [ '[SPC z t] is to switch filetype', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'W'], 'Windows',
+        \ [' windows', [ '[SPC z W] is to list windows', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', '/'], ':RG ',
+        \ ['󰺯 search string', [ '[SPC z /] is to search string', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 0)
+
+  " Map
+  let g:_spacevim_mappings_space.z.M = {'name' : '+Map'}
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'M', 'n'], 'Maps',
+        \ [' normal mappings', [ '[SPC M n] is to list normal mode mappings', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'M', 'i'], 'IMaps',
+        \ [' input mappings', [ '[SPC M i] is to list input mode mappings', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'M', 'v'], 'VMaps',
+        \ [' visual mappings', [ '[SPC M v] is to list visual mode mappings', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+
+  " History
+  let g:_spacevim_mappings_space.z.h = {'name' : '+History'}
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'h', 'f'], 'History',
+        \ [' file history', [ '[SPC z h f] is to list file history', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'h', ':'], 'History:',
+        \ [' command history', [ '[SPC z h :] is to list vim command history', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
+  call SpaceVim#mapping#space#def('nnoremap', ['z', 'h', '/'], 'History/',
+        \ ['󰺯 search history', [ '[SPC z h /] is to list search history', '', 'Definition: ' . s:filename . ':' . (expand('<sflnum>') - 1), ] ] , 1)
 endfunction
 
 let s:file = expand('<sfile>:~')
-let s:unite_lnum = expand('<slnum>') + 3
-function! s:defind_fuzzy_finder() abort
-  nnoremap <silent> <Leader>fe
-        \ :<C-u>FzfRegister<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.e = ['FzfRegister',
-        \ 'fuzzy find registers',
-        \ [
-        \ '[Leader f r ] is to resume unite window',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
-  nnoremap <silent> <Leader>fj
-        \ :<C-u>FzfJumps<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.j = ['FzfJumps',
-        \ 'fuzzy find jump list',
-        \ [
-        \ '[Leader f j] is to fuzzy find jump list',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
-  nnoremap <silent> <Leader>fh
-        \ :<C-u>FZFNeoyank<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.h = ['FZFNeoyank',
-        \ 'fuzzy find yank history',
-        \ [
-        \ '[Leader f r ] is to resume unite window',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
-  nnoremap <silent> <Leader>fm
-        \ :<C-u>FzfMessages<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.m = ['FzfMessages',
-        \ 'fuzzy find message',
-        \ [
-        \ '[Leader f m] is to fuzzy find message',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
-  nnoremap <silent> <Leader>fq
-        \ :<C-u>FzfQuickfix<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.q = ['FzfQuickfix',
-        \ 'fuzzy find quickfix list',
-        \ [
-        \ '[Leader f q] is to fuzzy find quickfix list',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
-  nnoremap <silent> <Leader>fl
-        \ :<C-u>FzfLocationList<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.l = ['FzfLocationList',
-        \ 'fuzzy find location list',
-        \ [
-        \ '[Leader f l] is to fuzzy find location list',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+function! s:define_fuzzy_finder() abort
+  if !s:fuzzy_finder 
+    return
+  endif
+
+  let g:_spacevim_mappings.f = {'name' : '+Fuzzy Finder'}
+
+  " let g:_spacevim_mappings.f.e = ['FzfRegister', 'fuzzy find registers',
+        " \ [ '[Leader f r ] is to resume unite window', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+
+  let g:_spacevim_mappings.f.j = ['FzfPreviewJumpsRpc', ' fuzzy find jump list',
+        \ [ '[Leader f j] is to fuzzy find jump list', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+
+  let g:_spacevim_mappings.f.y = ['FZFNeoyank', '󱘞 fuzzy find yank history',
+        \ [ '[Leader f y ] is to resume unite window', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+
+  let g:_spacevim_mappings.f.m = ['FzfMessages', ' fuzzy find message',
+        \ [ '[Leader f m] is to fuzzy find message', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+
+  " nnoremap <silent> <Leader>fq :<C-u>FzfQuickfix<CR>
+  let g:_spacevim_mappings.f.q = ['FzfQuickfix', ' fuzzy find quickfix list',
+        \ [ '[Leader f q] is to fuzzy find quickfix list', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+
+  " nnoremap <silent> <Leader>fl :<C-u>FzfLocationList<CR>
+  let g:_spacevim_mappings.f.l = ['FzfLocationList', 'fuzzy find location list',
+        \ [ '[Leader f l] is to fuzzy find location list', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
+  
   nnoremap <silent> <Leader>fo  :<C-u>FzfOutline<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.o = ['FzfOutline',
-        \ 'fuzzy find outline',
-        \ [
-        \ '[Leader f o] is to fuzzy find outline',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  let g:_spacevim_mappings.f.o = ['FzfOutline', 'fuzzy find outline',
+        \ [ '[Leader f o] is to fuzzy find outline', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
 
   nnoremap <silent> <Leader>f<Space> :FzfMenu CustomKeyMaps<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f['[SPC]'] = ['FzfMenu CustomKeyMaps',
-        \ 'fuzzy find custom key bindings',
-        \ [
-        \ '[Leader f SPC] is to fuzzy find custom key bindings',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  let g:_spacevim_mappings.f['[SPC]'] = ['FzfMenu CustomKeyMaps', 'fuzzy find custom key bindings',
+        \ [ '[Leader f SPC] is to fuzzy find custom key bindings', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
 
   nnoremap <silent> <Leader>fp  :<C-u>FzfMenu AddedPlugins<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.p = ['FzfMenu AddedPlugins',
-        \ 'fuzzy find vim packages',
-        \ [
-        \ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  let g:_spacevim_mappings.f.p = ['FzfMenu AddedPlugins', 'fuzzy find vim packages',
+        \ [ '[Leader f p] is to fuzzy find vim packages installed in SpaceVim', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
 
   nnoremap <silent> <Leader>ft  :<C-u>FzfTags<CR>
-  let lnum = expand('<slnum>') + s:unite_lnum - 4
-  let g:_spacevim_mappings.f.t = ['FzfTags',
-        \ 'fuzzy find global tags',
-        \ [
-        \ '[Leader f t] is to fuzzy find global tags',
-        \ '',
-        \ 'Definition: ' . s:file . ':' . lnum,
-        \ ]
-        \ ]
+  let g:_spacevim_mappings.f.t = ['FzfTags', 'fuzzy find global tags',
+        \ [ '[Leader f t] is to fuzzy find global tags', '', 'Definition: ' . s:file . ':' . (expand('<sflnum>') - 1), ] ]
 endfunction
 
 " Function below is largely lifted directly out of project junegunn/fzf.vim from
@@ -226,19 +201,8 @@ function! s:wrap(name, opts)
   return wrapped
 endfunction
 
-command! FzfColors call <SID>colors()
-function! s:colors() abort
-  let s:source = 'colorscheme'
-  call fzf#run(fzf#wrap({'source': map(split(globpath(&rtp, 'colors/*.vim')),
-        \               "fnamemodify(v:val, ':t:r')"),
-        \ 'sink': 'colo','options': '--reverse',  'down': '40%'}))
-endfunction
-
-command! FzfFiles call <SID>files()
-function! s:files() abort
-  let s:source = 'files'
-  call fzf#run(s:wrap('files', {'sink': 'e', 'options': '--reverse', 'down' : '40%'}))
-endfunction
+command! -bar -bang IMaps call fzf#vim#maps("i", <bang>0)
+command! -bar -bang VMaps call fzf#vim#maps("v", <bang>0)
 
 let s:source = ''
 
@@ -246,43 +210,6 @@ function! SpaceVim#layers#fzf#sources() abort
 
   return s:source
 
-endfunction
-command! FzfJumps call <SID>jumps()
-function! s:bufopen(e) abort
-  let list = split(a:e)
-  if len(list) < 4
-    return
-  endif
-
-  let [linenr, col, file_text] = [list[1], list[2]+1, join(list[3:])]
-  let lines = getbufline(file_text, linenr)
-  let path = file_text
-  if empty(lines)
-    if stridx(join(split(getline(linenr))), file_text) == 0
-      let lines = [file_text]
-      let path = bufname('%')
-    elseif filereadable(path)
-      let lines = ['buffer unloaded']
-    else
-      " Skip.
-      return
-    endif
-  endif
-
-  exe 'e '  . path
-  call cursor(linenr, col)
-endfunction
-function! s:jumps() abort
-  let s:source = 'jumps'
-  function! s:jumplist() abort
-    return split(s:CMP.execute('jumps'), '\n')[1:]
-  endfunction
-  call fzf#run(fzf#wrap('jumps', {
-        \   'source':  reverse(<sid>jumplist()),
-        \   'sink':    function('s:bufopen'),
-        \   'options': '+m',
-        \   'down':    len(<sid>jumplist()) + 2
-        \ }))
 endfunction
 
 command! FzfMessages call <SID>message()
@@ -302,22 +229,6 @@ function! s:message() abort
         \   'sink':    function('s:yankmessage'),
         \   'options': '+m',
         \   'down':    len(<sid>messagelist()) + 2
-        \ }))
-endfunction
-
-command! FzfMru call <SID>file_mru()
-function! s:open_file(path) abort
-  exe 'e' a:path
-endfunction
-function! s:file_mru() abort
-  let s:source = 'mru'
-  function! s:mru_files() abort
-    return neomru#_gather_file_candidates()
-  endfunction
-  call fzf#run(s:wrap('mru', {
-        \ 'source':  <sid>mru_files(),
-        \ 'sink':    function('s:open_file'),
-        \ 'down' : '40%',
         \ }))
 endfunction
 
@@ -445,23 +356,6 @@ function! s:register() abort
         \ }))
 endfunction
 
-command! FzfBuffers call <SID>buffers()
-function! s:open_buffer(e) abort
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-endfunction
-function! s:buffers() abort
-  let s:source = 'buffers'
-  function! s:buffer_list() abort
-    return split(s:CMP.execute('buffers'), '\n')
-  endfunction
-  call fzf#run(fzf#wrap('buffers', {
-        \   'source':  reverse(<sid>buffer_list()),
-        \   'sink':    function('s:open_buffer'),
-        \   'options': '+m',
-        \   'down': '40%'
-        \ }))
-endfunction
-
 let s:ansi = {'black': 30, 'red': 31, 'green': 32, 'yellow': 33, 'blue': 34, 'magenta': 35, 'cyan': 36}
 
 function! s:get_color(attr, ...) abort
@@ -521,30 +415,6 @@ function! s:helptag_sink(line) abort
   endif
   execute 'help' tag
 endfunction
-command! -nargs=? FzfHelpTags call <SID>helptags(<q-args>)
-function! s:helptags(...) abort
-  let query = get(a:000, 0, '')
-  if !executable('grep') || !executable('perl')
-    call SpaceVim#logger#warn('FzfHelpTags command requires grep and perl')
-  endif
-  let sorted = sort(split(globpath(&runtimepath, 'doc/tags', 1), '\n'))
-  let tags = exists('*uniq') ? uniq(sorted) : s:LIST.uniq(sorted)
-
-  if exists('s:helptags_script')
-    silent! call delete(s:helptags_script)
-  endif
-  let s:helptags_script = tempname()
-  call writefile(['/('.(s:SYS.isWindows ? '^[A-Z]:\/.*?[^:]' : '.*?').'):(.*?)\t(.*?)\t/; printf(qq('. call('s:green', ['%-40s', 'Label']) . '\t%s\t%s\n), $2, $3, $1)'], s:helptags_script)
-  let s:source = 'help'
-  call fzf#run(fzf#wrap('helptags', {
-        \ 'source':  'grep -H ".*" '.join(map(tags, 'shellescape(v:val)')).
-        \ ' | perl -n '. shellescape(s:helptags_script).' | sort',
-        \ 'sink':    function('s:helptag_sink'),
-        \ 'options': ['--ansi', '--reverse', '+m', '--tiebreak=begin', '--with-nth', '..-2'] + (empty(query) ? [] : ['--query', query]),
-        \   'down': '40%'
-        \ }))
-endfunction
-
 
 " fzf menu command
 function! SpaceVim#layers#fzf#complete_menu(ArgLead, CmdLine, CursorPos) abort

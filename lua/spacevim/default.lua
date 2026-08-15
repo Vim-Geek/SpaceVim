@@ -117,4 +117,16 @@ function M.options()
   logger.info('options init done')
 end
 
+function M.use_tool_panel_appearance(bufnr)
+  print('bufnr' .. tostring(bufnr))
+  -- vim.api.nvim_set_option_value("number", false, { buf = bufnr })
+  -- vim.api.nvim_set_option_value("cursornumber", false, { buf = bufnr })
+  -- vim.api.nvim_set_option_value("list", false, { buf = bufnr })
+  -- vim.api.nvim_set_option_value("relativenumber", false, { buf = bufnr })
+  -- vim.api.nvim_set_option_value("signcolumn", 'no', { buf = bufnr })
+  -- vim.opt_local.signcolumn = 'no'
+  -- vim.opt_local.foldcolumn = '0'
+  -- vim.opt_local.statuscolumn = '0'
+end
+
 return M
